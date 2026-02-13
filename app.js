@@ -1,4 +1,4 @@
-const tarotCards = [
+const majorCards = [
   { number: 0, name: "The Fool", title: "바보", upright: "모험, 무지", reversed: "경솔, 어리석음", emoji: "🌱", art: "radial-gradient(circle at 85% 12%, #fff8bb7a 0 10%, transparent 11%), linear-gradient(180deg, #a7cedf 0 58%, #88a868 59% 100%)" },
   { number: 1, name: "The Magician", title: "마술사", upright: "창조, 수완", reversed: "겁많음, 기만", emoji: "🪄", art: "radial-gradient(circle at 22% 16%, #fff7d18a 0 12%, transparent 13%), linear-gradient(180deg, #deb9ff 0 55%, #a285d7 56% 100%)" },
   { number: 2, name: "The High Priestess", title: "고위 여사제", upright: "지식, 총명", reversed: "잔혹, 무례함", emoji: "🌙", art: "radial-gradient(circle at 80% 14%, #fff2c27a 0 10%, transparent 11%), linear-gradient(180deg, #6e7cbb 0 58%, #4f5e9d 59% 100%)" },
@@ -23,9 +23,49 @@ const tarotCards = [
   { number: 21, name: "The World", title: "세계", upright: "완성, 완전", reversed: "미완성, 어중간함", emoji: "🌍", art: "radial-gradient(circle at 82% 12%, #fff2c07a 0 10%, transparent 11%), linear-gradient(180deg, #a9d7ba 0 58%, #6ca380 59% 100%)" }
 ];
 
+function createMinorCards() {
+  const suitMeta = [
+    { key: "W", nameKo: "완드", nameEn: "Wands", emoji: "🔥", art: "radial-gradient(circle at 78% 12%, #fff1c17a 0 10%, transparent 11%), linear-gradient(180deg, #f0b28e 0 58%, #b56b4b 59% 100%)", uprightTone: "열정, 추진력", reversedTone: "성급함, 소진" },
+    { key: "C", nameKo: "컵", nameEn: "Cups", emoji: "💧", art: "radial-gradient(circle at 80% 12%, #fff4cf7a 0 10%, transparent 11%), linear-gradient(180deg, #8fc5eb 0 58%, #5b87bd 59% 100%)", uprightTone: "감정, 공감", reversedTone: "감정기복, 혼란" },
+    { key: "S", nameKo: "소드", nameEn: "Swords", emoji: "🗡️", art: "radial-gradient(circle at 78% 12%, #fff5d27a 0 10%, transparent 11%), linear-gradient(180deg, #bfc9d9 0 58%, #7b879b 59% 100%)", uprightTone: "판단, 결단", reversedTone: "갈등, 피로" },
+    { key: "P", nameKo: "펜타클", nameEn: "Pentacles", emoji: "🪙", art: "radial-gradient(circle at 78% 12%, #fff4c07a 0 10%, transparent 11%), linear-gradient(180deg, #9dcf9b 0 58%, #5f9562 59% 100%)", uprightTone: "현실, 성장", reversedTone: "지연, 불안정" }
+  ];
+
+  const ranks = [
+    { key: "A", nameKo: "에이스", nameEn: "Ace", up: "새 출발", rev: "출발 지연" },
+    { key: "2", nameKo: "투", nameEn: "Two", up: "균형", rev: "불균형" },
+    { key: "3", nameKo: "쓰리", nameEn: "Three", up: "확장", rev: "정체" },
+    { key: "4", nameKo: "포", nameEn: "Four", up: "안정", rev: "고착" },
+    { key: "5", nameKo: "파이브", nameEn: "Five", up: "변화", rev: "충돌" },
+    { key: "6", nameKo: "식스", nameEn: "Six", up: "회복", rev: "미해결" },
+    { key: "7", nameKo: "세븐", nameEn: "Seven", up: "도전", rev: "의심" },
+    { key: "8", nameKo: "에이트", nameEn: "Eight", up: "집중", rev: "압박" },
+    { key: "9", nameKo: "나인", nameEn: "Nine", up: "성숙", rev: "불안" },
+    { key: "10", nameKo: "텐", nameEn: "Ten", up: "완성", rev: "과부하" },
+    { key: "P", nameKo: "페이지", nameEn: "Page", up: "배움", rev: "미숙" },
+    { key: "N", nameKo: "나이트", nameEn: "Knight", up: "전진", rev: "충동" },
+    { key: "Q", nameKo: "퀸", nameEn: "Queen", up: "통찰", rev: "감정 과잉" },
+    { key: "K", nameKo: "킹", nameEn: "King", up: "주도", rev: "고집" }
+  ];
+
+  return suitMeta.flatMap((suit) =>
+    ranks.map((rank) => ({
+      number: `${suit.key}-${rank.key}`,
+      name: `${rank.nameEn} of ${suit.nameEn}`,
+      title: `${suit.nameKo} ${rank.nameKo}`,
+      upright: `${suit.uprightTone}, ${rank.up}`,
+      reversed: `${suit.reversedTone}, ${rank.rev}`,
+      emoji: suit.emoji,
+      art: suit.art
+    }))
+  );
+}
+
+const tarotCards = [...majorCards, ...createMinorCards()];
+
 const STORAGE_TODAY = "tarotMate:todayTarot";
 const STORAGE_HISTORY = "tarotMate:readingHistory";
-const SPREAD_COUNT = Math.min(22, tarotCards.length);
+const SPREAD_COUNT = tarotCards.length;
 
 const brandHomeBtn = document.querySelector("#brandHomeBtn");
 const navItems = Array.from(document.querySelectorAll(".nav-item"));
@@ -216,7 +256,7 @@ function openTodayDraw() {
   pickAreaEl.classList.remove("hidden");
   renderPickGrid(data);
   fortuneTitleEl.textContent = "오늘의 운세";
-  cardDescEl.textContent = "카드 22장 중 한 장을 선택하면 오늘의 운세를 알려드려요.";
+  cardDescEl.textContent = `카드 ${SPREAD_COUNT}장 중 한 장을 선택하면 오늘의 운세를 알려드려요.`;
   fortuneMetaEl.textContent = `${data.date} 기준, 하루 한 번 결과가 고정됩니다.`;
 }
 
