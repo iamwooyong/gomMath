@@ -84,6 +84,35 @@ body {
   font-weight: 800;
 }
 
+.brand-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-card-back {
+  width: 22px;
+  aspect-ratio: 2 / 3;
+  border-radius: 4px;
+  padding: 1px;
+  display: inline-grid;
+  background: linear-gradient(145deg, #e6d8fb, #ccb3ef);
+  box-shadow: 0 4px 8px #7048b540;
+}
+
+.brand-card-back span {
+  border-radius: 3px;
+  border: 1px solid #decdf4;
+  display: grid;
+  place-items: center;
+  font-size: 0.6rem;
+  color: #f8f2ff;
+  background:
+    radial-gradient(circle at 50% 50%, #ffffff29 0 24%, transparent 25%),
+    repeating-radial-gradient(circle at 50% 50%, #dac9f05c 0 2px, transparent 3px 6px),
+    linear-gradient(145deg, #40275f, #6e49a6 42%, #4a2f70);
+}
+
 .subtitle {
   margin: 2px 0 0;
   color: #9a85ba;
