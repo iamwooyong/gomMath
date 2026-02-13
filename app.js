@@ -351,6 +351,7 @@ function init() {
   initNavigation();
   initKakaoLogin();
   renderCard(currentIndex, "upright");
+  openTodayDraw();
   renderHistory();
   switchTab("home");
 }
