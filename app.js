@@ -66,6 +66,7 @@ const tarotCards = [...majorCards, ...createMinorCards()];
 const STORAGE_TODAY = "tarotMate:todayTarot";
 const STORAGE_HISTORY = "tarotMate:readingHistory";
 const DAILY_SPREAD_COUNT = Math.min(25, tarotCards.length);
+const API_BASE = "";
 
 const brandHomeBtn = document.querySelector("#brandHomeBtn");
 const navItems = Array.from(document.querySelectorAll(".nav-item"));
@@ -178,11 +179,70 @@ function saveHistory(history) {
   localStorage.setItem(STORAGE_HISTORY, JSON.stringify(history));
 }
 
+function getApiUrl(path) {
+  return `${API_BASE}${path}`;
+}
+
+function getActiveUser() {
+  return loadGoogleUser();
+}
+
+async function saveReadingToDb(entry) {
+  const user = getActiveUser();
+  if (!user?.id) return;
+
+  const externalKey = entry.type === "daily"
+    ? `daily:${user.id}:${entry.date}`
+    : `zodiac:${user.id}:${entry.date}:${Date.now()}`;
+
+  try {
+    await fetch(getApiUrl("/api/readings"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId: user.id,
+        type: entry.type,
+        date: entry.date,
+        title: entry.title,
+        summary: entry.summary,
+        externalKey
+      })
+    });
+  } catch (error) {
+    console.error("saveReadingToDb failed", error);
+  }
+}
+
+async function fetchReadingsFromDb(limit = 300) {
+  const user = getActiveUser();
+  if (!user?.id) return null;
+
+  try {
+    const response = await fetch(
+      `${getApiUrl("/api/readings")}?userId=${encodeURIComponent(user.id)}&limit=${limit}`
+    );
+    if (!response.ok) throw new Error("fetch failed");
+    const payload = await response.json();
+    return Array.isArray(payload.items)
+      ? payload.items.map((item) => ({
+          type: item.type,
+          date: item.date,
+          title: item.title,
+          summary: item.summary
+        }))
+      : [];
+  } catch (error) {
+    console.error("fetchReadingsFromDb failed", error);
+    return null;
+  }
+}
+
 function upsertDailyHistory(entry) {
   const history = getHistory();
   const others = history.filter((item) => !(item.type === "daily" && item.date === entry.date));
   const next = [entry, ...others].sort((a, b) => (a.date < b.date ? 1 : -1));
   saveHistory(next);
+  saveReadingToDb(entry);
   renderHistory();
 }
 
@@ -190,6 +250,7 @@ function addZodiacHistory(entry) {
   const history = getHistory();
   const next = [entry, ...history].slice(0, 60);
   saveHistory(next);
+  saveReadingToDb(entry);
   renderHistory();
 }
 
@@ -276,11 +337,9 @@ function resetHomeIntro() {
   drawBtn.textContent = "✦ 오늘의 운세 보기";
 }
 
-function renderHistory() {
-  const history = getHistory();
+function buildHistoryHtml(history) {
   if (history.length === 0) {
-    historyListEl.innerHTML = '<li class="history-item"><p class="history-text">아직 저장된 리딩 기록이 없어요.</p></li>';
-    return;
+    return '<li class="history-item"><p class="history-text">아직 저장된 리딩 기록이 없어요.</p></li>';
   }
 
   const pages = [];
@@ -300,7 +359,20 @@ function renderHistory() {
     })
     .join("");
 
-  historyListEl.innerHTML = `<div class="history-viewport"><div class="history-track">${pageHtml}</div></div>`;
+  return `<div class="history-viewport"><div class="history-track">${pageHtml}</div></div>`;
+}
+
+function renderHistory() {
+  historyListEl.innerHTML = '<li class="history-item"><p class="history-text">기록을 불러오는 중...</p></li>';
+
+  const localHistory = getHistory();
+  historyListEl.innerHTML = buildHistoryHtml(localHistory);
+
+  fetchReadingsFromDb().then((remoteHistory) => {
+    if (!remoteHistory) return;
+    saveHistory(remoteHistory);
+    historyListEl.innerHTML = buildHistoryHtml(remoteHistory);
+  });
 }
 
 function renderCardCatalog() {
@@ -476,6 +548,7 @@ function logoutGoogleUser() {
   }
   clearGoogleUser();
   setGoogleButton(null);
+  renderHistory();
 }
 
 function initGoogleLogin() {
@@ -509,6 +582,8 @@ function initGoogleLogin() {
         fetchGoogleUserInfo(tokenResponse.access_token).catch((error) => {
           console.error(error);
           alert("Google 사용자 정보를 가져오지 못했어요.");
+        }).finally(() => {
+          renderHistory();
         });
       }
     });
