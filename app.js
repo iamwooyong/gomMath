@@ -45,12 +45,14 @@ const cardDescEl = document.querySelector("#cardDesc");
 const fortuneTitleEl = document.querySelector("#fortuneTitle");
 const fortuneMetaEl = document.querySelector("#fortuneMeta");
 const cardArtEl = document.querySelector("#cardArt");
-const cardHeadEl = document.querySelector(".card-head");
 const tagBox = document.querySelector("#tagBox");
 const kakaoLoginBtn = document.querySelector("#kakaoLoginBtn");
+const pickAreaEl = document.querySelector("#pickArea");
+const pickGridEl = document.querySelector("#pickGrid");
 
 const KAKAO_JS_KEY = "";
 const KAKAO_REDIRECT_URI = window.location.origin + window.location.pathname;
+const SPREAD_COUNT = Math.min(5, tarotCards.length);
 
 let currentIndex = 0;
 
@@ -60,10 +62,8 @@ function renderTags(tags) {
 
 function renderCard(index) {
   const card = tarotCards[index];
-  cardHeadEl.textContent = card.number;
   cardTitleEl.textContent = card.title;
   cardQuoteEl.textContent = `“${card.quote}”`;
-  cardDescEl.textContent = card.desc;
   cardArtEl.textContent = card.emoji;
   cardArtEl.style.background = card.art;
   renderTags(card.tags);
@@ -87,32 +87,88 @@ function getFortuneMessage(card) {
   return moods[card.number] || "오늘은 중심을 잡고 차분히 움직이면 좋은 흐름이 이어집니다.";
 }
 
-function drawTodayTarot() {
-  tarotCardEl.classList.remove("animating");
-  void tarotCardEl.offsetWidth;
-  tarotCardEl.classList.add("animating");
+function shuffle(list) {
+  const arr = [...list];
+  for (let i = arr.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
+function getTodayData() {
   const todayKey = getDateKey();
   const storageKey = "tarotMate:todayTarot";
   const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
 
-  if (saved?.date === todayKey && Number.isInteger(saved.index)) {
-    currentIndex = saved.index;
-  } else {
-    currentIndex = Math.floor(Math.random() * tarotCards.length);
-    localStorage.setItem(storageKey, JSON.stringify({ date: todayKey, index: currentIndex }));
+  if (saved?.date === todayKey && Array.isArray(saved.spread) && saved.spread.length === SPREAD_COUNT) {
+    return saved;
   }
 
-  const todayCard = tarotCards[currentIndex];
+  const spread = shuffle(tarotCards.map((_, i) => i)).slice(0, SPREAD_COUNT);
+  const newData = { date: todayKey, spread, selected: null };
+  localStorage.setItem(storageKey, JSON.stringify(newData));
+  return newData;
+}
+
+function saveTodayData(data) {
+  localStorage.setItem("tarotMate:todayTarot", JSON.stringify(data));
+}
+
+function revealFortune(cardIndex, todayKey) {
+  const todayCard = tarotCards[cardIndex];
+  currentIndex = cardIndex;
+
+  tarotCardEl.classList.remove("animating");
+  void tarotCardEl.offsetWidth;
+  tarotCardEl.classList.add("animating");
   renderCard(currentIndex);
 
-  fortuneTitleEl.textContent = `오늘의 타로: ${todayCard.title}`;
+  fortuneTitleEl.textContent = `오늘의 타로 결과: ${todayCard.title}`;
   cardDescEl.textContent = `${todayCard.desc} ${getFortuneMessage(todayCard)}`;
-  fortuneMetaEl.textContent = `${todayKey} 기준 오늘의 카드입니다.`;
+  fortuneMetaEl.textContent = `${todayKey} 기준, 오늘 선택한 카드입니다.`;
   drawBtn.textContent = "✦ 오늘의 운세 다시 보기";
 }
 
-drawBtn.addEventListener("click", drawTodayTarot);
+function renderPickGrid(data) {
+  pickGridEl.innerHTML = "";
+
+  data.spread.forEach((cardIndex) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "pick-card";
+    button.textContent = "✦";
+
+    if (data.selected === cardIndex) {
+      button.classList.add("selected");
+    }
+
+    button.addEventListener("click", () => {
+      const nextData = { ...data, selected: cardIndex };
+      saveTodayData(nextData);
+      renderPickGrid(nextData);
+      revealFortune(cardIndex, nextData.date);
+    });
+
+    pickGridEl.appendChild(button);
+  });
+}
+
+function openTodayDraw() {
+  const data = getTodayData();
+  pickAreaEl.classList.remove("hidden");
+  renderPickGrid(data);
+
+  if (Number.isInteger(data.selected)) {
+    revealFortune(data.selected, data.date);
+  } else {
+    fortuneTitleEl.textContent = "오늘의 운세";
+    cardDescEl.textContent = "펼쳐진 카드 중 한 장을 선택하면 오늘의 운세를 알려드려요.";
+    fortuneMetaEl.textContent = `${data.date} 기준, 하루 한 번 결과가 고정됩니다.`;
+  }
+}
+
+drawBtn.addEventListener("click", openTodayDraw);
 renderCard(currentIndex);
 
 function initKakaoLogin() {
