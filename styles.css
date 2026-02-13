@@ -502,8 +502,23 @@ body {
   list-style: none;
   display: grid;
   gap: 10px;
-  max-height: 62vh;
-  overflow: auto;
+}
+
+.catalog-viewport {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.catalog-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 100%;
+  gap: 10px;
+}
+
+.catalog-page {
+  scroll-snap-align: start;
 }
 
 .catalog-item {

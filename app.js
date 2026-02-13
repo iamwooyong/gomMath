@@ -343,8 +343,8 @@ function buildHistoryHtml(history) {
   }
 
   const pages = [];
-  for (let i = 0; i < history.length; i += 5) {
-    pages.push(history.slice(i, i + 5));
+  for (let i = 0; i < history.length; i += 4) {
+    pages.push(history.slice(i, i + 4));
   }
 
   const pageHtml = pages
@@ -376,27 +376,39 @@ function renderHistory() {
 }
 
 function renderCardCatalog() {
-  cardCatalogListEl.innerHTML = tarotCards
-    .map((card) => {
-      const idLabel = typeof card.number === "number" ? formatCardNumber(card.number) : String(card.number);
-      return `<li class="catalog-item">
-        <div class="catalog-head">
-          <div class="catalog-thumb-wrap">
-            <div class="catalog-thumb" style="--card-art:${card.art}">
-              <span class="catalog-thumb-symbol">${card.emoji}</span>
+  const pages = [];
+  for (let i = 0; i < tarotCards.length; i += 4) {
+    pages.push(tarotCards.slice(i, i + 4));
+  }
+
+  const pageHtml = pages
+    .map((page) => {
+      const items = page
+        .map((card) => {
+          const idLabel = typeof card.number === "number" ? formatCardNumber(card.number) : String(card.number);
+          return `<li class="catalog-item">
+            <div class="catalog-head">
+              <div class="catalog-thumb-wrap">
+                <div class="catalog-thumb" style="--card-art:${card.art}">
+                  <span class="catalog-thumb-symbol">${card.emoji}</span>
+                </div>
+              </div>
+              <div>
+                <p class="catalog-id">${idLabel}</p>
+                <p class="catalog-title">${card.title}</p>
+                <p class="catalog-sub">${card.name}</p>
+              </div>
             </div>
-          </div>
-          <div>
-            <p class="catalog-id">${idLabel}</p>
-            <p class="catalog-title">${card.title}</p>
-            <p class="catalog-sub">${card.name}</p>
-          </div>
-        </div>
-        <p class="catalog-desc"><strong>정방향:</strong> ${card.upright}</p>
-        <p class="catalog-desc"><strong>역방향:</strong> ${card.reversed}</p>
-      </li>`;
+            <p class="catalog-desc"><strong>정방향:</strong> ${card.upright}</p>
+            <p class="catalog-desc"><strong>역방향:</strong> ${card.reversed}</p>
+          </li>`;
+        })
+        .join("");
+      return `<section class="catalog-page"><ul class="card-catalog">${items}</ul></section>`;
     })
     .join("");
+
+  cardCatalogListEl.innerHTML = `<div class="catalog-viewport"><div class="catalog-track">${pageHtml}</div></div>`;
 }
 
 function getZodiacSign(month, day) {
