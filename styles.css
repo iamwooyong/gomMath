@@ -424,6 +424,20 @@ body {
   color: #53466c;
 }
 
+.inline-check {
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  color: #7f6aab;
+}
+
+.inline-check input {
+  margin: 0;
+  width: 16px;
+  height: 16px;
+}
+
 .zodiac-result {
   margin-top: 12px;
   background: linear-gradient(180deg, #fffefe, #f8f2ff);
@@ -440,6 +454,35 @@ body {
   color: #5d506d;
   font-size: 0.95rem;
   line-height: 1.5;
+}
+
+.zodiac-card-preview {
+  width: 94px;
+  margin: 0 auto 8px;
+  aspect-ratio: 2 / 3;
+  border-radius: 12px;
+  padding: 4px;
+  background: linear-gradient(140deg, #e2d5f4 0 10%, #f7f3ff 45%, #ddd1f3 100%);
+  box-shadow: 0 8px 14px #7447be3a;
+}
+
+.zodiac-card-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  border: 1.5px solid #d7c9ec;
+  display: grid;
+  place-items: center;
+  color: #f7f0ff;
+  font-weight: 700;
+  font-size: 0.92rem;
+  text-align: center;
+  line-height: 1.3;
+  padding: 6px;
+  background:
+    radial-gradient(circle at 50% 50%, #ffffff26 0 20%, transparent 21%),
+    repeating-radial-gradient(circle at 50% 50%, #d8c9f055 0 5px, transparent 6px 12px),
+    linear-gradient(145deg, #40275f, #6e49a6 42%, #4a2f70);
 }
 
 .bottom-nav {

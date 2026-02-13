@@ -64,10 +64,14 @@
           <form class="zodiac-form" id="zodiacForm">
             <label>생년월일<input id="birthDate" type="date" required /></label>
             <label>태어난 시간<input id="birthTime" type="time" required /></label>
+            <label class="inline-check"><input id="unknownBirthTime" type="checkbox" />태어난 시간 모름</label>
             <button class="start-btn small" type="submit">✦ 별자리 타로 보기</button>
           </form>
 
           <article class="zodiac-result hidden" id="zodiacResult">
+            <div class="zodiac-card-preview" id="zodiacCardPreview">
+              <div class="zodiac-card-inner" id="zodiacCardInner"></div>
+            </div>
             <h4 id="zodiacTitle"></h4>
             <p id="zodiacSignText"></p>
             <p id="zodiacFortuneText"></p>

@@ -52,7 +52,9 @@ const historyListEl = document.querySelector("#historyList");
 const zodiacForm = document.querySelector("#zodiacForm");
 const birthDateInput = document.querySelector("#birthDate");
 const birthTimeInput = document.querySelector("#birthTime");
+const unknownBirthTimeInput = document.querySelector("#unknownBirthTime");
 const zodiacResultEl = document.querySelector("#zodiacResult");
+const zodiacCardInnerEl = document.querySelector("#zodiacCardInner");
 const zodiacTitleEl = document.querySelector("#zodiacTitle");
 const zodiacSignTextEl = document.querySelector("#zodiacSignText");
 const zodiacFortuneTextEl = document.querySelector("#zodiacFortuneText");
@@ -291,20 +293,32 @@ function makeZodiacReading(birthDate, birthTime) {
   };
 }
 
+function onToggleUnknownBirthTime() {
+  const unknown = unknownBirthTimeInput.checked;
+  birthTimeInput.required = !unknown;
+  birthTimeInput.disabled = unknown;
+  if (unknown) {
+    birthTimeInput.value = "";
+  }
+}
+
 function onSubmitZodiac(event) {
   event.preventDefault();
   const birthDate = birthDateInput.value;
-  const birthTime = birthTimeInput.value;
+  const isUnknownTime = unknownBirthTimeInput.checked;
+  const birthTime = isUnknownTime ? "12:00" : birthTimeInput.value;
 
-  if (!birthDate || !birthTime) {
-    alert("생년월일과 태어난 시간을 모두 입력해 주세요.");
+  if (!birthDate || (!isUnknownTime && !birthTime)) {
+    alert("생년월일과 태어난 시간을 입력하거나 '태어난 시간 모름'을 체크해 주세요.");
     return;
   }
 
   const reading = makeZodiacReading(birthDate, birthTime);
   zodiacResultEl.classList.remove("hidden");
+  zodiacCardInnerEl.textContent = `${formatCardNumber(reading.card.number)}\n${reading.card.title}`;
   zodiacTitleEl.textContent = `별자리 타로 결과: ${reading.card.title}`;
-  zodiacSignTextEl.textContent = `${reading.sign} · ${reading.card.name} (${formatDirection(reading.direction)})`;
+  zodiacSignTextEl.textContent =
+    `${reading.sign} · ${reading.card.name} (${formatDirection(reading.direction)}) · 출생시간 ${isUnknownTime ? "모름" : birthTime}`;
   zodiacFortuneTextEl.textContent = reading.detail;
 
   addZodiacHistory({
@@ -368,8 +382,10 @@ function initKakaoLogin() {
 function init() {
   drawBtn.addEventListener("click", openTodayDraw);
   zodiacForm.addEventListener("submit", onSubmitZodiac);
+  unknownBirthTimeInput.addEventListener("change", onToggleUnknownBirthTime);
   initNavigation();
   initKakaoLogin();
+  onToggleUnknownBirthTime();
   resetHomeIntro();
   renderHistory();
   switchTab("home");
