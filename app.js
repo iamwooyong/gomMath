@@ -65,7 +65,7 @@ const tarotCards = [...majorCards, ...createMinorCards()];
 
 const STORAGE_TODAY = "tarotMate:todayTarot";
 const STORAGE_HISTORY = "tarotMate:readingHistory";
-const SPREAD_COUNT = tarotCards.length;
+const DAILY_SPREAD_COUNT = Math.min(25, tarotCards.length);
 
 const brandHomeBtn = document.querySelector("#brandHomeBtn");
 const navItems = Array.from(document.querySelectorAll(".nav-item"));
@@ -150,11 +150,11 @@ function getTodayData() {
   const todayKey = getDateKey();
   const saved = JSON.parse(localStorage.getItem(STORAGE_TODAY) || "null");
 
-  if (saved?.date === todayKey && Array.isArray(saved.spread) && saved.spread.length === SPREAD_COUNT) {
+  if (saved?.date === todayKey && Array.isArray(saved.spread) && saved.spread.length === DAILY_SPREAD_COUNT) {
     return saved;
   }
 
-  const spread = shuffle(tarotCards.map((_, i) => i)).slice(0, SPREAD_COUNT);
+  const spread = shuffle(tarotCards.map((_, i) => i)).slice(0, DAILY_SPREAD_COUNT);
   const orientationMap = {};
   spread.forEach((cardIndex) => {
     orientationMap[cardIndex] = Math.random() < 0.5 ? "upright" : "reversed";
@@ -256,7 +256,7 @@ function openTodayDraw() {
   pickAreaEl.classList.remove("hidden");
   renderPickGrid(data);
   fortuneTitleEl.textContent = "오늘의 운세";
-  cardDescEl.textContent = `카드 ${SPREAD_COUNT}장 중 한 장을 선택하면 오늘의 운세를 알려드려요.`;
+  cardDescEl.textContent = `카드 ${DAILY_SPREAD_COUNT}장 중 한 장을 선택하면 오늘의 운세를 알려드려요.`;
   fortuneMetaEl.textContent = `${data.date} 기준, 하루 한 번 결과가 고정됩니다.`;
 }
 
