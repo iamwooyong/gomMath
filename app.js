@@ -381,7 +381,11 @@ function renderCardCatalog() {
       const idLabel = typeof card.number === "number" ? formatCardNumber(card.number) : String(card.number);
       return `<li class="catalog-item">
         <div class="catalog-head">
-          <span class="catalog-emoji">${card.emoji}</span>
+          <div class="catalog-thumb-wrap">
+            <div class="catalog-thumb" style="--card-art:${card.art}">
+              <span class="catalog-thumb-symbol">${card.emoji}</span>
+            </div>
+          </div>
           <div>
             <p class="catalog-id">${idLabel}</p>
             <p class="catalog-title">${card.title}</p>
