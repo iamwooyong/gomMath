@@ -86,6 +86,7 @@ function renderTags(card, direction) {
 
 function renderCard(index, direction = "upright") {
   const card = tarotCards[index];
+  tarotCardEl.classList.remove("is-back");
   cardTitleEl.textContent = `${formatCardNumber(card.number)}. ${card.title}`;
   cardQuoteEl.textContent = `“${card.name} · ${formatDirection(direction)}”`;
   cardArtEl.textContent = card.emoji;
@@ -221,8 +222,11 @@ function resetHomeIntro() {
   isSelectionMode = false;
   views.home.classList.remove("selection-mode");
   pickAreaEl.classList.add("hidden");
-  currentIndex = 0;
-  renderCard(currentIndex, "upright");
+  tarotCardEl.classList.add("is-back");
+  cardArtEl.textContent = "";
+  cardArtEl.style.transform = "none";
+  cardArtEl.style.background =
+    "linear-gradient(140deg, #e2d5f4 0 10%, #f7f3ff 45%, #ddd1f3 100%)";
   fortuneTitleEl.textContent = "안녕하세요 타로메이트 입니다.";
   cardDescEl.textContent = "오늘의 타로 골라볼까요?";
   fortuneMetaEl.textContent = "";
