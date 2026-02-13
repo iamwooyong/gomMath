@@ -381,6 +381,23 @@ body {
   gap: 10px;
 }
 
+.history-viewport {
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
+.history-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 100%;
+  gap: 10px;
+}
+
+.history-page {
+  scroll-snap-align: start;
+}
+
 .history-item {
   border: 1px solid #eadcf6;
   border-radius: 12px;

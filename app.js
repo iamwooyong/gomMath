@@ -242,12 +242,24 @@ function renderHistory() {
     return;
   }
 
-  historyListEl.innerHTML = history
-    .map((item) => {
-      const label = item.type === "zodiac" ? "별자리" : "오늘의 운세";
-      return `<li class="history-item"><p class="history-date">${item.date} · ${label}</p><p class="history-text"><strong>${item.title}</strong><br>${item.summary}</p></li>`;
+  const pages = [];
+  for (let i = 0; i < history.length; i += 5) {
+    pages.push(history.slice(i, i + 5));
+  }
+
+  const pageHtml = pages
+    .map((page) => {
+      const items = page
+        .map((item) => {
+          const label = item.type === "zodiac" ? "별자리" : "오늘의 운세";
+          return `<li class="history-item"><p class="history-date">${item.date} · ${label}</p><p class="history-text"><strong>${item.title}</strong><br>${item.summary}</p></li>`;
+        })
+        .join("");
+      return `<section class="history-page"><ul class="history-list">${items}</ul></section>`;
     })
     .join("");
+
+  historyListEl.innerHTML = `<div class="history-viewport"><div class="history-track">${pageHtml}</div></div>`;
 }
 
 function getZodiacSign(month, day) {
