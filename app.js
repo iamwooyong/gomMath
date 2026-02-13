@@ -101,7 +101,7 @@ const zodiacFortuneTextEl = document.querySelector("#zodiacFortuneText");
 
 const kakaoLoginBtn = document.querySelector("#kakaoLoginBtn");
 const KAKAO_JS_KEY = "";
-const KAKAO_REDIRECT_URI = window.location.origin + window.location.pathname;
+const STORAGE_KAKAO_USER = "tarotMate:kakaoUser";
 
 let currentIndex = 0;
 let isSelectionMode = false;
@@ -407,8 +407,42 @@ function initNavigation() {
   brandHomeBtn.addEventListener("click", () => switchTab("home"));
 }
 
+function setKakaoButton(user) {
+  if (!kakaoLoginBtn) return;
+  kakaoLoginBtn.textContent = user ? `${user.nickname} 로그아웃` : "카카오 로그인";
+}
+
+function saveKakaoUser(user) {
+  localStorage.setItem(STORAGE_KAKAO_USER, JSON.stringify(user));
+}
+
+function clearKakaoUser() {
+  localStorage.removeItem(STORAGE_KAKAO_USER);
+}
+
+function loadKakaoUser() {
+  return JSON.parse(localStorage.getItem(STORAGE_KAKAO_USER) || "null");
+}
+
+function requestKakaoUserProfile() {
+  return new Promise((resolve, reject) => {
+    window.Kakao.API.request({
+      url: "/v2/user/me",
+      success: (res) => {
+        const nickname = res?.kakao_account?.profile?.nickname || "사용자";
+        const user = { id: res?.id, nickname };
+        saveKakaoUser(user);
+        setKakaoButton(user);
+        resolve(user);
+      },
+      fail: (error) => reject(error)
+    });
+  });
+}
+
 function initKakaoLogin() {
   if (!kakaoLoginBtn) return;
+  setKakaoButton(loadKakaoUser());
 
   kakaoLoginBtn.addEventListener("click", () => {
     if (!window.Kakao) {
@@ -425,10 +459,33 @@ function initKakaoLogin() {
       window.Kakao.init(KAKAO_JS_KEY);
     }
 
-    window.Kakao.Auth.authorize({
-      redirectUri: KAKAO_REDIRECT_URI
+    if (window.Kakao.Auth.getAccessToken()) {
+      window.Kakao.Auth.logout(() => {
+        clearKakaoUser();
+        setKakaoButton(null);
+      });
+      return;
+    }
+
+    window.Kakao.Auth.login({
+      success: () => {
+        requestKakaoUserProfile().catch(() => {
+          alert("로그인은 됐지만 사용자 정보를 가져오지 못했어요.");
+          setKakaoButton(loadKakaoUser());
+        });
+      },
+      fail: (error) => {
+        console.error(error);
+        alert("카카오 로그인에 실패했어요. 다시 시도해 주세요.");
+      }
     });
   });
+
+  if (window.Kakao && window.Kakao.isInitialized && window.Kakao.isInitialized() && window.Kakao.Auth.getAccessToken()) {
+    requestKakaoUserProfile().catch(() => {
+      setKakaoButton(loadKakaoUser());
+    });
+  }
 }
 
 function init() {
