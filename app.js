@@ -42,17 +42,17 @@ const tarotCardEl = document.querySelector("#tarotCard");
 const cardTitleEl = document.querySelector("#cardTitle");
 const cardQuoteEl = document.querySelector("#cardQuote");
 const cardDescEl = document.querySelector("#cardDesc");
+const fortuneTitleEl = document.querySelector("#fortuneTitle");
+const fortuneMetaEl = document.querySelector("#fortuneMeta");
 const cardArtEl = document.querySelector("#cardArt");
 const cardHeadEl = document.querySelector(".card-head");
 const tagBox = document.querySelector("#tagBox");
-const coinCountEl = document.querySelector("#coinCount");
 const kakaoLoginBtn = document.querySelector("#kakaoLoginBtn");
 
 const KAKAO_JS_KEY = "";
 const KAKAO_REDIRECT_URI = window.location.origin + window.location.pathname;
 
 let currentIndex = 0;
-let coin = 0;
 
 function renderTags(tags) {
   tagBox.innerHTML = tags.map((tag) => `<span class="tag">${tag}</span>`).join("");
@@ -69,20 +69,50 @@ function renderCard(index) {
   renderTags(card.tags);
 }
 
-function nextCard() {
+function getDateKey() {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, "0");
+  const day = String(today.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function getFortuneMessage(card) {
+  const moods = {
+    "0": "새로운 기운이 열립니다. 고민보다 실행이 운을 끌어와요.",
+    "2": "서두르지 말고 직감을 믿어보세요. 조용한 선택이 정답입니다.",
+    "17": "회복과 희망의 하루입니다. 천천히 가도 결과는 따라옵니다.",
+    "19": "상승운이 강합니다. 자신감 있게 드러낼수록 기회가 커져요."
+  };
+  return moods[card.number] || "오늘은 중심을 잡고 차분히 움직이면 좋은 흐름이 이어집니다.";
+}
+
+function drawTodayTarot() {
   tarotCardEl.classList.remove("animating");
   void tarotCardEl.offsetWidth;
   tarotCardEl.classList.add("animating");
 
-  const next = Math.floor(Math.random() * tarotCards.length);
-  currentIndex = next;
+  const todayKey = getDateKey();
+  const storageKey = "tarotMate:todayTarot";
+  const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
+
+  if (saved?.date === todayKey && Number.isInteger(saved.index)) {
+    currentIndex = saved.index;
+  } else {
+    currentIndex = Math.floor(Math.random() * tarotCards.length);
+    localStorage.setItem(storageKey, JSON.stringify({ date: todayKey, index: currentIndex }));
+  }
+
+  const todayCard = tarotCards[currentIndex];
   renderCard(currentIndex);
 
-  coin += 1;
-  coinCountEl.textContent = String(coin);
+  fortuneTitleEl.textContent = `오늘의 타로: ${todayCard.title}`;
+  cardDescEl.textContent = `${todayCard.desc} ${getFortuneMessage(todayCard)}`;
+  fortuneMetaEl.textContent = `${todayKey} 기준 오늘의 카드입니다.`;
+  drawBtn.textContent = "✦ 오늘의 운세 다시 보기";
 }
 
-drawBtn.addEventListener("click", nextCard);
+drawBtn.addEventListener("click", drawTodayTarot);
 renderCard(currentIndex);
 
 function initKakaoLogin() {

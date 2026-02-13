@@ -93,19 +93,6 @@ body {
   gap: 8px;
 }
 
-.coin-pill {
-  border: 2px solid #d8b04c;
-  background: linear-gradient(180deg, #ffe58f, #f2cb61);
-  border-radius: 999px;
-  padding: 6px 14px;
-  font-weight: 700;
-  color: #826029;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  box-shadow: 0 4px 10px #c59f3a54;
-}
-
 .icon-btn,
 .profile-btn {
   border: 0;
@@ -219,10 +206,27 @@ body {
   border-radius: 16px;
   padding: 16px;
   box-shadow: 0 8px 25px #a18ac12e;
+  text-align: center;
+}
+
+.reading-box h3 {
+  margin: 0 0 8px;
+  color: #7857ba;
+  font-size: 1.04rem;
+  font-weight: 800;
+}
+
+.reading-box p {
+  margin: 0;
   font-size: 1.03rem;
   line-height: 1.6;
-  text-align: center;
   font-weight: 500;
+}
+
+#fortuneMeta {
+  margin-top: 8px;
+  color: #8f7ea6;
+  font-size: 0.9rem;
 }
 
 .carousel-dots {
