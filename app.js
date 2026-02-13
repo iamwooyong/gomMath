@@ -23,6 +23,19 @@ const tarotCards = [
   { number: 21, name: "The World", title: "세계", upright: "완성, 완전", reversed: "미완성, 어중간함", emoji: "🌍", art: "radial-gradient(circle at 82% 12%, #fff2c07a 0 10%, transparent 11%), linear-gradient(180deg, #a9d7ba 0 58%, #6ca380 59% 100%)" }
 ];
 
+const STORAGE_TODAY = "tarotMate:todayTarot";
+const STORAGE_HISTORY = "tarotMate:readingHistory";
+const SPREAD_COUNT = Math.min(5, tarotCards.length);
+
+const brandHomeBtn = document.querySelector("#brandHomeBtn");
+const navItems = Array.from(document.querySelectorAll(".nav-item"));
+const views = {
+  home: document.querySelector("#homeView"),
+  history: document.querySelector("#historyView"),
+  zodiac: document.querySelector("#zodiacView"),
+  settings: document.querySelector("#settingsView")
+};
+
 const drawBtn = document.querySelector("#drawBtn");
 const tarotCardEl = document.querySelector("#tarotCard");
 const cardTitleEl = document.querySelector("#cardTitle");
@@ -32,46 +45,52 @@ const fortuneTitleEl = document.querySelector("#fortuneTitle");
 const fortuneMetaEl = document.querySelector("#fortuneMeta");
 const cardArtEl = document.querySelector("#cardArt");
 const tagBox = document.querySelector("#tagBox");
-const kakaoLoginBtn = document.querySelector("#kakaoLoginBtn");
 const pickAreaEl = document.querySelector("#pickArea");
 const pickGridEl = document.querySelector("#pickGrid");
+const historyListEl = document.querySelector("#historyList");
 
+const zodiacForm = document.querySelector("#zodiacForm");
+const birthDateInput = document.querySelector("#birthDate");
+const birthTimeInput = document.querySelector("#birthTime");
+const zodiacResultEl = document.querySelector("#zodiacResult");
+const zodiacTitleEl = document.querySelector("#zodiacTitle");
+const zodiacSignTextEl = document.querySelector("#zodiacSignText");
+const zodiacFortuneTextEl = document.querySelector("#zodiacFortuneText");
+
+const kakaoLoginBtn = document.querySelector("#kakaoLoginBtn");
 const KAKAO_JS_KEY = "";
 const KAKAO_REDIRECT_URI = window.location.origin + window.location.pathname;
-const SPREAD_COUNT = Math.min(5, tarotCards.length);
 
 let currentIndex = 0;
+
+function getDateKey() {
+  const today = new Date();
+  return `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+}
 
 function formatCardNumber(number) {
   return String(number).padStart(2, "0");
 }
 
-function renderTags(card, isReversed) {
-  const directionLabel = isReversed ? "#역방향" : "#정방향";
-  const meaning = isReversed ? card.reversed : card.upright;
-  tagBox.innerHTML = [directionLabel, `#${meaning.split(",")[0].trim()}`, `#${card.name}`]
+function formatDirection(direction) {
+  return direction === "reversed" ? "역방향" : "정방향";
+}
+
+function renderTags(card, direction) {
+  const meaning = direction === "reversed" ? card.reversed : card.upright;
+  tagBox.innerHTML = [`#${formatDirection(direction)}`, `#${meaning.split(",")[0].trim()}`, `#${card.name}`]
     .map((tag) => `<span class="tag">${tag}</span>`)
     .join("");
 }
 
-function renderCard(index, isReversed = false) {
+function renderCard(index, direction = "upright") {
   const card = tarotCards[index];
-  const directionText = isReversed ? "역방향" : "정방향";
-
   cardTitleEl.textContent = `${formatCardNumber(card.number)}. ${card.title}`;
-  cardQuoteEl.textContent = `“${card.name} · ${directionText}”`;
+  cardQuoteEl.textContent = `“${card.name} · ${formatDirection(direction)}”`;
   cardArtEl.textContent = card.emoji;
   cardArtEl.style.background = card.art;
-  cardArtEl.style.transform = isReversed ? "rotate(180deg)" : "none";
-  renderTags(card, isReversed);
-}
-
-function getDateKey() {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
+  cardArtEl.style.transform = direction === "reversed" ? "rotate(180deg)" : "none";
+  renderTags(card, direction);
 }
 
 function shuffle(list) {
@@ -85,8 +104,7 @@ function shuffle(list) {
 
 function getTodayData() {
   const todayKey = getDateKey();
-  const storageKey = "tarotMate:todayTarot";
-  const saved = JSON.parse(localStorage.getItem(storageKey) || "null");
+  const saved = JSON.parse(localStorage.getItem(STORAGE_TODAY) || "null");
 
   if (saved?.date === todayKey && Array.isArray(saved.spread) && saved.spread.length === SPREAD_COUNT) {
     return saved;
@@ -98,37 +116,66 @@ function getTodayData() {
     orientationMap[cardIndex] = Math.random() < 0.5 ? "upright" : "reversed";
   });
 
-  const newData = { date: todayKey, spread, orientationMap, selected: null };
-  localStorage.setItem(storageKey, JSON.stringify(newData));
-  return newData;
+  const data = { date: todayKey, spread, orientationMap, selected: null };
+  localStorage.setItem(STORAGE_TODAY, JSON.stringify(data));
+  return data;
 }
 
 function saveTodayData(data) {
-  localStorage.setItem("tarotMate:todayTarot", JSON.stringify(data));
+  localStorage.setItem(STORAGE_TODAY, JSON.stringify(data));
 }
 
-function buildFortuneText(card, isReversed) {
-  const baseMeaning = isReversed ? card.reversed : card.upright;
-  const extra = isReversed
-    ? "무리하게 밀어붙이기보다 정리와 균형을 먼저 잡는 것이 오늘의 포인트입니다."
-    : "핵심 기회가 열리는 흐름이니 작은 실행을 빠르게 시작해보세요.";
-  return `${card.title} 카드의 ${isReversed ? "역방향" : "정방향"} 의미는 '${baseMeaning}'입니다. ${extra}`;
+function getHistory() {
+  return JSON.parse(localStorage.getItem(STORAGE_HISTORY) || "[]");
 }
 
-function revealFortune(cardIndex, todayKey, direction) {
-  const todayCard = tarotCards[cardIndex];
-  const isReversed = direction === "reversed";
+function saveHistory(history) {
+  localStorage.setItem(STORAGE_HISTORY, JSON.stringify(history));
+}
+
+function upsertDailyHistory(entry) {
+  const history = getHistory();
+  const others = history.filter((item) => !(item.type === "daily" && item.date === entry.date));
+  const next = [entry, ...others].sort((a, b) => (a.date < b.date ? 1 : -1));
+  saveHistory(next);
+  renderHistory();
+}
+
+function addZodiacHistory(entry) {
+  const history = getHistory();
+  const next = [entry, ...history].slice(0, 60);
+  saveHistory(next);
+  renderHistory();
+}
+
+function buildFortuneText(card, direction) {
+  const meaning = direction === "reversed" ? card.reversed : card.upright;
+  const extra = direction === "reversed"
+    ? "오늘은 속도를 줄이고 우선순위를 다시 정리하면 흐름이 좋아집니다."
+    : "핵심 기회가 열리는 흐름이니 작은 실행을 바로 시작해보세요.";
+  return `${card.title} 카드의 ${formatDirection(direction)} 의미는 '${meaning}'입니다. ${extra}`;
+}
+
+function revealFortune(cardIndex, dateKey, direction) {
+  const card = tarotCards[cardIndex];
   currentIndex = cardIndex;
 
   tarotCardEl.classList.remove("animating");
   void tarotCardEl.offsetWidth;
   tarotCardEl.classList.add("animating");
 
-  renderCard(currentIndex, isReversed);
-  fortuneTitleEl.textContent = `오늘의 타로 결과: ${todayCard.title}`;
-  cardDescEl.textContent = buildFortuneText(todayCard, isReversed);
-  fortuneMetaEl.textContent = `${todayKey} 기준, 오늘 선택한 카드입니다.`;
+  renderCard(cardIndex, direction);
+  fortuneTitleEl.textContent = `오늘의 타로 결과: ${card.title}`;
+  cardDescEl.textContent = buildFortuneText(card, direction);
+  fortuneMetaEl.textContent = `${dateKey} 기준, 오늘 선택한 카드입니다.`;
   drawBtn.textContent = "✦ 오늘의 운세 다시 보기";
+
+  upsertDailyHistory({
+    type: "daily",
+    date: dateKey,
+    title: `${card.title} (${formatDirection(direction)})`,
+    summary: direction === "reversed" ? card.reversed : card.upright
+  });
 }
 
 function renderPickGrid(data) {
@@ -148,8 +195,7 @@ function renderPickGrid(data) {
       const nextData = { ...data, selected: cardIndex };
       saveTodayData(nextData);
       renderPickGrid(nextData);
-      const direction = nextData.orientationMap?.[cardIndex] || "upright";
-      revealFortune(cardIndex, nextData.date, direction);
+      revealFortune(cardIndex, nextData.date, nextData.orientationMap?.[cardIndex] || "upright");
     });
 
     pickGridEl.appendChild(button);
@@ -162,8 +208,7 @@ function openTodayDraw() {
   renderPickGrid(data);
 
   if (Number.isInteger(data.selected)) {
-    const direction = data.orientationMap?.[data.selected] || "upright";
-    revealFortune(data.selected, data.date, direction);
+    revealFortune(data.selected, data.date, data.orientationMap?.[data.selected] || "upright");
     return;
   }
 
@@ -172,8 +217,109 @@ function openTodayDraw() {
   fortuneMetaEl.textContent = `${data.date} 기준, 하루 한 번 결과가 고정됩니다.`;
 }
 
-drawBtn.addEventListener("click", openTodayDraw);
-renderCard(currentIndex, false);
+function renderHistory() {
+  const history = getHistory();
+  if (history.length === 0) {
+    historyListEl.innerHTML = '<li class="history-item"><p class="history-text">아직 저장된 리딩 기록이 없어요.</p></li>';
+    return;
+  }
+
+  historyListEl.innerHTML = history
+    .map((item) => {
+      const label = item.type === "zodiac" ? "별자리" : "오늘의 운세";
+      return `<li class="history-item"><p class="history-date">${item.date} · ${label}</p><p class="history-text"><strong>${item.title}</strong><br>${item.summary}</p></li>`;
+    })
+    .join("");
+}
+
+function getZodiacSign(month, day) {
+  if ((month === 3 && day >= 21) || (month === 4 && day <= 19)) return "양자리";
+  if ((month === 4 && day >= 20) || (month === 5 && day <= 20)) return "황소자리";
+  if ((month === 5 && day >= 21) || (month === 6 && day <= 21)) return "쌍둥이자리";
+  if ((month === 6 && day >= 22) || (month === 7 && day <= 22)) return "게자리";
+  if ((month === 7 && day >= 23) || (month === 8 && day <= 22)) return "사자자리";
+  if ((month === 8 && day >= 23) || (month === 9 && day <= 23)) return "처녀자리";
+  if ((month === 9 && day >= 24) || (month === 10 && day <= 22)) return "천칭자리";
+  if ((month === 10 && day >= 23) || (month === 11 && day <= 22)) return "전갈자리";
+  if ((month === 11 && day >= 23) || (month === 12 && day <= 24)) return "사수자리";
+  if ((month === 12 && day >= 25) || (month === 1 && day <= 19)) return "염소자리";
+  if ((month === 1 && day >= 20) || (month === 2 && day <= 18)) return "물병자리";
+  return "물고기자리";
+}
+
+function hashString(text) {
+  let hash = 0;
+  for (let i = 0; i < text.length; i += 1) {
+    hash = (hash * 31 + text.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+}
+
+function makeZodiacReading(birthDate, birthTime) {
+  const [year, month, day] = birthDate.split("-").map(Number);
+  const sign = getZodiacSign(month, day);
+  const seed = `${birthDate}:${birthTime}:${sign}`;
+  const hash = hashString(seed);
+  const cardIndex = hash % tarotCards.length;
+  const direction = hash % 2 === 0 ? "upright" : "reversed";
+  const card = tarotCards[cardIndex];
+  const meaning = direction === "reversed" ? card.reversed : card.upright;
+
+  return {
+    date: getDateKey(),
+    sign,
+    card,
+    direction,
+    summary: `${sign} 기준 별자리 타로는 ${card.title} (${formatDirection(direction)}) · ${meaning}`,
+    detail: `태어난 시간 ${birthTime}의 리듬을 반영하면 '${meaning}' 키워드가 강합니다. 중요한 선택은 감정보다 리듬과 균형을 먼저 확인해보세요.`
+  };
+}
+
+function onSubmitZodiac(event) {
+  event.preventDefault();
+  const birthDate = birthDateInput.value;
+  const birthTime = birthTimeInput.value;
+
+  if (!birthDate || !birthTime) {
+    alert("생년월일과 태어난 시간을 모두 입력해 주세요.");
+    return;
+  }
+
+  const reading = makeZodiacReading(birthDate, birthTime);
+  zodiacResultEl.classList.remove("hidden");
+  zodiacTitleEl.textContent = `별자리 타로 결과: ${reading.card.title}`;
+  zodiacSignTextEl.textContent = `${reading.sign} · ${reading.card.name} (${formatDirection(reading.direction)})`;
+  zodiacFortuneTextEl.textContent = reading.detail;
+
+  addZodiacHistory({
+    type: "zodiac",
+    date: reading.date,
+    title: `${reading.sign} - ${reading.card.title} (${formatDirection(reading.direction)})`,
+    summary: reading.summary
+  });
+}
+
+function switchTab(tab) {
+  Object.entries(views).forEach(([key, view]) => {
+    view.classList.toggle("hidden", key !== tab);
+  });
+
+  navItems.forEach((item) => {
+    item.classList.toggle("active", item.dataset.tab === tab);
+  });
+
+  if (tab === "history") {
+    renderHistory();
+  }
+}
+
+function initNavigation() {
+  navItems.forEach((item) => {
+    item.addEventListener("click", () => switchTab(item.dataset.tab));
+  });
+
+  brandHomeBtn.addEventListener("click", () => switchTab("home"));
+}
 
 function initKakaoLogin() {
   if (!kakaoLoginBtn) return;
@@ -199,4 +345,14 @@ function initKakaoLogin() {
   });
 }
 
-initKakaoLogin();
+function init() {
+  drawBtn.addEventListener("click", openTodayDraw);
+  zodiacForm.addEventListener("submit", onSubmitZodiac);
+  initNavigation();
+  initKakaoLogin();
+  renderCard(currentIndex, "upright");
+  renderHistory();
+  switchTab("home");
+}
+
+init();

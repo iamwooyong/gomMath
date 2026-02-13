@@ -12,54 +12,89 @@
   <body>
     <main class="app-shell">
       <header class="top-bar">
-        <div>
+        <button class="brand-wrap" id="brandHomeBtn" type="button">
           <h1 class="brand">타로메이트</h1>
           <p class="subtitle">Tarot-Mate</p>
-        </div>
+        </button>
         <div class="top-actions">
           <button class="icon-btn" type="button" aria-label="알림">✉️</button>
           <button class="profile-btn kakao-btn" id="kakaoLoginBtn" type="button">카카오 로그인</button>
         </div>
       </header>
 
-      <section class="card-area">
-        <article class="tarot-card" id="tarotCard">
-          <div class="card-art" id="cardArt">🐈</div>
-          <div class="card-body">
-            <h2 id="cardTitle">방랑자 고양이</h2>
-            <p id="cardQuote">“생각은 그만! 지금은 마음이 이끄는 대로 가볍게 시작할 때.”</p>
-            <div class="tags" id="tagBox"></div>
-          </div>
-        </article>
+      <section class="view view-home" id="homeView">
+        <section class="card-area">
+          <article class="tarot-card" id="tarotCard">
+            <div class="card-art" id="cardArt">🌱</div>
+            <div class="card-body">
+              <h2 id="cardTitle">00. 바보</h2>
+              <p id="cardQuote">“The Fool · 정방향”</p>
+              <div class="tags" id="tagBox"></div>
+            </div>
+          </article>
+        </section>
+
+        <section class="reading-box">
+          <h3 id="fortuneTitle">오늘의 타로를 뽑아보세요</h3>
+          <p id="cardDesc">아래 버튼을 누르면 오늘의 카드와 운세가 나와요.</p>
+          <p id="fortuneMeta"></p>
+        </section>
+
+        <button class="start-btn" id="drawBtn" type="button">✦ 오늘의 운세</button>
+
+        <section class="pick-area hidden" id="pickArea">
+          <h3>카드를 한 장 골라주세요</h3>
+          <div class="pick-grid" id="pickGrid"></div>
+        </section>
       </section>
 
-      <section class="reading-box">
-        <h3 id="fortuneTitle">오늘의 타로를 뽑아보세요</h3>
-        <p id="cardDesc">아래 시작하기를 누르면 오늘의 카드와 운세가 나와요.</p>
-        <p id="fortuneMeta"></p>
+      <section class="view hidden" id="historyView">
+        <section class="panel">
+          <h3>리딩 기록</h3>
+          <p class="panel-sub">오늘의 운세를 본 기록이 날짜별로 저장됩니다.</p>
+          <ul class="history-list" id="historyList"></ul>
+        </section>
       </section>
 
-      <section class="carousel-dots" aria-label="진행 표시">
-        <span class="dot active"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
+      <section class="view hidden" id="zodiacView">
+        <section class="panel">
+          <h3>별자리 운세</h3>
+          <p class="panel-sub">생년월일과 태어난 시간을 입력하면 별자리 타로를 알려드려요.</p>
+
+          <form class="zodiac-form" id="zodiacForm">
+            <label>생년월일<input id="birthDate" type="date" required /></label>
+            <label>태어난 시간<input id="birthTime" type="time" required /></label>
+            <button class="start-btn small" type="submit">✦ 별자리 타로 보기</button>
+          </form>
+
+          <article class="zodiac-result hidden" id="zodiacResult">
+            <h4 id="zodiacTitle"></h4>
+            <p id="zodiacSignText"></p>
+            <p id="zodiacFortuneText"></p>
+          </article>
+        </section>
       </section>
 
-      <button class="start-btn" id="drawBtn" type="button">✦ 오늘의 운세</button>
-
-      <section class="pick-area hidden" id="pickArea">
-        <h3>카드를 한 장 골라주세요</h3>
-        <div class="pick-grid" id="pickGrid"></div>
+      <section class="view hidden" id="settingsView">
+        <section class="panel">
+          <h3>설정</h3>
+          <p class="panel-sub">알림, 테마, 계정 설정은 다음 단계에서 연결할 수 있어요.</p>
+        </section>
       </section>
 
       <nav class="bottom-nav">
-        <button class="nav-item active" type="button">⌂<span>홈</span></button>
-        <button class="nav-item" type="button">◌<span>리딩 기록</span></button>
-        <button class="nav-item" type="button">▣<span>타로 백과사전</span></button>
-        <button class="nav-item" type="button">⋯<span>설정</span></button>
+        <button class="nav-item active" data-tab="home" type="button">
+          <span class="nav-icon">🏠</span><span>홈</span>
+        </button>
+        <button class="nav-item" data-tab="history" type="button">
+          <span class="nav-icon">📜</span><span>리딩 기록</span>
+        </button>
+        <button class="nav-item" data-tab="zodiac" type="button">
+          <span class="nav-icon">✨</span><span>별자리 운세</span>
+        </button>
+        <button class="nav-item" data-tab="settings" type="button">
+          <span class="nav-icon">⚙️</span><span>설정</span>
+        </button>
       </nav>
     </main>
 

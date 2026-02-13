@@ -32,7 +32,7 @@ body {
   min-height: 100vh;
   padding: 16px 16px 14px;
   display: grid;
-  grid-template-rows: auto auto auto auto auto 1fr;
+  grid-template-rows: auto 1fr auto;
   gap: 14px;
   position: relative;
   overflow: hidden;
@@ -49,19 +49,16 @@ body {
 
 .app-shell::before {
   left: 22px;
-  top: 40%;
+  top: 38%;
 }
 
 .app-shell::after {
   right: 26px;
-  top: 52%;
+  top: 56%;
 }
 
 .top-bar,
-.card-area,
-.reading-box,
-.carousel-dots,
-.start-btn,
+.view,
 .bottom-nav {
   z-index: 1;
 }
@@ -70,6 +67,13 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+}
+
+.brand-wrap {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
 }
 
 .brand {
@@ -121,6 +125,16 @@ body {
   box-shadow: 0 4px 12px rgba(113, 94, 0, 0.26);
 }
 
+.view {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.hidden {
+  display: none;
+}
+
 .card-area {
   display: grid;
   place-items: center;
@@ -141,9 +155,6 @@ body {
   border: 2px solid #8f8f92;
   border-radius: 8px;
   height: 330px;
-  background:
-    radial-gradient(circle at 85% 12%, #fff8bb7a 0 10%, transparent 11%),
-    linear-gradient(180deg, #a7cedf 0 58%, #88a868 59% 100%);
   font-size: 5rem;
   display: grid;
   place-items: center;
@@ -162,7 +173,7 @@ body {
 
 .card-body h2 {
   margin: 0;
-  font-size: 2rem;
+  font-size: 1.8rem;
   line-height: 1.1;
 }
 
@@ -185,19 +196,22 @@ body {
   color: #7c5abb;
   border-radius: 999px;
   padding: 5px 10px;
-  font-size: 0.86rem;
+  font-size: 0.82rem;
   font-weight: 700;
 }
 
-.reading-box {
+.reading-box,
+.panel,
+.pick-area,
+.zodiac-result {
   background: #fff;
   border-radius: 16px;
-  padding: 16px;
+  padding: 14px;
   box-shadow: 0 8px 25px #a18ac12e;
-  text-align: center;
 }
 
-.reading-box h3 {
+.reading-box h3,
+.panel h3 {
   margin: 0 0 8px;
   color: #7857ba;
   font-size: 1.04rem;
@@ -206,7 +220,7 @@ body {
 
 .reading-box p {
   margin: 0;
-  font-size: 1.03rem;
+  font-size: 1.01rem;
   line-height: 1.6;
   font-weight: 500;
 }
@@ -217,33 +231,20 @@ body {
   font-size: 0.9rem;
 }
 
-.carousel-dots {
-  display: flex;
-  justify-content: center;
-  gap: 7px;
-}
-
-.dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: #dccff2;
-}
-
-.dot.active {
-  width: 30px;
-  background: linear-gradient(90deg, #7f59cc, #9f7be2);
-}
-
 .start-btn {
   border: 0;
   border-radius: 999px;
   background: linear-gradient(90deg, #8454d2, #a17ee6);
   color: #fff;
-  font-size: 1.2rem;
+  font-size: 1.08rem;
   font-weight: 700;
-  padding: 16px 18px;
+  padding: 14px 18px;
   box-shadow: 0 12px 24px #885ed551;
+}
+
+.start-btn.small {
+  font-size: 0.95rem;
+  padding: 11px 14px;
 }
 
 .start-btn:active {
@@ -253,9 +254,6 @@ body {
 .pick-area {
   background: #ffffffc7;
   border: 1px solid #eadcf6;
-  border-radius: 16px;
-  padding: 12px;
-  box-shadow: 0 8px 22px #a18ac12e;
 }
 
 .pick-area h3 {
@@ -289,8 +287,79 @@ body {
   transform: translateY(-2px);
 }
 
-.hidden {
-  display: none;
+.panel-sub {
+  margin: 0 0 10px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.history-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.history-item {
+  border: 1px solid #eadcf6;
+  border-radius: 12px;
+  background: #fdfbff;
+  padding: 10px;
+}
+
+.history-date {
+  margin: 0;
+  color: #7f5bc5;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.history-text {
+  margin: 4px 0 0;
+  color: #5a4f6c;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
+.zodiac-form {
+  display: grid;
+  gap: 10px;
+}
+
+.zodiac-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #705a9f;
+}
+
+.zodiac-form input {
+  border: 1px solid #ddc9f4;
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px;
+  font: inherit;
+  color: #53466c;
+}
+
+.zodiac-result {
+  margin-top: 12px;
+  background: linear-gradient(180deg, #fffefe, #f8f2ff);
+}
+
+.zodiac-result h4 {
+  margin: 0;
+  color: #734eb8;
+  font-size: 1.05rem;
+}
+
+.zodiac-result p {
+  margin: 8px 0 0;
+  color: #5d506d;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
 .bottom-nav {
@@ -307,19 +376,36 @@ body {
   border: 0;
   background: transparent;
   color: #b6a3d2;
-  font-size: 1rem;
   display: grid;
-  gap: 2px;
+  gap: 4px;
   justify-items: center;
+  align-content: start;
 }
 
-.nav-item span {
-  font-size: 0.78rem;
-  font-weight: 600;
+.nav-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(180deg, #efe5fb, #e3d4f7);
+  box-shadow: inset 0 0 0 1px #d7c2f2;
+  font-size: 1rem;
+}
+
+.nav-item span:last-child {
+  font-size: 0.75rem;
+  font-weight: 700;
 }
 
 .nav-item.active {
-  color: #7b57c9;
+  color: #7047c0;
+}
+
+.nav-item.active .nav-icon {
+  background: linear-gradient(180deg, #9c73e0, #7e53cc);
+  color: #fff;
+  box-shadow: 0 6px 14px #7a50c245;
 }
 
 .tarot-card.animating {
@@ -328,15 +414,15 @@ body {
 
 @keyframes floatFlip {
   0% {
-    transform: translateY(0) rotateY(0deg) scale(1);
+    transform: translateY(0) scale(1);
     opacity: 1;
   }
   45% {
-    transform: translateY(8px) rotateY(80deg) scale(0.92);
+    transform: translateY(8px) scale(0.94);
     opacity: 0.75;
   }
   100% {
-    transform: translateY(0) rotateY(0deg) scale(1);
+    transform: translateY(0) scale(1);
     opacity: 1;
   }
 }
@@ -347,7 +433,7 @@ body {
   }
 
   .card-body h2 {
-    font-size: 1.7rem;
+    font-size: 1.6rem;
   }
 
   .card-art {
