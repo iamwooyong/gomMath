@@ -76,6 +76,7 @@ const els = {
   progressText: document.querySelector("#progressText"),
   progressBar: document.querySelector(".progress-bar"),
   stickerShelf: document.querySelector("#stickerShelf"),
+  stickerGuide: document.querySelector("#stickerGuide"),
 
   authStatus: document.querySelector("#authStatus"),
   authUser: document.querySelector("#authUser"),
@@ -627,20 +628,29 @@ function updateModePill() {
 }
 
 function renderStickers() {
-  const icons = ["🧸", "🍯", "⭐", "🍪", "🎈", "🌼", "📚", "🏅"];
-  const stickerCount = Math.min(profile.dailyCorrect, 16);
+  const toneKeys = ["red", "orange", "yellow", "green", "blue", "purple", "pink"];
+  const stickerCount = Math.min(Math.floor(profile.dailyCorrect / 10), 42);
+  const solvedMod = profile.dailyCorrect % 10;
+  const remainToNext = solvedMod === 0 ? 10 : 10 - solvedMod;
 
   if (stickerCount === 0) {
-    els.stickerShelf.innerHTML = '<p class="empty-note">정답을 맞히면 스티커가 여기에 모여요.</p>';
+    els.stickerShelf.innerHTML = '<p class="empty-note">아직 받은 스티커가 없어요.</p>';
+    if (els.stickerGuide) {
+      els.stickerGuide.textContent = `10개 맞추면 곰돌이 스티커를 한 장 드려요. 다음 스티커까지 ${remainToNext}문제 남았어요.`;
+    }
     return;
   }
 
   const stickers = Array.from({ length: stickerCount }, (_, index) => {
-    const icon = icons[index % icons.length];
-    return `<span class="sticker" aria-hidden="true">${icon}</span>`;
+    const tone = toneKeys[index % toneKeys.length];
+    const scoreMark = (index + 1) * 10;
+    return `<span class="sticker sticker-${tone}" data-label="${scoreMark}" aria-hidden="true">🧸</span>`;
   });
 
   els.stickerShelf.innerHTML = stickers.join("");
+  if (els.stickerGuide) {
+    els.stickerGuide.textContent = `10개 맞추면 곰돌이 스티커를 한 장 드려요. 지금 ${stickerCount}장 모았어요.`;
+  }
 }
 
 function updateStats() {
