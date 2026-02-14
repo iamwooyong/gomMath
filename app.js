@@ -1,5 +1,8 @@
 const STORAGE_KEY = "gomdori-math:profile";
+const AUTH_STORAGE_KEY = "gomdori-math:auth";
 const TARGET_QUESTIONS = 10;
+const API_BASE = "";
+const GOOGLE_CLIENT_ID = "610364396438-cduadkikkc8gkcbgrn4700q45load9kr.apps.googleusercontent.com";
 
 const OPERATIONS = {
   add: { key: "add", label: "더하기", symbol: "+" },
@@ -44,17 +47,22 @@ const els = {
   operationButtons: Array.from(document.querySelectorAll("[data-operation]")),
   levelButtons: Array.from(document.querySelectorAll("[data-level]")),
   themeButtons: Array.from(document.querySelectorAll("[data-theme]")),
+
   startBtn: document.querySelector("#startBtn"),
   submitBtn: document.querySelector("#submitBtn"),
   hintBtn: document.querySelector("#hintBtn"),
   nextBtn: document.querySelector("#nextBtn"),
   answerInput: document.querySelector("#answerInput"),
+
   questionCount: document.querySelector("#questionCount"),
   modePill: document.querySelector("#modePill"),
   equation: document.querySelector("#equation"),
   feedback: document.querySelector("#feedback"),
+
   bearAvatar: document.querySelector("#bearAvatar"),
   bearMessage: document.querySelector("#bearMessage"),
+  themePicker: document.querySelector("#themePicker"),
+
   dailyCorrect: document.querySelector("#dailyCorrect"),
   sessionStreak: document.querySelector("#sessionStreak"),
   bestStreak: document.querySelector("#bestStreak"),
@@ -63,20 +71,35 @@ const els = {
   progressText: document.querySelector("#progressText"),
   progressBar: document.querySelector(".progress-bar"),
   stickerShelf: document.querySelector("#stickerShelf"),
-  themePicker: document.querySelector("#themePicker")
+
+  authStatus: document.querySelector("#authStatus"),
+  authUser: document.querySelector("#authUser"),
+  authAvatar: document.querySelector("#authAvatar"),
+  authName: document.querySelector("#authName"),
+  authEmail: document.querySelector("#authEmail"),
+  logoutBtn: document.querySelector("#logoutBtn"),
+  googleSignInWrap: document.querySelector("#googleSignInWrap")
 };
 
 const state = {
   operation: "add",
   level: "easy",
   sessionActive: false,
+  sessionStartedAt: 0,
   questionNumber: 0,
   answered: false,
   currentQuestion: null,
   sessionCorrect: 0,
   sessionWrong: 0,
   sessionStreak: 0,
+  sessionBestStreak: 0,
   themePickerOpen: false
+};
+
+const authState = {
+  token: "",
+  user: null,
+  googleReady: false
 };
 
 let profile = loadProfile();
@@ -85,7 +108,7 @@ function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function getTodayKey() {
+function getDateKey() {
   const now = new Date();
   const yyyy = now.getFullYear();
   const mm = String(now.getMonth() + 1).padStart(2, "0");
@@ -93,9 +116,13 @@ function getTodayKey() {
   return `${yyyy}-${mm}-${dd}`;
 }
 
+function getApiUrl(path) {
+  return `${API_BASE}${path}`;
+}
+
 function createDefaultProfile() {
   return {
-    dateKey: getTodayKey(),
+    dateKey: getDateKey(),
     dailySolved: 0,
     dailyCorrect: 0,
     lifetimeSolved: 0,
@@ -142,6 +169,41 @@ function saveProfile() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(profile));
 }
 
+function loadAuthState() {
+  try {
+    const raw = localStorage.getItem(AUTH_STORAGE_KEY);
+    if (!raw) return { token: "", user: null };
+
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") {
+      return { token: "", user: null };
+    }
+
+    return {
+      token: String(parsed.token || ""),
+      user: parsed.user && typeof parsed.user === "object" ? parsed.user : null
+    };
+  } catch {
+    return { token: "", user: null };
+  }
+}
+
+function saveAuthState() {
+  localStorage.setItem(
+    AUTH_STORAGE_KEY,
+    JSON.stringify({
+      token: authState.token,
+      user: authState.user
+    })
+  );
+}
+
+function clearAuthState() {
+  authState.token = "";
+  authState.user = null;
+  localStorage.removeItem(AUTH_STORAGE_KEY);
+}
+
 function setActive(buttons, attrName, value) {
   buttons.forEach((button) => {
     button.classList.toggle("is-active", button.dataset[attrName] === value);
@@ -165,6 +227,75 @@ function applyTheme(themeKey, options = {}) {
     profile.theme = safeTheme;
     if (persist) saveProfile();
   }
+}
+
+function setBear(mood, message) {
+  els.bearAvatar.dataset.mood = mood;
+  els.bearMessage.textContent = message;
+}
+
+function setFeedback(message) {
+  els.feedback.textContent = message;
+}
+
+function setAuthStatus(message) {
+  els.authStatus.textContent = message;
+}
+
+function renderGoogleSignInButton() {
+  if (!authState.googleReady) return;
+
+  els.googleSignInWrap.innerHTML = "";
+
+  if (authState.user) {
+    els.googleSignInWrap.classList.add("hidden");
+    return;
+  }
+
+  els.googleSignInWrap.classList.remove("hidden");
+
+  window.google.accounts.id.renderButton(els.googleSignInWrap, {
+    type: "standard",
+    theme: "outline",
+    size: "large",
+    text: "signin_with",
+    shape: "pill",
+    locale: "ko",
+    width: 250
+  });
+}
+
+function renderAuthUser() {
+  if (!authState.user) {
+    els.authUser.classList.add("hidden");
+    if (authState.googleReady) {
+      els.googleSignInWrap.classList.remove("hidden");
+    }
+    setAuthStatus("로그인하면 학습 기록을 안전하게 저장할 수 있어요.");
+    renderGoogleSignInButton();
+    return;
+  }
+
+  const { name, email, picture } = authState.user;
+
+  els.authAvatar.src = picture || "";
+  els.authAvatar.alt = `${name || "사용자"} 프로필`;
+  els.authName.textContent = name || "사용자";
+  els.authEmail.textContent = email || "";
+
+  if (!picture) {
+    els.authAvatar.classList.add("hidden");
+  } else {
+    els.authAvatar.classList.remove("hidden");
+  }
+
+  els.authUser.classList.remove("hidden");
+  els.googleSignInWrap.classList.add("hidden");
+  setAuthStatus(`${name || "사용자"}님, 라운드 결과가 자동으로 저장돼요.`);
+}
+
+function getRandomLine(lines) {
+  return lines[randomInt(0, lines.length - 1)];
 }
 
 function pickOperation() {
@@ -233,15 +364,6 @@ function buildQuestion(operationKey, levelKey) {
     answer: quotient,
     hint: `${dividend}을 ${divisor}개씩 나누면 몇 묶음일까?`
   };
-}
-
-function setBear(mood, message) {
-  els.bearAvatar.dataset.mood = mood;
-  els.bearMessage.textContent = message;
-}
-
-function setFeedback(message) {
-  els.feedback.textContent = message;
 }
 
 function updateModePill() {
@@ -318,10 +440,12 @@ function nextQuestion() {
 
 function startSession() {
   state.sessionActive = true;
+  state.sessionStartedAt = Date.now();
   state.questionNumber = 1;
   state.sessionCorrect = 0;
   state.sessionWrong = 0;
   state.sessionStreak = 0;
+  state.sessionBestStreak = 0;
 
   els.startBtn.textContent = "다시 시작";
   updateModePill();
@@ -332,8 +456,70 @@ function startSession() {
   updateProgress();
 }
 
-function getRandomLine(lines) {
-  return lines[randomInt(0, lines.length - 1)];
+async function saveSessionToDb(summary) {
+  if (!authState.user || !authState.token) {
+    return { ok: false, reason: "not-logged-in" };
+  }
+
+  try {
+    const response = await fetch(getApiUrl("/api/math/sessions"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authState.token}`
+      },
+      body: JSON.stringify(summary)
+    });
+
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({ error: "failed to save" }));
+      throw new Error(payload.error || "failed to save");
+    }
+
+    return { ok: true };
+  } catch (error) {
+    console.error("saveSessionToDb failed", error);
+    return { ok: false, reason: "request-failed" };
+  }
+}
+
+async function syncRoundResult(summary) {
+  if (!authState.user) {
+    return;
+  }
+
+  const result = await saveSessionToDb(summary);
+
+  if (result.ok) {
+    setAuthStatus(`${authState.user.name || "사용자"}님, 이번 라운드 기록이 저장됐어요.`);
+    return;
+  }
+
+  if (result.reason === "not-logged-in") {
+    setAuthStatus("로그인하면 라운드 결과를 저장할 수 있어요.");
+    return;
+  }
+
+  setAuthStatus("저장에 실패했어요. 로그인 상태와 DB 설정을 확인해 주세요.");
+}
+
+function buildRoundSummary() {
+  const total = state.sessionCorrect + state.sessionWrong;
+  const accuracy = total ? Math.round((state.sessionCorrect / total) * 100) : 0;
+  const durationMs = Math.max(Date.now() - state.sessionStartedAt, 0);
+
+  return {
+    date: getDateKey(),
+    operation: state.operation,
+    level: state.level,
+    totalQuestions: total,
+    correctAnswers: state.sessionCorrect,
+    wrongAnswers: state.sessionWrong,
+    accuracy,
+    bestStreak: state.sessionBestStreak,
+    durationMs,
+    externalKey: `round:${getDateKey()}:${state.operation}:${state.level}:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`
+  };
 }
 
 function completeSession() {
@@ -370,6 +556,9 @@ function completeSession() {
   els.startBtn.textContent = "새 라운드 시작";
 
   updateProgress();
+
+  const summary = buildRoundSummary();
+  void syncRoundResult(summary);
 }
 
 function handleSubmit() {
@@ -400,6 +589,7 @@ function handleSubmit() {
   if (userAnswer === state.currentQuestion.answer) {
     state.sessionCorrect += 1;
     state.sessionStreak += 1;
+    state.sessionBestStreak = Math.max(state.sessionBestStreak, state.sessionStreak);
 
     profile.dailyCorrect += 1;
     profile.lifetimeCorrect += 1;
@@ -487,6 +677,121 @@ function handleThemeSelect(nextTheme) {
   setBear("happy", `${themeLabel} 컨셉으로 바꿨어!`);
 }
 
+async function handleGoogleCredential(response) {
+  const idToken = String(response?.credential || "").trim();
+  if (!idToken) return;
+
+  setAuthStatus("Google 로그인 확인 중...");
+
+  try {
+    const authResponse = await fetch(getApiUrl("/api/auth/google"), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ idToken })
+    });
+
+    if (!authResponse.ok) {
+      const payload = await authResponse.json().catch(() => ({ error: "로그인 실패" }));
+      throw new Error(payload.error || "로그인 실패");
+    }
+
+    const payload = await authResponse.json();
+
+    authState.token = String(payload.token || "");
+    authState.user = payload.user || null;
+
+    if (!authState.token || !authState.user) {
+      throw new Error("로그인 응답이 올바르지 않습니다.");
+    }
+
+    saveAuthState();
+    renderAuthUser();
+
+    setFeedback("로그인 완료! 이제 라운드 결과가 DB에 저장돼요.");
+    setBear("happy", `${authState.user.name || "친구"} 반가워!`);
+  } catch (error) {
+    console.error("google login failed", error);
+    clearAuthState();
+    renderAuthUser();
+
+    setAuthStatus("로그인에 실패했어요. 잠시 후 다시 시도해 주세요.");
+    setFeedback("로그인 중 문제가 생겼어. 한 번 더 시도해보자.");
+  }
+}
+
+function initGoogleSignIn(retry = 0) {
+  if (window.google?.accounts?.id) {
+    authState.googleReady = true;
+
+    window.google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: handleGoogleCredential,
+      auto_select: false,
+      ux_mode: "popup"
+    });
+
+    renderGoogleSignInButton();
+    return;
+  }
+
+  if (retry < 24) {
+    setTimeout(() => initGoogleSignIn(retry + 1), 250);
+    return;
+  }
+
+  setAuthStatus("Google 로그인 버튼을 불러오지 못했어요. 새로고침 후 다시 시도해 주세요.");
+}
+
+async function restoreAuthSession() {
+  const saved = loadAuthState();
+
+  authState.token = saved.token;
+  authState.user = saved.user;
+
+  if (!authState.token) {
+    renderAuthUser();
+    return;
+  }
+
+  try {
+    const response = await fetch(getApiUrl("/api/auth/me"), {
+      headers: {
+        Authorization: `Bearer ${authState.token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("invalid session");
+    }
+
+    const payload = await response.json();
+    authState.user = payload.user || null;
+
+    if (!authState.user) {
+      throw new Error("missing user");
+    }
+
+    saveAuthState();
+  } catch (error) {
+    console.error("restoreAuthSession failed", error);
+    clearAuthState();
+  }
+
+  renderAuthUser();
+}
+
+function handleLogout() {
+  clearAuthState();
+  renderAuthUser();
+
+  if (window.google?.accounts?.id) {
+    window.google.accounts.id.disableAutoSelect();
+  }
+
+  setBear("idle", "로그아웃했어. 원하면 다시 로그인해줘!");
+  setFeedback("로그아웃 완료! 로그인하면 다시 DB 저장이 가능해.");
+}
+
 function bindEvents() {
   els.operationButtons.forEach((button) => {
     button.addEventListener("click", () => {
@@ -555,6 +860,10 @@ function bindEvents() {
 
     handleSubmit();
   });
+
+  els.logoutBtn.addEventListener("click", () => {
+    handleLogout();
+  });
 }
 
 function init() {
@@ -563,6 +872,7 @@ function init() {
 
   setActive(els.operationButtons, "operation", state.operation);
   setActive(els.levelButtons, "level", state.level);
+
   applyTheme(profile.theme, { persist: false });
   setThemePicker(false);
 
@@ -573,6 +883,10 @@ function init() {
   setFeedback("천천히, 정확하게! 준비되면 시작해요.");
 
   bindEvents();
+  renderAuthUser();
+
+  void restoreAuthSession();
+  initGoogleSignIn();
 }
 
 init();
