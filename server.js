@@ -16,6 +16,7 @@ const GOOGLE_CLIENT_IDS = (process.env.GOOGLE_CLIENT_IDS || process.env.GOOGLE_C
 const SESSION_SECRET = process.env.SESSION_SECRET || "gommath-dev-session-secret";
 const SESSION_TTL_HOURS = Math.max(Number(process.env.SESSION_TTL_HOURS || 24 * 7), 1);
 const SESSION_TTL_MS = SESSION_TTL_HOURS * 60 * 60 * 1000;
+const ALLOWED_THEMES = ["red", "orange", "yellow", "green", "blue", "purple", "pink"];
 
 const isLocalDb = DATABASE_URL.includes("localhost") || DATABASE_URL.includes("127.0.0.1");
 const pool = new Pool({
@@ -143,7 +144,7 @@ async function verifyGoogleIdToken(idToken) {
 }
 
 async function upsertMathUser(user) {
-  await pool.query(
+  const { rows } = await pool.query(
     `
       INSERT INTO math_users (id, email, name, picture)
       VALUES ($1, $2, $3, $4)
@@ -153,9 +154,17 @@ async function upsertMathUser(user) {
         name = EXCLUDED.name,
         picture = EXCLUDED.picture,
         updated_at = NOW()
+      RETURNING
+        id,
+        email,
+        name,
+        picture,
+        theme
     `,
     [user.id, user.email, user.name, user.picture]
   );
+
+  return rows[0];
 }
 
 function toInt(value, fallback = 0) {
@@ -190,9 +199,15 @@ async function initDb() {
       email TEXT NOT NULL,
       name TEXT NOT NULL,
       picture TEXT NOT NULL,
+      theme TEXT NOT NULL DEFAULT 'pink',
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
+  `);
+
+  await pool.query(`
+    ALTER TABLE math_users
+    ADD COLUMN IF NOT EXISTS theme TEXT NOT NULL DEFAULT 'pink'
   `);
 
   await pool.query(`
@@ -240,16 +255,17 @@ app.post("/api/auth/google", async (req, res) => {
 
   try {
     const user = await verifyGoogleIdToken(idToken);
-    await upsertMathUser(user);
+    const dbUser = await upsertMathUser(user);
 
     const token = signSession(user);
     res.json({
       token,
       user: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        picture: user.picture
+        id: dbUser.id,
+        email: dbUser.email,
+        name: dbUser.name,
+        picture: dbUser.picture,
+        theme: dbUser.theme
       }
     });
   } catch (error) {
@@ -269,7 +285,8 @@ app.get("/api/auth/me", async (req, res) => {
           id,
           email,
           name,
-          picture
+          picture,
+          theme
         FROM math_users
         WHERE id = $1
         LIMIT 1
@@ -287,12 +304,67 @@ app.get("/api/auth/me", async (req, res) => {
         id: session.sub,
         email: session.email,
         name: session.name,
-        picture: session.picture
+        picture: session.picture,
+        theme: "pink"
       }
     });
   } catch (error) {
     console.error("auth me failed", error);
     res.status(500).json({ error: "failed to load user" });
+  }
+});
+
+app.patch("/api/math/profile/theme", async (req, res) => {
+  const session = getSessionOrReject(req, res);
+  if (!session) return;
+
+  const theme = String(req.body?.theme || "").trim().toLowerCase();
+  if (!ALLOWED_THEMES.includes(theme)) {
+    res.status(400).json({ error: "theme is invalid" });
+    return;
+  }
+
+  try {
+    const { rows } = await pool.query(
+      `
+        UPDATE math_users
+        SET
+          theme = $2,
+          updated_at = NOW()
+        WHERE id = $1
+        RETURNING
+          id,
+          email,
+          name,
+          picture,
+          theme
+      `,
+      [session.sub, theme]
+    );
+
+    if (rows.length > 0) {
+      res.json({ ok: true, user: rows[0] });
+      return;
+    }
+
+    const { rows: insertedRows } = await pool.query(
+      `
+        INSERT INTO math_users (id, email, name, picture, theme)
+        VALUES ($1, $2, $3, $4, $5)
+        RETURNING
+          id,
+          email,
+          name,
+          picture,
+          theme
+      `,
+      [session.sub, session.email || "", session.name || "사용자", session.picture || "", theme]
+    );
+
+    res.json({ ok: true, user: insertedRows[0] });
+  } catch (error) {
+    console.error("failed to save theme preference", error);
+    res.status(500).json({ error: "failed to save theme preference" });
   }
 });
 

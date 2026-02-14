@@ -52,6 +52,7 @@ const els = {
   submitBtn: document.querySelector("#submitBtn"),
   hintBtn: document.querySelector("#hintBtn"),
   nextBtn: document.querySelector("#nextBtn"),
+  retryWrongBtn: document.querySelector("#retryWrongBtn"),
   answerInput: document.querySelector("#answerInput"),
 
   questionCount: document.querySelector("#questionCount"),
@@ -93,6 +94,9 @@ const state = {
   sessionWrong: 0,
   sessionStreak: 0,
   sessionBestStreak: 0,
+  wrongQuestions: [],
+  reviewMode: false,
+  reviewQueue: [],
   themePickerOpen: false
 };
 
@@ -226,6 +230,39 @@ function applyTheme(themeKey, options = {}) {
   if (profile.theme !== safeTheme) {
     profile.theme = safeTheme;
     if (persist) saveProfile();
+  }
+}
+
+async function saveThemeToDb(themeKey) {
+  if (!authState.user || !authState.token) {
+    return { ok: false, reason: "not-logged-in" };
+  }
+
+  try {
+    const response = await fetch(getApiUrl("/api/math/profile/theme"), {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authState.token}`
+      },
+      body: JSON.stringify({ theme: themeKey })
+    });
+
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({ error: "failed to save theme" }));
+      throw new Error(payload.error || "failed to save theme");
+    }
+
+    const payload = await response.json();
+    if (payload?.user && typeof payload.user === "object") {
+      authState.user = payload.user;
+      saveAuthState();
+    }
+
+    return { ok: true };
+  } catch (error) {
+    console.error("saveThemeToDb failed", error);
+    return { ok: false, reason: "request-failed" };
   }
 }
 
@@ -418,7 +455,12 @@ function renderQuestion() {
   const question = state.currentQuestion;
   if (!question) return;
 
-  els.questionCount.textContent = `${state.questionNumber} / ${TARGET_QUESTIONS} 문제`;
+  if (state.reviewMode) {
+    const remaining = state.reviewQueue.length + 1;
+    els.questionCount.textContent = `틀린문제 복습 · 남은 ${remaining}문제`;
+  } else {
+    els.questionCount.textContent = `${state.questionNumber} / ${TARGET_QUESTIONS} 문제`;
+  }
   els.equation.textContent = `${question.left} ${question.symbol} ${question.right} = ?`;
 
   els.answerInput.value = "";
@@ -428,6 +470,7 @@ function renderQuestion() {
   els.submitBtn.disabled = false;
   els.hintBtn.disabled = false;
   els.nextBtn.classList.add("hidden");
+  els.retryWrongBtn.classList.add("hidden");
 
   state.answered = false;
 }
@@ -438,6 +481,53 @@ function nextQuestion() {
   renderQuestion();
 }
 
+function nextReviewQuestion() {
+  const next = state.reviewQueue.shift();
+  if (!next) {
+    completeWrongReview();
+    return;
+  }
+
+  state.currentQuestion = { ...next };
+  renderQuestion();
+}
+
+function startWrongReview() {
+  if (state.wrongQuestions.length === 0) return;
+
+  state.reviewMode = true;
+  state.reviewQueue = state.wrongQuestions.map((question) => ({ ...question }));
+  state.sessionActive = true;
+
+  els.retryWrongBtn.classList.add("hidden");
+  els.startBtn.textContent = "다시 시작";
+  els.modePill.textContent = "틀린문제 복습";
+  setFeedback("좋아! 틀린 문제를 다시 풀어보자.");
+  setBear("thinking", "이번엔 꼭 맞혀보자!");
+
+  nextReviewQuestion();
+}
+
+function completeWrongReview() {
+  state.reviewMode = false;
+  state.sessionActive = false;
+  state.reviewQueue = [];
+
+  updateModePill();
+  els.questionCount.textContent = "복습 완료";
+  els.equation.textContent = "🎉 틀린 문제를 모두 다시 풀었어!";
+  els.answerInput.value = "";
+  els.answerInput.disabled = true;
+  els.submitBtn.disabled = true;
+  els.hintBtn.disabled = true;
+  els.nextBtn.classList.add("hidden");
+  els.retryWrongBtn.classList.add("hidden");
+  els.startBtn.textContent = "새 라운드 시작";
+
+  setFeedback("복습 완료! 이제 같은 실수를 줄일 수 있어.");
+  setBear("celebrate", "정말 잘했어! 복습까지 완벽해.");
+}
+
 function startSession() {
   state.sessionActive = true;
   state.sessionStartedAt = Date.now();
@@ -446,8 +536,12 @@ function startSession() {
   state.sessionWrong = 0;
   state.sessionStreak = 0;
   state.sessionBestStreak = 0;
+  state.wrongQuestions = [];
+  state.reviewMode = false;
+  state.reviewQueue = [];
 
   els.startBtn.textContent = "다시 시작";
+  els.retryWrongBtn.classList.add("hidden");
   updateModePill();
   setFeedback("첫 문제야! 침착하게 계산해보자.");
   setBear("thinking", "좋아, 머리를 반짝여보자!");
@@ -542,7 +636,13 @@ function completeSession() {
     mood = "thinking";
   }
 
-  setFeedback(`${line} ${total}문제 중 ${state.sessionCorrect}문제 정답 (${score}%).`);
+  const wrongCount = state.wrongQuestions.length;
+  const baseMessage = `${line} ${total}문제 중 ${state.sessionCorrect}문제 정답 (${score}%).`;
+  if (wrongCount > 0) {
+    setFeedback(`${baseMessage} 틀린 문제 ${wrongCount}개를 다시 풀어볼 수 있어!`);
+  } else {
+    setFeedback(baseMessage);
+  }
   setBear(mood, "라운드 완료! 다시 시작해서 기록을 깨보자.");
 
   els.questionCount.textContent = "라운드 완료";
@@ -553,6 +653,11 @@ function completeSession() {
   els.submitBtn.disabled = true;
   els.hintBtn.disabled = true;
   els.nextBtn.classList.add("hidden");
+  if (wrongCount > 0) {
+    els.retryWrongBtn.classList.remove("hidden");
+  } else {
+    els.retryWrongBtn.classList.add("hidden");
+  }
   els.startBtn.textContent = "새 라운드 시작";
 
   updateProgress();
@@ -583,6 +688,24 @@ function handleSubmit() {
   els.answerInput.disabled = true;
   els.nextBtn.classList.remove("hidden");
 
+  if (state.reviewMode) {
+    if (userAnswer === state.currentQuestion.answer) {
+      setFeedback(`정답! 웃는곰 ${getRandomLine(POSITIVE_FEEDBACK)}`);
+      setBear("smile", "좋아! 틀린 문제를 다시 맞혔어.");
+    } else {
+      state.reviewQueue.push({ ...state.currentQuestion });
+      setFeedback(`오답! 우는곰 정답은 ${state.currentQuestion.answer}이야. ${getRandomLine(ENCOURAGE_FEEDBACK)}`);
+      setBear("cry", "괜찮아, 같은 문제를 한 번 더 풀어보자.");
+    }
+
+    if (state.reviewQueue.length === 0) {
+      els.nextBtn.textContent = "복습 완료";
+    } else {
+      els.nextBtn.textContent = "다음 복습";
+    }
+    return;
+  }
+
   profile.dailySolved += 1;
   profile.lifetimeSolved += 1;
 
@@ -600,6 +723,7 @@ function handleSubmit() {
   } else {
     state.sessionWrong += 1;
     state.sessionStreak = 0;
+    state.wrongQuestions.push({ ...state.currentQuestion });
 
     setFeedback(`오답! 우는곰 정답은 ${state.currentQuestion.answer}이야. ${getRandomLine(ENCOURAGE_FEEDBACK)}`);
     setBear("cry", "괜찮아, 우는곰이 토닥토닥. 다음 문제에서 만회하자.");
@@ -619,12 +743,30 @@ function handleSubmit() {
 function handleHint() {
   if (!state.sessionActive || state.answered || !state.currentQuestion) return;
 
+  if (state.reviewMode) {
+    setFeedback(`복습 힌트: ${state.currentQuestion.hint}`);
+    setBear("thinking", "복습 문제도 천천히 다시 생각해보자.");
+    return;
+  }
+
   setFeedback(`힌트: ${state.currentQuestion.hint}`);
   setBear("thinking", "힌트를 보고 천천히 계산해보자.");
 }
 
 function handleNext() {
   if (!state.answered) return;
+
+  if (state.reviewMode) {
+    if (state.reviewQueue.length === 0) {
+      completeWrongReview();
+      return;
+    }
+
+    setBear("idle", "좋아! 다음 복습 문제로 가자.");
+    setFeedback("틀린 문제를 하나씩 다시 풀어보자.");
+    nextReviewQuestion();
+    return;
+  }
 
   if (state.questionNumber >= TARGET_QUESTIONS) {
     completeSession();
@@ -667,7 +809,7 @@ function handleLevelSelect(nextLevel) {
   }
 }
 
-function handleThemeSelect(nextTheme) {
+async function handleThemeSelect(nextTheme) {
   if (!THEMES[nextTheme]) return;
 
   applyTheme(nextTheme);
@@ -675,6 +817,16 @@ function handleThemeSelect(nextTheme) {
 
   const themeLabel = THEMES[nextTheme].label;
   setBear("happy", `${themeLabel} 컨셉으로 바꿨어!`);
+
+  if (!authState.user) return;
+
+  const result = await saveThemeToDb(nextTheme);
+  if (result.ok) {
+    setAuthStatus(`${authState.user.name || "사용자"}님 테마를 ${themeLabel}로 저장했어요.`);
+    return;
+  }
+
+  setAuthStatus("테마 저장에 실패했어요. 잠시 후 다시 시도해 주세요.");
 }
 
 async function handleGoogleCredential(response) {
@@ -706,6 +858,9 @@ async function handleGoogleCredential(response) {
 
     saveAuthState();
     renderAuthUser();
+    if (authState.user?.theme && THEME_KEYS.includes(authState.user.theme)) {
+      applyTheme(authState.user.theme);
+    }
 
     setFeedback("로그인 완료! 이제 라운드 결과가 DB에 저장돼요.");
     setBear("happy", `${authState.user.name || "친구"} 반가워!`);
@@ -772,6 +927,9 @@ async function restoreAuthSession() {
     }
 
     saveAuthState();
+    if (authState.user?.theme && THEME_KEYS.includes(authState.user.theme)) {
+      applyTheme(authState.user.theme);
+    }
   } catch (error) {
     console.error("restoreAuthSession failed", error);
     clearAuthState();
@@ -816,7 +974,7 @@ function bindEvents() {
 
   els.themeButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      handleThemeSelect(button.dataset.theme);
+      void handleThemeSelect(button.dataset.theme);
     });
   });
 
@@ -848,6 +1006,10 @@ function bindEvents() {
     handleNext();
   });
 
+  els.retryWrongBtn.addEventListener("click", () => {
+    startWrongReview();
+  });
+
   els.answerInput.addEventListener("keydown", (event) => {
     if (event.key !== "Enter") return;
 
@@ -875,6 +1037,7 @@ function init() {
 
   applyTheme(profile.theme, { persist: false });
   setThemePicker(false);
+  els.retryWrongBtn.classList.add("hidden");
 
   updateModePill();
   updateStats();

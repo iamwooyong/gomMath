@@ -8,7 +8,9 @@
 - 4연산 학습: 더하기, 빼기, 곱하기, 나누기, 랜덤 모드
 - 난이도 3단계: 쉬움 / 보통 / 도전
 - 10문제 라운드 진행 + 즉시 정답/오답 피드백
+- 라운드 종료 후 틀린 문제 다시 풀기(복습 모드)
 - 힌트 제공
+- Google 로그인 시 곰돌이 색(테마) 계정 동기화
 - 오늘 학습 통계:
   - 오늘 맞힌 문제 수
   - 현재 연속 정답
@@ -65,6 +67,7 @@ npm start
 - `GET /api/health`
 - `POST /api/auth/google`
 - `GET /api/auth/me`
+- `PATCH /api/math/profile/theme`
 - `GET /api/math/sessions`
 - `POST /api/math/sessions`
 - `GET /api/readings?userId=...&limit=...`
