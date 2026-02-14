@@ -882,8 +882,13 @@ body {
   transform: translateY(-2px);
 }
 
+.bear-avatar[data-mood="love"] {
+  transform: translateY(-2px);
+}
+
 .bear-avatar[data-mood="happy"] .mouth,
 .bear-avatar[data-mood="smile"] .mouth,
+.bear-avatar[data-mood="love"] .mouth,
 .bear-avatar[data-mood="celebrate"] .mouth {
   border-bottom-width: 4px;
   height: 16px;
@@ -903,6 +908,30 @@ body {
   border-radius: 0 0 12px 12px;
   border-bottom: 3px solid #33261c;
   background: transparent;
+}
+
+.bear-avatar[data-mood="love"] .eye {
+  width: 16px;
+  height: 16px;
+  top: 48px;
+  border-radius: 0;
+  background: transparent;
+}
+
+.bear-avatar[data-mood="love"] .eye::before {
+  content: "❤";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -55%);
+  color: #f0609f;
+  font-size: 17px;
+  line-height: 1;
+  text-shadow: 0 1px 0 #fff5fb;
+}
+
+.bear-avatar[data-mood="love"] .eye::after {
+  content: none;
 }
 
 .bear-avatar[data-mood="surprised"] .eye {
@@ -1380,12 +1409,14 @@ h2 {
 
 .feedback-bear[data-mood="smile"],
 .feedback-bear[data-mood="happy"],
+.feedback-bear[data-mood="love"],
 .feedback-bear[data-mood="celebrate"] {
   transform: translateY(-2px);
 }
 
 .feedback-bear[data-mood="smile"] .fb-mouth,
 .feedback-bear[data-mood="happy"] .fb-mouth,
+.feedback-bear[data-mood="love"] .fb-mouth,
 .feedback-bear[data-mood="celebrate"] .fb-mouth {
   border-bottom-width: 4px;
   height: 14px;
@@ -1399,6 +1430,30 @@ h2 {
   border-radius: 0 0 12px 12px;
   border-bottom: 3px solid #33261c;
   background: transparent;
+}
+
+.feedback-bear[data-mood="love"] .fb-eye {
+  width: 14px;
+  height: 14px;
+  top: 43px;
+  border-radius: 0;
+  background: transparent;
+}
+
+.feedback-bear[data-mood="love"] .fb-eye::before {
+  content: "❤";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -55%);
+  color: #f0609f;
+  font-size: 15px;
+  line-height: 1;
+  text-shadow: 0 1px 0 #fff5fb;
+}
+
+.feedback-bear[data-mood="love"] .fb-eye::after {
+  content: none;
 }
 
 .feedback-bear[data-mood="surprised"] .fb-eye {
