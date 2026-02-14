@@ -3,109 +3,118 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>타로메이트 (Tarot-Mate)</title>
+    <title>곰돌이 수학</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260213-2" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Jua&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css?v=20260214-1" />
   </head>
   <body>
     <main class="app-shell">
-      <header class="top-bar">
-        <button class="brand-wrap" id="brandHomeBtn" type="button">
-          <div class="brand-line">
-            <h1 class="brand">타로메이트</h1>
-            <span class="brand-card-back" aria-hidden="true"><span>✶</span></span>
-          </div>
-          <p class="subtitle">Tarot-Mate</p>
-        </button>
-        <div class="top-actions">
-          <button class="profile-btn google-btn" id="googleLoginBtn" type="button">Google 로그인</button>
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Bear Math Playground</p>
+          <h1>곰돌이 수학</h1>
+          <p class="subtitle">꿀곰 선생님과 더하기, 빼기, 곱하기, 나누기를 재미있게 연습해요.</p>
         </div>
+
+        <section class="bear-card" aria-live="polite">
+          <div class="bear-avatar" id="bearAvatar" data-mood="idle">
+            <span class="ear ear-left"></span>
+            <span class="ear ear-right"></span>
+            <span class="eye eye-left"></span>
+            <span class="eye eye-right"></span>
+            <span class="snout"></span>
+            <span class="mouth"></span>
+            <span class="blush blush-left"></span>
+            <span class="blush blush-right"></span>
+          </div>
+          <p class="bear-message" id="bearMessage">안녕! 오늘은 우리가 수학 히어로야.</p>
+        </section>
       </header>
 
-      <section class="view view-home" id="homeView">
-        <section class="card-area">
-          <article class="tarot-card" id="tarotCard">
-            <div class="card-art" id="cardArt">🌱</div>
-            <div class="card-body">
-              <h2 id="cardTitle">00. 바보</h2>
-              <p id="cardQuote">“The Fool · 정방향”</p>
-              <div class="tags" id="tagBox"></div>
-            </div>
+      <section class="panel settings-panel">
+        <h2>학습 모드</h2>
+
+        <div class="option-wrap">
+          <p class="option-title">연산 선택</p>
+          <div class="chip-row" id="operationRow">
+            <button class="chip is-active" data-operation="add" type="button">+ 더하기</button>
+            <button class="chip" data-operation="subtract" type="button">- 빼기</button>
+            <button class="chip" data-operation="multiply" type="button">× 곱하기</button>
+            <button class="chip" data-operation="divide" type="button">÷ 나누기</button>
+            <button class="chip" data-operation="mix" type="button">🎲 랜덤</button>
+          </div>
+        </div>
+
+        <div class="option-wrap">
+          <p class="option-title">난이도</p>
+          <div class="chip-row" id="levelRow">
+            <button class="chip is-active" data-level="easy" type="button">쉬움</button>
+            <button class="chip" data-level="medium" type="button">보통</button>
+            <button class="chip" data-level="hard" type="button">도전</button>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" id="startBtn" type="button">10문제 시작</button>
+      </section>
+
+      <section class="panel quiz-panel">
+        <div class="quiz-head">
+          <p class="question-count" id="questionCount">준비 완료</p>
+          <p class="mode-pill" id="modePill">더하기 · 쉬움</p>
+        </div>
+
+        <p class="equation" id="equation">시작 버튼을 누르면 문제가 나와요.</p>
+
+        <label class="answer-label" for="answerInput">정답 입력</label>
+        <input id="answerInput" type="number" inputmode="numeric" placeholder="숫자를 입력해요" disabled />
+
+        <div class="quiz-actions">
+          <button class="btn btn-primary" id="submitBtn" type="button" disabled>정답 확인</button>
+          <button class="btn btn-ghost" id="hintBtn" type="button" disabled>힌트</button>
+          <button class="btn btn-ghost hidden" id="nextBtn" type="button">다음 문제</button>
+        </div>
+
+        <p class="feedback" id="feedback">천천히, 정확하게! 준비되면 시작해요.</p>
+      </section>
+
+      <section class="panel stats-panel">
+        <h2>오늘의 성과판</h2>
+
+        <div class="stat-grid">
+          <article class="stat-card">
+            <p class="stat-label">오늘 맞힌 문제</p>
+            <p class="stat-value" id="dailyCorrect">0</p>
           </article>
-        </section>
-
-        <section class="reading-box">
-          <h3 id="fortuneTitle">안녕하세요 타로메이트 입니다.</h3>
-          <p id="cardDesc">오늘의 타로 골라볼까요?</p>
-          <p id="fortuneMeta"></p>
-        </section>
-
-        <button class="start-btn" id="drawBtn" type="button">✦ 오늘의 운세 보기</button>
-
-        <section class="pick-area hidden" id="pickArea">
-          <h3>카드를 한 장 골라주세요</h3>
-          <div class="pick-grid" id="pickGrid"></div>
-        </section>
-      </section>
-
-      <section class="view hidden" id="historyView">
-        <section class="panel">
-          <h3>리딩 기록</h3>
-          <p class="panel-sub">오늘의 운세를 본 기록이 날짜별로 저장됩니다.</p>
-          <ul class="history-list" id="historyList"></ul>
-        </section>
-      </section>
-
-      <section class="view hidden" id="zodiacView">
-        <section class="panel">
-          <h3>별자리 운세</h3>
-          <p class="panel-sub">생년월일과 태어난 시간을 입력하면 별자리 타로를 알려드려요.</p>
-
-          <form class="zodiac-form" id="zodiacForm">
-            <label>생년월일<input id="birthDate" type="date" required /></label>
-            <label>태어난 시간<input id="birthTime" type="time" required /></label>
-            <label class="inline-check"><input id="unknownBirthTime" type="checkbox" />태어난 시간 모름</label>
-            <button class="start-btn small" type="submit">✦ 별자리 타로 보기</button>
-          </form>
-
-          <article class="zodiac-result hidden" id="zodiacResult">
-            <div class="zodiac-card-preview" id="zodiacCardPreview">
-              <div class="zodiac-card-inner" id="zodiacCardInner"></div>
-            </div>
-            <h4 id="zodiacTitle"></h4>
-            <p id="zodiacSignText"></p>
-            <p id="zodiacFortuneText"></p>
+          <article class="stat-card">
+            <p class="stat-label">현재 연속 정답</p>
+            <p class="stat-value" id="sessionStreak">0</p>
           </article>
-        </section>
-      </section>
+          <article class="stat-card">
+            <p class="stat-label">최고 연속 기록</p>
+            <p class="stat-value" id="bestStreak">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-label">오늘 정답률</p>
+            <p class="stat-value" id="accuracy">0%</p>
+          </article>
+        </div>
 
-      <section class="view hidden" id="guideView">
-        <section class="panel">
-          <h3>카드 설명</h3>
-          <p class="panel-sub">타로메이트가 사용하는 전체 카드와 해석(정방향/역방향)을 확인할 수 있어요.</p>
-          <ul class="card-catalog" id="cardCatalogList"></ul>
-        </section>
-      </section>
+        <div class="progress-group">
+          <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0">
+            <span id="progressFill"></span>
+          </div>
+          <p id="progressText">0 / 10 진행</p>
+        </div>
 
-      <nav class="bottom-nav">
-        <button class="nav-item active" data-tab="home" type="button">
-          <span class="nav-icon">🂠</span><span>홈</span>
-        </button>
-        <button class="nav-item" data-tab="zodiac" type="button">
-          <span class="nav-icon">✨</span><span>별자리 운세</span>
-        </button>
-        <button class="nav-item" data-tab="history" type="button">
-          <span class="nav-icon">📜</span><span>리딩 기록</span>
-        </button>
-        <button class="nav-item" data-tab="guide" type="button">
-          <span class="nav-icon">🃏</span><span>카드 설명</span>
-        </button>
-      </nav>
+        <div class="sticker-shelf" id="stickerShelf"></div>
+      </section>
     </main>
 
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="app.js?v=20260213-2"></script>
+    <script src="app.js?v=20260214-1"></script>
   </body>
 </html>

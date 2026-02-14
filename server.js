@@ -142,7 +142,7 @@ app.get("*", (_req, res) => {
 initDb()
   .then(() => {
     app.listen(PORT, () => {
-      console.log(`Tarot-Mate running on http://localhost:${PORT}`);
+      console.log(`곰돌이 수학 running on http://localhost:${PORT}`);
     });
   })
   .catch((error) => {
