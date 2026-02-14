@@ -911,9 +911,9 @@ body {
 }
 
 .bear-avatar[data-mood="love"] .eye {
-  width: 16px;
-  height: 16px;
-  top: 48px;
+  width: 24px;
+  height: 24px;
+  top: 42px;
   border-radius: 0;
   background: transparent;
 }
@@ -923,11 +923,12 @@ body {
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -55%);
-  color: #f0609f;
-  font-size: 17px;
+  transform: translate(-50%, -54%);
+  color: #ff4d9a;
+  font-size: 24px;
+  font-weight: 800;
   line-height: 1;
-  text-shadow: 0 1px 0 #fff5fb;
+  text-shadow: 0 0 2px #fff7fc, 0 2px 4px rgba(152, 38, 91, 0.45);
 }
 
 .bear-avatar[data-mood="love"] .eye::after {
@@ -1433,9 +1434,9 @@ h2 {
 }
 
 .feedback-bear[data-mood="love"] .fb-eye {
-  width: 14px;
-  height: 14px;
-  top: 43px;
+  width: 20px;
+  height: 20px;
+  top: 38px;
   border-radius: 0;
   background: transparent;
 }
@@ -1445,11 +1446,12 @@ h2 {
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -55%);
-  color: #f0609f;
-  font-size: 15px;
+  transform: translate(-50%, -54%);
+  color: #ff4d9a;
+  font-size: 20px;
+  font-weight: 800;
   line-height: 1;
-  text-shadow: 0 1px 0 #fff5fb;
+  text-shadow: 0 0 2px #fff7fc, 0 2px 4px rgba(152, 38, 91, 0.45);
 }
 
 .feedback-bear[data-mood="love"] .fb-eye::after {
