@@ -8,7 +8,7 @@ const { Pool } = pg;
 const app = express();
 const PORT = Number(process.env.PORT || 3000);
 const ROOT = process.cwd();
-const DATABASE_URL = process.env.DATABASE_URL || "";
+const DATABASE_URL = process.env.DATABASE_URL || "postgresql://postgres:postgres@localhost:5432/gommath";
 const GOOGLE_CLIENT_IDS = (process.env.GOOGLE_CLIENT_IDS || process.env.GOOGLE_CLIENT_ID || "610364396438-cduadkikkc8gkcbgrn4700q45load9kr.apps.googleusercontent.com")
   .split(",")
   .map((value) => value.trim())
@@ -17,13 +17,11 @@ const SESSION_SECRET = process.env.SESSION_SECRET || "gommath-dev-session-secret
 const SESSION_TTL_HOURS = Math.max(Number(process.env.SESSION_TTL_HOURS || 24 * 7), 1);
 const SESSION_TTL_MS = SESSION_TTL_HOURS * 60 * 60 * 1000;
 
-const hasDb = Boolean(DATABASE_URL);
-const pool = hasDb
-  ? new Pool({
-      connectionString: DATABASE_URL,
-      ssl: DATABASE_URL.includes("localhost") ? false : { rejectUnauthorized: false }
-    })
-  : null;
+const isLocalDb = DATABASE_URL.includes("localhost") || DATABASE_URL.includes("127.0.0.1");
+const pool = new Pool({
+  connectionString: DATABASE_URL,
+  ssl: isLocalDb ? false : { rejectUnauthorized: false }
+});
 
 if (!process.env.SESSION_SECRET) {
   console.warn("[warn] SESSION_SECRET is not set. Using development default secret.");
@@ -145,8 +143,6 @@ async function verifyGoogleIdToken(idToken) {
 }
 
 async function upsertMathUser(user) {
-  if (!pool) return;
-
   await pool.query(
     `
       INSERT INTO math_users (id, email, name, picture)
@@ -169,11 +165,6 @@ function toInt(value, fallback = 0) {
 }
 
 async function initDb() {
-  if (!pool) {
-    console.warn("[warn] DATABASE_URL is not set. DB features are disabled.");
-    return;
-  }
-
   await pool.query(`
     CREATE TABLE IF NOT EXISTS readings (
       id BIGSERIAL PRIMARY KEY,
@@ -232,11 +223,6 @@ async function initDb() {
 app.use(express.json());
 
 app.get("/api/health", async (_req, res) => {
-  if (!pool) {
-    res.json({ ok: true, db: "disabled" });
-    return;
-  }
-
   try {
     await pool.query("SELECT 1");
     res.json({ ok: true, db: "connected" });
@@ -276,18 +262,6 @@ app.get("/api/auth/me", async (req, res) => {
   const session = getSessionOrReject(req, res);
   if (!session) return;
 
-  if (!pool) {
-    res.json({
-      user: {
-        id: session.sub,
-        email: session.email,
-        name: session.name,
-        picture: session.picture
-      }
-    });
-    return;
-  }
-
   try {
     const { rows } = await pool.query(
       `
@@ -323,11 +297,6 @@ app.get("/api/auth/me", async (req, res) => {
 });
 
 app.get("/api/math/sessions", async (req, res) => {
-  if (!pool) {
-    res.status(503).json({ error: "database is not configured" });
-    return;
-  }
-
   const session = getSessionOrReject(req, res);
   if (!session) return;
 
@@ -363,11 +332,6 @@ app.get("/api/math/sessions", async (req, res) => {
 });
 
 app.post("/api/math/sessions", async (req, res) => {
-  if (!pool) {
-    res.status(503).json({ error: "database is not configured" });
-    return;
-  }
-
   const session = getSessionOrReject(req, res);
   if (!session) return;
 
@@ -447,11 +411,6 @@ app.post("/api/math/sessions", async (req, res) => {
 });
 
 app.get("/api/readings", async (req, res) => {
-  if (!pool) {
-    res.status(503).json({ error: "database is not configured" });
-    return;
-  }
-
   const userId = String(req.query.userId || "").trim();
   const limit = Math.min(Number(req.query.limit || 200), 500);
 
@@ -487,11 +446,6 @@ app.get("/api/readings", async (req, res) => {
 });
 
 app.post("/api/readings", async (req, res) => {
-  if (!pool) {
-    res.status(503).json({ error: "database is not configured" });
-    return;
-  }
-
   const { userId, type, date, title, summary, externalKey } = req.body || {};
 
   if (!userId || !type || !date || !title || !summary || !externalKey) {

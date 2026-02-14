@@ -21,12 +21,13 @@
 
 - Frontend: HTML, CSS, Vanilla JavaScript
 - Backend: Node.js, Express
-- Database: PostgreSQL (선택, `DATABASE_URL` 설정 시 활성화)
+- Database: PostgreSQL (`pg`)
 
 ## 실행 방법
 
 ```bash
 npm install
+npm run db:up
 npm start
 ```
 
@@ -34,10 +35,24 @@ npm start
 
 - [http://localhost:3000](http://localhost:3000)
 
+기본 DB는 PostgreSQL이며, 기본 연결 문자열은 아래와 같습니다.
+
+- `postgresql://postgres:postgres@localhost:5432/gommath`
+
+## 환경 변수
+
+`.env.example`를 참고해서 환경 변수를 설정할 수 있습니다.
+
+- `DATABASE_URL`: PostgreSQL 연결 문자열
+- `SESSION_SECRET`: 로그인 세션 서명 키
+- `GOOGLE_CLIENT_ID` 또는 `GOOGLE_CLIENT_IDS`: Google OAuth 클라이언트 ID
+
 ## 프로젝트 구조
 
 ```text
 .
+├── docker-compose.yml # PostgreSQL 로컬 실행
+├── .env.example      # 환경 변수 예시
 ├── index.html      # 메인 화면 구조
 ├── styles.css      # 곰돌이 테마 UI 스타일
 ├── app.js          # 문제 생성/채점/진행도/통계 로직
@@ -45,15 +60,15 @@ npm start
 └── data/           # 기존 데이터 폴더(필요 시 확장)
 ```
 
-## API (선택 기능)
-
-`DATABASE_URL`이 설정되어 있으면 아래 API가 동작합니다.
+## API
 
 - `GET /api/health`
+- `POST /api/auth/google`
+- `GET /api/auth/me`
+- `GET /api/math/sessions`
+- `POST /api/math/sessions`
 - `GET /api/readings?userId=...&limit=...`
 - `POST /api/readings`
-
-현재 수학 MVP는 프론트 로컬 저장 중심으로 동작하며, DB는 향후 학습 기록 확장용으로 활용할 수 있습니다.
 
 ## 로드맵
 
