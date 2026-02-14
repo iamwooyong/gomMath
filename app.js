@@ -629,14 +629,15 @@ function updateModePill() {
 
 function renderStickers() {
   const toneKeys = ["red", "orange", "yellow", "green", "blue", "purple", "pink"];
-  const stickerCount = Math.min(Math.floor(profile.dailyCorrect / 10), 42);
-  const solvedMod = profile.dailyCorrect % 10;
+  const totalCorrect = Math.max(Number(profile.lifetimeCorrect || 0), Number(profile.dailyCorrect || 0));
+  const stickerCount = Math.min(Math.floor(totalCorrect / 10), 42);
+  const solvedMod = totalCorrect % 10;
   const remainToNext = solvedMod === 0 ? 10 : 10 - solvedMod;
 
   if (stickerCount === 0) {
     els.stickerShelf.innerHTML = '<p class="empty-note">아직 받은 스티커가 없어요.</p>';
     if (els.stickerGuide) {
-      els.stickerGuide.textContent = `10개 맞추면 곰돌이 스티커를 한 장 드려요. 다음 스티커까지 ${remainToNext}문제 남았어요.`;
+      els.stickerGuide.textContent = `누적 정답 10개마다 곰돌이 스티커를 한 장 드려요. 다음 스티커까지 ${remainToNext}문제 남았어요.`;
     }
     return;
   }
@@ -649,7 +650,7 @@ function renderStickers() {
 
   els.stickerShelf.innerHTML = stickers.join("");
   if (els.stickerGuide) {
-    els.stickerGuide.textContent = `10개 맞추면 곰돌이 스티커를 한 장 드려요. 지금 ${stickerCount}장 모았어요.`;
+    els.stickerGuide.textContent = `누적 정답 ${totalCorrect}문제! 10개마다 한 장, 지금 곰돌이 스티커 ${stickerCount}장 모았어요.`;
   }
 }
 
