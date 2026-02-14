@@ -595,14 +595,14 @@ function handleSubmit() {
     profile.lifetimeCorrect += 1;
     profile.bestStreak = Math.max(profile.bestStreak, state.sessionStreak);
 
-    setFeedback(getRandomLine(POSITIVE_FEEDBACK));
+    setFeedback(`정답! 웃는곰 ${getRandomLine(POSITIVE_FEEDBACK)}`);
     setBear("smile", "정답! 곰 선생님이 활짝 웃고 있어.");
   } else {
     state.sessionWrong += 1;
     state.sessionStreak = 0;
 
-    setFeedback(`아쉽다! 정답은 ${state.currentQuestion.answer}이야. ${getRandomLine(ENCOURAGE_FEEDBACK)}`);
-    setBear("surprised", "어머! 살짝 놀랐지만, 다음 문제는 맞힐 수 있어.");
+    setFeedback(`오답! 우는곰 정답은 ${state.currentQuestion.answer}이야. ${getRandomLine(ENCOURAGE_FEEDBACK)}`);
+    setBear("cry", "괜찮아, 우는곰이 토닥토닥. 다음 문제에서 만회하자.");
   }
 
   saveProfile();

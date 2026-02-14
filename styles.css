@@ -853,6 +853,36 @@ body {
   background: #f8d1c8;
 }
 
+.bear-avatar[data-mood="cry"] {
+  transform: translateY(1px);
+}
+
+.bear-avatar[data-mood="cry"] .eye {
+  width: 14px;
+  height: 8px;
+  top: 55px;
+  border-radius: 0 0 12px 12px;
+  border-bottom: 3px solid #33261c;
+  background: transparent;
+}
+
+.bear-avatar[data-mood="cry"] .eye::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 8px;
+  width: 4px;
+  height: 9px;
+  border-radius: 50%;
+  background: #7fc7ff;
+}
+
+.bear-avatar[data-mood="cry"] .mouth {
+  border-bottom: 0;
+  border-top: 3px solid #58392a;
+  border-radius: 20px 20px 0 0;
+}
+
 .bear-avatar[data-mood="celebrate"] {
   animation: bounce 0.8s ease infinite;
 }
