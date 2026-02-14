@@ -329,6 +329,15 @@ function setAuthStatus(message) {
   els.authStatus.textContent = message;
 }
 
+function renderGoogleFallbackButton() {
+  els.googleSignInWrap.classList.remove("hidden");
+  els.googleSignInWrap.innerHTML = `
+    <button class="btn btn-ghost" id="retryGoogleLoginBtn" type="button">
+      Google 로그인 다시 불러오기
+    </button>
+  `;
+}
+
 function setNicknameNote(message, isError = false) {
   els.nicknameNote.textContent = message;
   els.nicknameNote.classList.toggle("is-error", isError);
@@ -395,7 +404,10 @@ async function refreshRankings() {
 }
 
 function renderGoogleSignInButton() {
-  if (!authState.googleReady) return;
+  if (!authState.googleReady) {
+    renderGoogleFallbackButton();
+    return;
+  }
 
   els.googleSignInWrap.innerHTML = "";
 
@@ -406,15 +418,21 @@ function renderGoogleSignInButton() {
 
   els.googleSignInWrap.classList.remove("hidden");
 
-  window.google.accounts.id.renderButton(els.googleSignInWrap, {
-    type: "standard",
-    theme: "outline",
-    size: "large",
-    text: "signin_with",
-    shape: "pill",
-    locale: "ko",
-    width: 250
-  });
+  try {
+    window.google.accounts.id.renderButton(els.googleSignInWrap, {
+      type: "standard",
+      theme: "outline",
+      size: "large",
+      text: "signin_with",
+      shape: "pill",
+      locale: "ko",
+      width: 250
+    });
+  } catch (error) {
+    console.error("renderGoogleSignInButton failed", error);
+    renderGoogleFallbackButton();
+    setAuthStatus("Google 로그인 버튼 로딩에 실패했어요. 다시 불러오기를 눌러주세요.");
+  }
 }
 
 function renderAuthUser() {
@@ -423,9 +441,7 @@ function renderAuthUser() {
     els.nicknameSection.classList.add("hidden");
     els.nicknameInput.value = "";
     setNicknameNote("닉네임은 랭킹에 표시돼요.");
-    if (authState.googleReady) {
-      els.googleSignInWrap.classList.remove("hidden");
-    }
+    els.googleSignInWrap.classList.remove("hidden");
     setAuthStatus("로그인하면 학습 기록을 안전하게 저장할 수 있어요.");
     renderGoogleSignInButton();
     return;
@@ -1040,25 +1056,38 @@ async function handleGoogleCredential(response) {
 }
 
 function initGoogleSignIn(retry = 0) {
+  if (authState.googleReady && window.google?.accounts?.id) {
+    renderGoogleSignInButton();
+    return;
+  }
+
   if (window.google?.accounts?.id) {
     authState.googleReady = true;
 
-    window.google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: handleGoogleCredential,
-      auto_select: false,
-      ux_mode: "popup"
-    });
+    try {
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleCredential,
+        auto_select: false,
+        ux_mode: "popup"
+      });
+    } catch (error) {
+      console.error("initGoogleSignIn initialize failed", error);
+      renderGoogleFallbackButton();
+      setAuthStatus("Google 로그인 초기화에 실패했어요. 다시 불러오기를 눌러주세요.");
+      return;
+    }
 
     renderGoogleSignInButton();
     return;
   }
 
-  if (retry < 24) {
+  if (retry < 120) {
     setTimeout(() => initGoogleSignIn(retry + 1), 250);
     return;
   }
 
+  renderGoogleFallbackButton();
   setAuthStatus("Google 로그인 버튼을 불러오지 못했어요. 새로고침 후 다시 시도해 주세요.");
 }
 
@@ -1192,6 +1221,16 @@ function bindEvents() {
     void refreshRankings();
   });
 
+  document.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    if (target.id !== "retryGoogleLoginBtn") return;
+
+    target.textContent = "불러오는 중...";
+    target.setAttribute("disabled", "true");
+    initGoogleSignIn();
+  });
+
   els.answerInput.addEventListener("keydown", (event) => {
     if (event.key !== "Enter") return;
 
@@ -1232,6 +1271,11 @@ function init() {
 
   void restoreAuthSession();
   initGoogleSignIn();
+  window.addEventListener("load", () => {
+    if (!authState.googleReady) {
+      initGoogleSignIn();
+    }
+  });
 }
 
 init();
