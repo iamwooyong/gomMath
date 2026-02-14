@@ -3,6 +3,7 @@ const AUTH_STORAGE_KEY = "gomdori-math:auth";
 const TARGET_QUESTIONS = 10;
 const API_BASE = "";
 const GOOGLE_CLIENT_ID = "160808232856-3c351j191uocqiailplgha2pnf2qtdam.apps.googleusercontent.com";
+const GOOGLE_GSI_SRC = "https://accounts.google.com/gsi/client";
 
 const OPERATIONS = {
   add: { key: "add", label: "더하기", symbol: "+" },
@@ -115,6 +116,8 @@ const authState = {
   user: null,
   googleReady: false
 };
+
+let googleScriptLoadPromise = null;
 
 let profile = loadProfile();
 
@@ -333,9 +336,49 @@ function renderGoogleFallbackButton() {
   els.googleSignInWrap.classList.remove("hidden");
   els.googleSignInWrap.innerHTML = `
     <button class="btn btn-ghost" id="retryGoogleLoginBtn" type="button">
-      Google 로그인 다시 불러오기
+      Google 계정으로 로그인
     </button>
   `;
+}
+
+function hasGoogleButtonDom() {
+  if (!els.googleSignInWrap) return false;
+
+  return Boolean(
+    els.googleSignInWrap.querySelector("iframe, [role='button'], .nsm7Bb-HzV7m-LgbsSe, div[aria-labelledby]")
+  );
+}
+
+function ensureGoogleScriptLoaded(forceReload = false) {
+  if (window.google?.accounts?.id && !forceReload) {
+    return Promise.resolve(true);
+  }
+
+  if (forceReload) {
+    googleScriptLoadPromise = null;
+    const scripts = Array.from(document.querySelectorAll("script[src*='accounts.google.com/gsi/client']"));
+    scripts.forEach((script) => script.remove());
+  }
+
+  if (googleScriptLoadPromise) {
+    return googleScriptLoadPromise;
+  }
+
+  googleScriptLoadPromise = new Promise((resolve) => {
+    const script = document.createElement("script");
+    script.src = GOOGLE_GSI_SRC;
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      resolve(Boolean(window.google?.accounts?.id));
+    };
+    script.onerror = () => {
+      resolve(false);
+    };
+    document.head.appendChild(script);
+  });
+
+  return googleScriptLoadPromise;
 }
 
 function setNicknameNote(message, isError = false) {
@@ -432,7 +475,17 @@ function renderGoogleSignInButton() {
     console.error("renderGoogleSignInButton failed", error);
     renderGoogleFallbackButton();
     setAuthStatus("Google 로그인 버튼 로딩에 실패했어요. 다시 불러오기를 눌러주세요.");
+    return;
   }
+
+  // renderButton can fail silently in some browser/origin combinations.
+  setTimeout(() => {
+    if (authState.user) return;
+    if (hasGoogleButtonDom()) return;
+
+    renderGoogleFallbackButton();
+    setAuthStatus("Google 로그인 버튼이 보이지 않아요. 버튼을 눌러 다시 불러와 주세요.");
+  }, 900);
 }
 
 function renderAuthUser() {
@@ -1082,6 +1135,10 @@ function initGoogleSignIn(retry = 0) {
     return;
   }
 
+  if (retry === 0) {
+    void ensureGoogleScriptLoaded(false);
+  }
+
   if (retry < 120) {
     setTimeout(() => initGoogleSignIn(retry + 1), 250);
     return;
@@ -1228,7 +1285,15 @@ function bindEvents() {
 
     target.textContent = "불러오는 중...";
     target.setAttribute("disabled", "true");
-    initGoogleSignIn();
+    void ensureGoogleScriptLoaded(true).then((loaded) => {
+      if (!loaded) {
+        renderGoogleFallbackButton();
+        setAuthStatus("Google 스크립트를 불러오지 못했어요. 잠시 후 다시 시도해 주세요.");
+        return;
+      }
+      authState.googleReady = false;
+      initGoogleSignIn();
+    });
   });
 
   els.answerInput.addEventListener("keydown", (event) => {
