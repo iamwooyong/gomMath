@@ -338,15 +338,44 @@ function renderGoogleFallbackButton() {
     <button class="btn btn-ghost" id="retryGoogleLoginBtn" type="button">
       Google 계정으로 로그인
     </button>
+    <p class="google-help">
+      버튼이 안 보이면 광고/추적 차단 확장 기능을 잠시 끄고 다시 시도해 주세요.
+    </p>
   `;
 }
 
-function hasGoogleButtonDom() {
+function hasVisibleGoogleButtonDom() {
   if (!els.googleSignInWrap) return false;
 
-  return Boolean(
-    els.googleSignInWrap.querySelector("iframe, [role='button'], .nsm7Bb-HzV7m-LgbsSe, div[aria-labelledby]")
+  const candidates = Array.from(
+    els.googleSignInWrap.querySelectorAll("iframe, [role='button'], .nsm7Bb-HzV7m-LgbsSe, div[aria-labelledby]")
   );
+
+  return candidates.some((element) => {
+    if (!(element instanceof HTMLElement)) return false;
+
+    const style = window.getComputedStyle(element);
+    if (style.display === "none") return false;
+    if (style.visibility === "hidden") return false;
+    if (Number(style.opacity || "1") === 0) return false;
+
+    const rect = element.getBoundingClientRect();
+    return rect.width >= 120 && rect.height >= 28;
+  });
+}
+
+function verifyGoogleButtonVisible(retry = 0) {
+  if (authState.user) return;
+
+  if (hasVisibleGoogleButtonDom()) return;
+
+  if (retry < 6) {
+    setTimeout(() => verifyGoogleButtonVisible(retry + 1), 450);
+    return;
+  }
+
+  renderGoogleFallbackButton();
+  setAuthStatus("Google 로그인 버튼이 보이지 않아요. 아래 버튼으로 다시 시도해 주세요.");
 }
 
 function ensureGoogleScriptLoaded(forceReload = false) {
@@ -479,13 +508,7 @@ function renderGoogleSignInButton() {
   }
 
   // renderButton can fail silently in some browser/origin combinations.
-  setTimeout(() => {
-    if (authState.user) return;
-    if (hasGoogleButtonDom()) return;
-
-    renderGoogleFallbackButton();
-    setAuthStatus("Google 로그인 버튼이 보이지 않아요. 버튼을 눌러 다시 불러와 주세요.");
-  }, 900);
+  setTimeout(() => verifyGoogleButtonVisible(0), 900);
 }
 
 function renderAuthUser() {
@@ -1293,6 +1316,20 @@ function bindEvents() {
       }
       authState.googleReady = false;
       initGoogleSignIn();
+      if (window.google?.accounts?.id) {
+        try {
+          window.google.accounts.id.prompt();
+        } catch (error) {
+          console.error("google prompt failed", error);
+        }
+      }
+
+      setTimeout(() => {
+        if (authState.user || hasVisibleGoogleButtonDom()) return;
+        setAuthStatus(
+          "계속 안 보이면 Google Cloud Console 승인 도메인에 https://math.dndyd.com 이 등록됐는지 확인해 주세요."
+        );
+      }, 1800);
     });
   });
 

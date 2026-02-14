@@ -641,6 +641,16 @@ body {
 
 .google-signin-wrap {
   min-height: 40px;
+  display: grid;
+  gap: 6px;
+  justify-items: start;
+}
+
+.google-help {
+  margin: 0;
+  color: var(--theme-text);
+  font-size: 0.79rem;
+  line-height: 1.35;
 }
 
 .auth-user {
