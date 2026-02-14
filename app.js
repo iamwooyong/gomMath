@@ -109,7 +109,8 @@ const state = {
   wrongQuestions: [],
   reviewMode: false,
   reviewQueue: [],
-  themePickerOpen: false
+  themePickerOpen: false,
+  rankingCorrect: null
 };
 
 const authState = {
@@ -473,7 +474,14 @@ async function fetchRankings(limit = 10) {
 
 async function refreshRankings() {
   const items = await fetchRankings(10);
+  if (authState.user) {
+    const me = items.find((item) => item.userId === authState.user.id);
+    state.rankingCorrect = me ? Number(me.totalCorrect || 0) : 0;
+  } else {
+    state.rankingCorrect = null;
+  }
   renderRanking(items);
+  renderStickers();
 }
 
 function renderGoogleSignInButton() {
@@ -627,9 +635,18 @@ function updateModePill() {
   els.modePill.textContent = `${operationLabel} · ${levelLabel}`;
 }
 
+function getStickerTotalCorrect() {
+  if (authState.user && Number.isFinite(state.rankingCorrect)) {
+    return Math.max(0, Math.trunc(state.rankingCorrect));
+  }
+
+  return Math.max(Number(profile.lifetimeCorrect || 0), Number(profile.dailyCorrect || 0), 0);
+}
+
 function renderStickers() {
   const toneKeys = ["red", "orange", "yellow", "green", "blue", "purple", "pink"];
-  const totalCorrect = Math.max(Number(profile.lifetimeCorrect || 0), Number(profile.dailyCorrect || 0));
+  const totalCorrect = getStickerTotalCorrect();
+  const useRankingTotal = Boolean(authState.user && Number.isFinite(state.rankingCorrect));
   const stickerCount = Math.min(Math.floor(totalCorrect / 10), 42);
   const solvedMod = totalCorrect % 10;
   const remainToNext = solvedMod === 0 ? 10 : 10 - solvedMod;
@@ -637,7 +654,11 @@ function renderStickers() {
   if (stickerCount === 0) {
     els.stickerShelf.innerHTML = '<p class="empty-note">아직 받은 스티커가 없어요.</p>';
     if (els.stickerGuide) {
-      els.stickerGuide.textContent = `누적 정답 10개마다 곰돌이 스티커를 한 장 드려요. 다음 스티커까지 ${remainToNext}문제 남았어요.`;
+      if (useRankingTotal) {
+        els.stickerGuide.textContent = `랭킹 누적 정답 10개마다 곰돌이 스티커를 한 장 드려요. 다음 스티커까지 ${remainToNext}문제 남았어요.`;
+      } else {
+        els.stickerGuide.textContent = `누적 정답 10개마다 곰돌이 스티커를 한 장 드려요. 다음 스티커까지 ${remainToNext}문제 남았어요.`;
+      }
     }
     return;
   }
@@ -650,7 +671,11 @@ function renderStickers() {
 
   els.stickerShelf.innerHTML = stickers.join("");
   if (els.stickerGuide) {
-    els.stickerGuide.textContent = `누적 정답 ${totalCorrect}문제! 10개마다 한 장, 지금 곰돌이 스티커 ${stickerCount}장 모았어요.`;
+    if (useRankingTotal) {
+      els.stickerGuide.textContent = `랭킹 누적 정답 ${totalCorrect}문제! 10개마다 한 장, 지금 곰돌이 스티커 ${stickerCount}장 모았어요.`;
+    } else {
+      els.stickerGuide.textContent = `누적 정답 ${totalCorrect}문제! 10개마다 한 장, 지금 곰돌이 스티커 ${stickerCount}장 모았어요.`;
+    }
   }
 }
 
@@ -1233,6 +1258,7 @@ async function restoreAuthSession() {
 
 function handleLogout() {
   clearAuthState();
+  state.rankingCorrect = null;
   renderAuthUser();
 
   if (window.google?.accounts?.id) {
