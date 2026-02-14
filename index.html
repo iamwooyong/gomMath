@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Jua&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20260214-1" />
+    <link rel="stylesheet" href="styles.css?v=20260214-2" />
   </head>
   <body>
     <main class="app-shell">
@@ -22,7 +22,14 @@
         </div>
 
         <section class="bear-card" aria-live="polite">
-          <div class="bear-avatar" id="bearAvatar" data-mood="idle">
+          <button
+            class="bear-avatar"
+            id="bearAvatar"
+            data-mood="idle"
+            type="button"
+            aria-label="곰 선생님 누르면 색상 테마 바꾸기"
+            aria-expanded="false"
+          >
             <span class="ear ear-left"></span>
             <span class="ear ear-right"></span>
             <span class="eye eye-left"></span>
@@ -31,8 +38,22 @@
             <span class="mouth"></span>
             <span class="blush blush-left"></span>
             <span class="blush blush-right"></span>
-          </div>
+          </button>
           <p class="bear-message" id="bearMessage">안녕! 오늘은 우리가 수학 히어로야.</p>
+          <p class="bear-tip">곰 선생님을 누르면 색이 변해요! 원하는 무지개 색을 골라봐요.</p>
+
+          <section class="theme-picker hidden" id="themePicker" aria-label="색상 컨셉 선택">
+            <p class="theme-title">색상 컨셉</p>
+            <div class="theme-grid">
+              <button class="theme-btn" data-theme="red" type="button">빨강</button>
+              <button class="theme-btn" data-theme="orange" type="button">주황</button>
+              <button class="theme-btn" data-theme="yellow" type="button">노랑</button>
+              <button class="theme-btn" data-theme="green" type="button">초록</button>
+              <button class="theme-btn" data-theme="blue" type="button">파랑</button>
+              <button class="theme-btn" data-theme="purple" type="button">보라</button>
+              <button class="theme-btn is-active" data-theme="pink" type="button">핑크</button>
+            </div>
+          </section>
         </section>
       </header>
 
@@ -115,6 +136,6 @@
       </section>
     </main>
 
-    <script src="app.js?v=20260214-1"></script>
+    <script src="app.js?v=20260214-2"></script>
   </body>
 </html>

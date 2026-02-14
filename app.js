@@ -15,6 +15,18 @@ const LEVELS = {
   hard: { key: "hard", label: "도전", addMax: 99, mulMax: 12 }
 };
 
+const THEMES = {
+  red: { key: "red", label: "빨강" },
+  orange: { key: "orange", label: "주황" },
+  yellow: { key: "yellow", label: "노랑" },
+  green: { key: "green", label: "초록" },
+  blue: { key: "blue", label: "파랑" },
+  purple: { key: "purple", label: "보라" },
+  pink: { key: "pink", label: "핑크" }
+};
+
+const THEME_KEYS = Object.keys(THEMES);
+
 const POSITIVE_FEEDBACK = [
   "정답! 꿀곰이 박수 치고 있어!",
   "완벽해! 계산 감각이 정말 좋아.",
@@ -31,6 +43,7 @@ const ENCOURAGE_FEEDBACK = [
 const els = {
   operationButtons: Array.from(document.querySelectorAll("[data-operation]")),
   levelButtons: Array.from(document.querySelectorAll("[data-level]")),
+  themeButtons: Array.from(document.querySelectorAll("[data-theme]")),
   startBtn: document.querySelector("#startBtn"),
   submitBtn: document.querySelector("#submitBtn"),
   hintBtn: document.querySelector("#hintBtn"),
@@ -49,7 +62,8 @@ const els = {
   progressFill: document.querySelector("#progressFill"),
   progressText: document.querySelector("#progressText"),
   progressBar: document.querySelector(".progress-bar"),
-  stickerShelf: document.querySelector("#stickerShelf")
+  stickerShelf: document.querySelector("#stickerShelf"),
+  themePicker: document.querySelector("#themePicker")
 };
 
 const state = {
@@ -61,7 +75,8 @@ const state = {
   currentQuestion: null,
   sessionCorrect: 0,
   sessionWrong: 0,
-  sessionStreak: 0
+  sessionStreak: 0,
+  themePickerOpen: false
 };
 
 let profile = loadProfile();
@@ -87,7 +102,8 @@ function createDefaultProfile() {
     lifetimeCorrect: 0,
     bestStreak: 0,
     lastOperation: "add",
-    lastLevel: "easy"
+    lastLevel: "easy",
+    theme: "pink"
   };
 }
 
@@ -112,6 +128,10 @@ function loadProfile() {
       merged.dailyCorrect = 0;
     }
 
+    if (!THEME_KEYS.includes(merged.theme)) {
+      merged.theme = defaults.theme;
+    }
+
     return merged;
   } catch {
     return defaults;
@@ -126,6 +146,25 @@ function setActive(buttons, attrName, value) {
   buttons.forEach((button) => {
     button.classList.toggle("is-active", button.dataset[attrName] === value);
   });
+}
+
+function setThemePicker(open) {
+  state.themePickerOpen = open;
+  els.themePicker.classList.toggle("hidden", !open);
+  els.bearAvatar.setAttribute("aria-expanded", String(open));
+}
+
+function applyTheme(themeKey, options = {}) {
+  const { persist = true } = options;
+  const safeTheme = THEME_KEYS.includes(themeKey) ? themeKey : "pink";
+
+  document.body.dataset.theme = safeTheme;
+  setActive(els.themeButtons, "theme", safeTheme);
+
+  if (profile.theme !== safeTheme) {
+    profile.theme = safeTheme;
+    if (persist) saveProfile();
+  }
 }
 
 function pickOperation() {
@@ -438,6 +477,16 @@ function handleLevelSelect(nextLevel) {
   }
 }
 
+function handleThemeSelect(nextTheme) {
+  if (!THEMES[nextTheme]) return;
+
+  applyTheme(nextTheme);
+  setThemePicker(false);
+
+  const themeLabel = THEMES[nextTheme].label;
+  setBear("happy", `${themeLabel} 컨셉으로 바꿨어!`);
+}
+
 function bindEvents() {
   els.operationButtons.forEach((button) => {
     button.addEventListener("click", () => {
@@ -449,6 +498,33 @@ function bindEvents() {
     button.addEventListener("click", () => {
       handleLevelSelect(button.dataset.level);
     });
+  });
+
+  els.bearAvatar.addEventListener("click", (event) => {
+    event.stopPropagation();
+    setThemePicker(!state.themePickerOpen);
+  });
+
+  els.themePicker.addEventListener("click", (event) => {
+    event.stopPropagation();
+  });
+
+  els.themeButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      handleThemeSelect(button.dataset.theme);
+    });
+  });
+
+  document.addEventListener("click", () => {
+    if (state.themePickerOpen) {
+      setThemePicker(false);
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && state.themePickerOpen) {
+      setThemePicker(false);
+    }
   });
 
   els.startBtn.addEventListener("click", () => {
@@ -487,6 +563,8 @@ function init() {
 
   setActive(els.operationButtons, "operation", state.operation);
   setActive(els.levelButtons, "level", state.level);
+  applyTheme(profile.theme, { persist: false });
+  setThemePicker(false);
 
   updateModePill();
   updateStats();
