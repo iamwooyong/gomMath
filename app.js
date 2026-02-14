@@ -29,6 +29,7 @@ const THEMES = {
 };
 
 const THEME_KEYS = Object.keys(THEMES);
+const NICKNAME_PATTERN = /^[A-Za-z0-9가-힣_]{2,12}$/;
 
 const POSITIVE_FEEDBACK = [
   "정답! 꿀곰이 박수 치고 있어!",
@@ -81,7 +82,14 @@ const els = {
   authName: document.querySelector("#authName"),
   authEmail: document.querySelector("#authEmail"),
   logoutBtn: document.querySelector("#logoutBtn"),
-  googleSignInWrap: document.querySelector("#googleSignInWrap")
+  googleSignInWrap: document.querySelector("#googleSignInWrap"),
+  nicknameSection: document.querySelector("#nicknameSection"),
+  nicknameInput: document.querySelector("#nicknameInput"),
+  saveNicknameBtn: document.querySelector("#saveNicknameBtn"),
+  nicknameNote: document.querySelector("#nicknameNote"),
+
+  refreshRankingBtn: document.querySelector("#refreshRankingBtn"),
+  rankingList: document.querySelector("#rankingList")
 };
 
 const state = {
@@ -268,6 +276,44 @@ async function saveThemeToDb(themeKey) {
   }
 }
 
+async function saveNicknameToDb(nickname) {
+  if (!authState.user || !authState.token) {
+    return { ok: false, reason: "not-logged-in" };
+  }
+
+  try {
+    const response = await fetch(getApiUrl("/api/math/profile/nickname"), {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authState.token}`
+      },
+      body: JSON.stringify({ nickname })
+    });
+
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({ error: "failed to save nickname" }));
+      return {
+        ok: false,
+        reason: "request-failed",
+        status: response.status,
+        message: payload.error || "failed to save nickname"
+      };
+    }
+
+    const payload = await response.json();
+    if (payload?.user && typeof payload.user === "object") {
+      authState.user = payload.user;
+      saveAuthState();
+    }
+
+    return { ok: true };
+  } catch (error) {
+    console.error("saveNicknameToDb failed", error);
+    return { ok: false, reason: "request-failed", message: "failed to save nickname" };
+  }
+}
+
 function setBear(mood, message) {
   els.bearAvatar.dataset.mood = mood;
   els.bearMessage.textContent = message;
@@ -291,6 +337,71 @@ function getFeedbackBearFace(mood) {
 
 function setAuthStatus(message) {
   els.authStatus.textContent = message;
+}
+
+function setNicknameNote(message, isError = false) {
+  els.nicknameNote.textContent = message;
+  els.nicknameNote.classList.toggle("is-error", isError);
+}
+
+function renderRanking(items = []) {
+  els.rankingList.innerHTML = "";
+
+  if (!Array.isArray(items) || items.length === 0) {
+    const empty = document.createElement("li");
+    empty.className = "ranking-empty";
+    empty.textContent = "아직 랭킹 데이터가 없어요. 첫 라운드의 주인공이 되어봐요!";
+    els.rankingList.appendChild(empty);
+    return;
+  }
+
+  items.forEach((item, index) => {
+    const rankNumber = index + 1;
+    const li = document.createElement("li");
+    li.className = "ranking-item";
+
+    if (authState.user && item.userId === authState.user.id) {
+      li.classList.add("is-me");
+    }
+
+    const rank = document.createElement("span");
+    rank.className = "ranking-rank";
+    rank.textContent = rankNumber <= 3 ? ["🥇", "🥈", "🥉"][rankNumber - 1] : String(rankNumber);
+
+    const name = document.createElement("span");
+    name.className = "ranking-name";
+    name.textContent = String(item.displayName || "곰친구");
+
+    const score = document.createElement("span");
+    score.className = "ranking-score";
+    score.textContent = `${Number(item.totalCorrect || 0)}점`;
+
+    li.appendChild(rank);
+    li.appendChild(name);
+    li.appendChild(score);
+
+    els.rankingList.appendChild(li);
+  });
+}
+
+async function fetchRankings(limit = 10) {
+  try {
+    const response = await fetch(getApiUrl(`/api/math/rankings?limit=${encodeURIComponent(limit)}`));
+    if (!response.ok) {
+      throw new Error("failed to fetch rankings");
+    }
+
+    const payload = await response.json();
+    return Array.isArray(payload.items) ? payload.items : [];
+  } catch (error) {
+    console.error("fetchRankings failed", error);
+    return [];
+  }
+}
+
+async function refreshRankings() {
+  const items = await fetchRankings(10);
+  renderRanking(items);
 }
 
 function renderGoogleSignInButton() {
@@ -319,6 +430,9 @@ function renderGoogleSignInButton() {
 function renderAuthUser() {
   if (!authState.user) {
     els.authUser.classList.add("hidden");
+    els.nicknameSection.classList.add("hidden");
+    els.nicknameInput.value = "";
+    setNicknameNote("닉네임은 랭킹에 표시돼요.");
     if (authState.googleReady) {
       els.googleSignInWrap.classList.remove("hidden");
     }
@@ -327,7 +441,7 @@ function renderAuthUser() {
     return;
   }
 
-  const { name, email, picture } = authState.user;
+  const { name, email, picture, nickname } = authState.user;
 
   els.authAvatar.src = picture || "";
   els.authAvatar.alt = `${name || "사용자"} 프로필`;
@@ -341,6 +455,13 @@ function renderAuthUser() {
   }
 
   els.authUser.classList.remove("hidden");
+  els.nicknameSection.classList.remove("hidden");
+  els.nicknameInput.value = nickname || "";
+  if (nickname) {
+    setNicknameNote(`현재 닉네임: ${nickname}`);
+  } else {
+    setNicknameNote("닉네임을 등록하면 랭킹에 내 이름으로 표시돼요.");
+  }
   els.googleSignInWrap.classList.add("hidden");
   setAuthStatus(`${name || "사용자"}님, 라운드 결과가 자동으로 저장돼요.`);
 }
@@ -600,6 +721,7 @@ async function syncRoundResult(summary) {
 
   if (result.ok) {
     setAuthStatus(`${authState.user.name || "사용자"}님, 이번 라운드 기록이 저장됐어요.`);
+    void refreshRankings();
     return;
   }
 
@@ -843,6 +965,44 @@ async function handleThemeSelect(nextTheme) {
   setAuthStatus("테마 저장에 실패했어요. 잠시 후 다시 시도해 주세요.");
 }
 
+async function handleSaveNickname() {
+  if (!authState.user) {
+    setNicknameNote("Google 로그인 후 닉네임을 등록할 수 있어요.", true);
+    return;
+  }
+
+  const nickname = els.nicknameInput.value.trim();
+  if (!NICKNAME_PATTERN.test(nickname)) {
+    setNicknameNote("닉네임은 2~12자, 한글/영문/숫자/_ 만 사용할 수 있어요.", true);
+    return;
+  }
+
+  els.saveNicknameBtn.disabled = true;
+  const beforeLabel = els.saveNicknameBtn.textContent;
+  els.saveNicknameBtn.textContent = "저장중...";
+
+  const result = await saveNicknameToDb(nickname);
+
+  els.saveNicknameBtn.disabled = false;
+  els.saveNicknameBtn.textContent = beforeLabel || "등록/수정";
+
+  if (result.ok) {
+    renderAuthUser();
+    setAuthStatus(`${authState.user?.name || "사용자"}님 닉네임을 저장했어요.`);
+    setFeedback(`${nickname} 닉네임으로 랭킹에 도전해보자!`);
+    setBear("happy", "닉네임 저장 완료! 정말 멋진 이름이야.");
+    void refreshRankings();
+    return;
+  }
+
+  if (result.status === 409) {
+    setNicknameNote("이미 사용 중인 닉네임이에요. 다른 이름으로 시도해 주세요.", true);
+    return;
+  }
+
+  setNicknameNote("닉네임 저장에 실패했어요. 잠시 후 다시 시도해 주세요.", true);
+}
+
 async function handleGoogleCredential(response) {
   const idToken = String(response?.credential || "").trim();
   if (!idToken) return;
@@ -875,6 +1035,7 @@ async function handleGoogleCredential(response) {
     if (authState.user?.theme && THEME_KEYS.includes(authState.user.theme)) {
       applyTheme(authState.user.theme);
     }
+    void refreshRankings();
 
     setFeedback("로그인 완료! 이제 라운드 결과가 DB에 저장돼요.");
     setBear("happy", `${authState.user.name || "친구"} 반가워!`);
@@ -919,6 +1080,7 @@ async function restoreAuthSession() {
 
   if (!authState.token) {
     renderAuthUser();
+    void refreshRankings();
     return;
   }
 
@@ -950,6 +1112,7 @@ async function restoreAuthSession() {
   }
 
   renderAuthUser();
+  void refreshRankings();
 }
 
 function handleLogout() {
@@ -962,6 +1125,7 @@ function handleLogout() {
 
   setBear("idle", "로그아웃했어. 원하면 다시 로그인해줘!");
   setFeedback("로그아웃 완료! 로그인하면 다시 DB 저장이 가능해.");
+  void refreshRankings();
 }
 
 function bindEvents() {
@@ -1022,6 +1186,20 @@ function bindEvents() {
 
   els.retryWrongBtn.addEventListener("click", () => {
     startWrongReview();
+  });
+
+  els.saveNicknameBtn.addEventListener("click", () => {
+    void handleSaveNickname();
+  });
+
+  els.nicknameInput.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter") return;
+    event.preventDefault();
+    void handleSaveNickname();
+  });
+
+  els.refreshRankingBtn.addEventListener("click", () => {
+    void refreshRankings();
   });
 
   els.answerInput.addEventListener("keydown", (event) => {

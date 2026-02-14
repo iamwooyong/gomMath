@@ -17,6 +17,7 @@ const SESSION_SECRET = process.env.SESSION_SECRET || "gommath-dev-session-secret
 const SESSION_TTL_HOURS = Math.max(Number(process.env.SESSION_TTL_HOURS || 24 * 7), 1);
 const SESSION_TTL_MS = SESSION_TTL_HOURS * 60 * 60 * 1000;
 const ALLOWED_THEMES = ["red", "orange", "yellow", "green", "blue", "purple", "pink"];
+const NICKNAME_PATTERN = /^[A-Za-z0-9가-힣_]{2,12}$/;
 
 const isLocalDb = DATABASE_URL.includes("localhost") || DATABASE_URL.includes("127.0.0.1");
 const pool = new Pool({
@@ -159,7 +160,8 @@ async function upsertMathUser(user) {
         email,
         name,
         picture,
-        theme
+        theme,
+        nickname
     `,
     [user.id, user.email, user.name, user.picture]
   );
@@ -200,6 +202,7 @@ async function initDb() {
       name TEXT NOT NULL,
       picture TEXT NOT NULL,
       theme TEXT NOT NULL DEFAULT 'pink',
+      nickname TEXT,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
@@ -208,6 +211,17 @@ async function initDb() {
   await pool.query(`
     ALTER TABLE math_users
     ADD COLUMN IF NOT EXISTS theme TEXT NOT NULL DEFAULT 'pink'
+  `);
+
+  await pool.query(`
+    ALTER TABLE math_users
+    ADD COLUMN IF NOT EXISTS nickname TEXT
+  `);
+
+  await pool.query(`
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_math_users_nickname_unique
+    ON math_users ((LOWER(nickname)))
+    WHERE nickname IS NOT NULL
   `);
 
   await pool.query(`
@@ -265,7 +279,8 @@ app.post("/api/auth/google", async (req, res) => {
         email: dbUser.email,
         name: dbUser.name,
         picture: dbUser.picture,
-        theme: dbUser.theme
+        theme: dbUser.theme,
+        nickname: dbUser.nickname
       }
     });
   } catch (error) {
@@ -286,7 +301,8 @@ app.get("/api/auth/me", async (req, res) => {
           email,
           name,
           picture,
-          theme
+          theme,
+          nickname
         FROM math_users
         WHERE id = $1
         LIMIT 1
@@ -305,12 +321,73 @@ app.get("/api/auth/me", async (req, res) => {
         email: session.email,
         name: session.name,
         picture: session.picture,
-        theme: "pink"
+        theme: "pink",
+        nickname: null
       }
     });
   } catch (error) {
     console.error("auth me failed", error);
     res.status(500).json({ error: "failed to load user" });
+  }
+});
+
+app.patch("/api/math/profile/nickname", async (req, res) => {
+  const session = getSessionOrReject(req, res);
+  if (!session) return;
+
+  const nickname = String(req.body?.nickname || "").trim();
+  if (!NICKNAME_PATTERN.test(nickname)) {
+    res.status(400).json({ error: "nickname must be 2-12 chars (KOR/ENG/NUM/_)" });
+    return;
+  }
+
+  try {
+    const { rows } = await pool.query(
+      `
+        UPDATE math_users
+        SET
+          nickname = $2,
+          updated_at = NOW()
+        WHERE id = $1
+        RETURNING
+          id,
+          email,
+          name,
+          picture,
+          theme,
+          nickname
+      `,
+      [session.sub, nickname]
+    );
+
+    if (rows.length > 0) {
+      res.json({ ok: true, user: rows[0] });
+      return;
+    }
+
+    const { rows: insertedRows } = await pool.query(
+      `
+        INSERT INTO math_users (id, email, name, picture, theme, nickname)
+        VALUES ($1, $2, $3, $4, 'pink', $5)
+        RETURNING
+          id,
+          email,
+          name,
+          picture,
+          theme,
+          nickname
+      `,
+      [session.sub, session.email || "", session.name || "사용자", session.picture || "", nickname]
+    );
+
+    res.json({ ok: true, user: insertedRows[0] });
+  } catch (error) {
+    if (error?.code === "23505") {
+      res.status(409).json({ error: "nickname is already in use" });
+      return;
+    }
+    console.error("failed to save nickname", error);
+    res.status(500).json({ error: "failed to save nickname" });
   }
 });
 
@@ -337,7 +414,8 @@ app.patch("/api/math/profile/theme", async (req, res) => {
           email,
           name,
           picture,
-          theme
+          theme,
+          nickname
       `,
       [session.sub, theme]
     );
@@ -356,7 +434,8 @@ app.patch("/api/math/profile/theme", async (req, res) => {
           email,
           name,
           picture,
-          theme
+          theme,
+          nickname
       `,
       [session.sub, session.email || "", session.name || "사용자", session.picture || "", theme]
     );
@@ -365,6 +444,34 @@ app.patch("/api/math/profile/theme", async (req, res) => {
   } catch (error) {
     console.error("failed to save theme preference", error);
     res.status(500).json({ error: "failed to save theme preference" });
+  }
+});
+
+app.get("/api/math/rankings", async (req, res) => {
+  const limit = Math.min(Math.max(toInt(req.query.limit, 10), 1), 50);
+
+  try {
+    const { rows } = await pool.query(
+      `
+        SELECT
+          u.id AS "userId",
+          COALESCE(NULLIF(u.nickname, ''), u.name) AS "displayName",
+          COALESCE(SUM(s.correct_answers), 0)::INT AS "totalCorrect",
+          COUNT(s.id)::INT AS "roundCount"
+        FROM math_users u
+        LEFT JOIN math_sessions s ON s.user_id = u.id
+        GROUP BY u.id, u.nickname, u.name
+        HAVING COALESCE(SUM(s.correct_answers), 0) > 0
+        ORDER BY "totalCorrect" DESC, "roundCount" ASC, "displayName" ASC
+        LIMIT $1
+      `,
+      [limit]
+    );
+
+    res.json({ items: rows });
+  } catch (error) {
+    console.error("failed to fetch rankings", error);
+    res.status(500).json({ error: "failed to fetch rankings" });
   }
 });
 
