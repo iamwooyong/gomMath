@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20260215-10" />
+    <link rel="stylesheet" href="styles.css?v=20260215-11" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20260215-1" />
   </head>
   <body>
@@ -347,10 +347,18 @@
             <p class="stat-value" id="historyAccuracy">0%</p>
           </article>
         </div>
+        <section class="ranking-board">
+          <div class="ranking-head">
+            <h3>곰돌이 한국사 랭킹</h3>
+            <button class="btn btn-ghost ranking-refresh" id="refreshHistoryRankingBtn" type="button">새로고침</button>
+          </div>
+          <p class="ranking-sub">맞힌 문제 수 기준 TOP 10</p>
+          <ol class="ranking-list" id="historyRankingList"></ol>
+        </section>
       </section>
     </main>
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="app.js?v=20260215-11"></script>
+    <script src="app.js?v=20260215-12"></script>
   </body>
 </html>

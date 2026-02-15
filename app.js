@@ -526,8 +526,10 @@ const els = {
 
   refreshRankingBtn: document.querySelector("#refreshRankingBtn"),
   refreshEnglishRankingBtn: document.querySelector("#refreshEnglishRankingBtn"),
+  refreshHistoryRankingBtn: document.querySelector("#refreshHistoryRankingBtn"),
   rankingList: document.querySelector("#rankingList"),
   englishRankingList: document.querySelector("#englishRankingList"),
+  historyRankingList: document.querySelector("#historyRankingList"),
 
   englishStartBtn: document.querySelector("#englishStartBtn"),
   englishGuide: document.querySelector(".english-guide"),
@@ -586,6 +588,7 @@ const state = {
   themePickerOpen: false,
   rankingCorrect: null,
   englishRankingCorrect: null,
+  historyRankingCorrect: null,
   subject: "math"
 };
 
@@ -620,6 +623,7 @@ const englishState = {
 const historyState = {
   level: "grade4",
   sessionActive: false,
+  sessionStartedAt: 0,
   questionNumber: 0,
   correct: 0,
   wrong: 0,
@@ -1086,6 +1090,21 @@ async function fetchEnglishRankings(limit = 10) {
   }
 }
 
+async function fetchHistoryRankings(limit = 10) {
+  try {
+    const response = await fetch(getApiUrl(`/api/history/rankings?limit=${encodeURIComponent(limit)}`));
+    if (!response.ok) {
+      throw new Error("failed to fetch history rankings");
+    }
+
+    const payload = await response.json();
+    return Array.isArray(payload.items) ? payload.items : [];
+  } catch (error) {
+    console.error("fetchHistoryRankings failed", error);
+    return [];
+  }
+}
+
 async function refreshMathRankings() {
   const items = await fetchMathRankings(10);
   if (authState.user) {
@@ -1109,8 +1128,19 @@ async function refreshEnglishRankings() {
   renderRanking(els.englishRankingList, items);
 }
 
+async function refreshHistoryRankings() {
+  const items = await fetchHistoryRankings(10);
+  if (authState.user) {
+    const me = items.find((item) => item.userId === authState.user.id);
+    state.historyRankingCorrect = me ? Number(me.totalCorrect || 0) : 0;
+  } else {
+    state.historyRankingCorrect = null;
+  }
+  renderRanking(els.historyRankingList, items);
+}
+
 async function refreshRankings() {
-  await Promise.all([refreshMathRankings(), refreshEnglishRankings()]);
+  await Promise.all([refreshMathRankings(), refreshEnglishRankings(), refreshHistoryRankings()]);
 }
 
 function renderGoogleSignInButton() {
@@ -1792,10 +1822,6 @@ function handleEnglishOptionSelect(option) {
       button.classList.add("is-wrong");
     }
   });
-  Array.from(els.englishOptions.querySelectorAll(".english-option-speak")).forEach((button) => {
-    if (!(button instanceof HTMLElement)) return;
-    button.setAttribute("disabled", "true");
-  });
 
   updateEnglishStats();
   if (isCorrect) {
@@ -1881,7 +1907,7 @@ function handleEnglishSpeakReplay() {
 
 function handleEnglishPromptSpeak() {
   if (!englishState.sessionActive || !englishState.current || isEnglishSpeakingPhase()) return;
-  const played = speakText(englishState.current.korean, "ko-KR", { rate: 0.95, pitch: 1 });
+  const played = speakText(englishState.current.answer, "en-US", { rate: 0.9, pitch: 1.02 });
   if (!played) {
     setEnglishFeedback("브라우저에서 음성 재생을 지원하지 않아요. Chrome 사용을 추천해요.");
   }
@@ -2072,6 +2098,7 @@ function renderHistoryQuestion() {
 function startHistorySession() {
   const level = getHistoryLevel(historyState.level);
   historyState.sessionActive = true;
+  historyState.sessionStartedAt = Date.now();
   historyState.questionNumber = 1;
   historyState.correct = 0;
   historyState.wrong = 0;
@@ -2107,6 +2134,9 @@ function completeHistorySession() {
   setHistoryFeedback(`완료! ${getHistoryLevel(historyState.level).label} 라운드를 끝냈어요. 다시 도전해볼까?`);
   updateHistoryStats();
   setBear(mood, "한국사 라운드 완료! 꾸준히 하면 더 강해져.");
+
+  const summary = buildHistoryRoundSummary();
+  void syncHistoryRoundResult(summary);
 }
 
 function handleHistoryOptionSelect(option) {
@@ -2364,6 +2394,54 @@ async function syncEnglishRoundResult(summary) {
   setAuthStatus("영어 라운드 저장에 실패했어요. 로그인 상태와 DB 설정을 확인해 주세요.");
 }
 
+async function saveHistorySessionToDb(summary) {
+  if (!authState.user || !authState.token) {
+    return { ok: false, reason: "not-logged-in" };
+  }
+
+  try {
+    const response = await fetch(getApiUrl("/api/history/sessions"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authState.token}`
+      },
+      body: JSON.stringify(summary)
+    });
+
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({ error: "failed to save" }));
+      throw new Error(payload.error || "failed to save");
+    }
+
+    return { ok: true };
+  } catch (error) {
+    console.error("saveHistorySessionToDb failed", error);
+    return { ok: false, reason: "request-failed" };
+  }
+}
+
+async function syncHistoryRoundResult(summary) {
+  if (!authState.user) {
+    return;
+  }
+
+  const result = await saveHistorySessionToDb(summary);
+
+  if (result.ok) {
+    setAuthStatus(`${authState.user.name || "사용자"}님, 한국사 라운드 기록이 저장됐어요.`);
+    void refreshHistoryRankings();
+    return;
+  }
+
+  if (result.reason === "not-logged-in") {
+    setAuthStatus("로그인하면 한국사 라운드 결과를 저장할 수 있어요.");
+    return;
+  }
+
+  setAuthStatus("한국사 라운드 저장에 실패했어요. 로그인 상태와 DB 설정을 확인해 주세요.");
+}
+
 function buildRoundSummary() {
   const total = state.sessionCorrect + state.sessionWrong;
   const accuracy = total ? Math.round((state.sessionCorrect / total) * 100) : 0;
@@ -2397,6 +2475,24 @@ function buildEnglishRoundSummary() {
     bestStreak: englishState.bestStreak,
     durationMs,
     externalKey: `english:${getDateKey()}:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`
+  };
+}
+
+function buildHistoryRoundSummary() {
+  const total = historyState.correct + historyState.wrong;
+  const accuracy = total ? Math.round((historyState.correct / total) * 100) : 0;
+  const durationMs = Math.max(Date.now() - historyState.sessionStartedAt, 0);
+
+  return {
+    date: getDateKey(),
+    level: historyState.level,
+    totalQuestions: total,
+    correctAnswers: historyState.correct,
+    wrongAnswers: historyState.wrong,
+    accuracy,
+    bestStreak: historyState.bestStreak,
+    durationMs,
+    externalKey: `history:${getDateKey()}:${historyState.level}:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`
   };
 }
 
@@ -2838,6 +2934,7 @@ function handleLogout() {
   clearAuthState();
   state.rankingCorrect = null;
   state.englishRankingCorrect = null;
+  state.historyRankingCorrect = null;
   renderAuthUser();
 
   if (window.google?.accounts?.id) {
@@ -2948,6 +3045,10 @@ function bindEvents() {
 
   els.refreshEnglishRankingBtn.addEventListener("click", () => {
     void refreshEnglishRankings();
+  });
+
+  els.refreshHistoryRankingBtn.addEventListener("click", () => {
+    void refreshHistoryRankings();
   });
 
   els.englishStartBtn.addEventListener("click", () => {
