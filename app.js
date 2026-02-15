@@ -57,6 +57,13 @@ const ENGLISH_LEVELS = {
   advanced: { key: "advanced", label: "고급", rangeStart: 48, rangeEnd: Number.POSITIVE_INFINITY }
 };
 const ENGLISH_LEVEL_KEYS = Object.keys(ENGLISH_LEVELS);
+const HISTORY_LEVELS = {
+  grade4: { key: "grade4", label: "한국사 4급" },
+  grade3: { key: "grade3", label: "한국사 3급" },
+  grade2: { key: "grade2", label: "한국사 2급" },
+  grade1: { key: "grade1", label: "한국사 1급" }
+};
+const HISTORY_LEVEL_KEYS = Object.keys(HISTORY_LEVELS);
 const ENGLISH_SPEAK_ACTIONS = {
   START: "start",
   RECORD: "record",
@@ -148,6 +155,304 @@ const ENGLISH_LESSONS = [
 ];
 const ENGLISH_ALL_LESSON_INDEXES = Array.from({ length: ENGLISH_LESSONS.length }, (_, index) => index);
 const ENGLISH_LEVEL_POOLS = Object.fromEntries(ENGLISH_LEVEL_KEYS.map((levelKey) => [levelKey, buildEnglishLevelPool(levelKey)]));
+const HISTORY_QUESTION_BANK = {
+  grade4: [
+    {
+      question: "고조선을 건국한 인물은 누구일까요?",
+      options: ["단군왕검", "주몽", "박혁거세", "온조"],
+      answer: "단군왕검",
+      explanation: "고조선은 단군왕검이 세운 나라로 전해져요."
+    },
+    {
+      question: "고려를 세운 왕은 누구일까요?",
+      options: ["왕건", "궁예", "견훤", "광종"],
+      answer: "왕건",
+      explanation: "왕건은 918년에 고려를 건국했어요."
+    },
+    {
+      question: "조선을 건국한 인물은 누구일까요?",
+      options: ["이성계", "이방원", "정도전", "최영"],
+      answer: "이성계",
+      explanation: "이성계는 1392년에 조선을 세웠어요."
+    },
+    {
+      question: "훈민정음을 창제한 왕은 누구일까요?",
+      options: ["세종", "태종", "성종", "세조"],
+      answer: "세종",
+      explanation: "세종은 백성을 위해 훈민정음을 만들었어요."
+    },
+    {
+      question: "임진왜란 때 거북선을 활약시킨 장군은 누구일까요?",
+      options: ["이순신", "권율", "곽재우", "원균"],
+      answer: "이순신",
+      explanation: "이순신 장군은 거북선으로 해전에서 큰 승리를 거두었어요."
+    },
+    {
+      question: "신라가 삼국 통일 과정에서 손잡은 나라는 어디일까요?",
+      options: ["당", "수", "원", "왜"],
+      answer: "당",
+      explanation: "신라는 당과 연합해 백제와 고구려를 무너뜨렸어요."
+    },
+    {
+      question: "광개토대왕은 어느 나라의 왕일까요?",
+      options: ["고구려", "백제", "신라", "발해"],
+      answer: "고구려",
+      explanation: "광개토대왕은 고구려의 영토를 크게 넓혔어요."
+    },
+    {
+      question: "팔만대장경이 만들어진 시대는 어디일까요?",
+      options: ["고려", "조선", "신라", "백제"],
+      answer: "고려",
+      explanation: "팔만대장경은 고려가 몽골 침입기에 만든 불교 경전판이에요."
+    },
+    {
+      question: "3.1 운동이 일어난 해는 언제일까요?",
+      options: ["1919년", "1905년", "1945년", "1894년"],
+      answer: "1919년",
+      explanation: "1919년 3월 1일, 전국에서 독립 만세 운동이 전개되었어요."
+    },
+    {
+      question: "대한민국 정부 수립은 어느 해일까요?",
+      options: ["1948년", "1945년", "1919년", "1950년"],
+      answer: "1948년",
+      explanation: "대한민국 정부는 1948년에 수립되었어요."
+    },
+    {
+      question: "발해를 세운 인물은 누구일까요?",
+      options: ["대조영", "장보고", "김춘추", "궁예"],
+      answer: "대조영",
+      explanation: "대조영은 고구려 유민과 말갈 세력을 이끌고 발해를 세웠어요."
+    },
+    {
+      question: "경복궁을 처음 지은 조선의 왕은 누구일까요?",
+      options: ["태조", "세종", "영조", "고종"],
+      answer: "태조",
+      explanation: "경복궁은 조선 건국 직후 태조 때 처음 지어졌어요."
+    }
+  ],
+  grade3: [
+    {
+      question: "고려에서 과거제를 실시한 왕은 누구일까요?",
+      options: ["광종", "태조", "성종", "공민왕"],
+      answer: "광종",
+      explanation: "광종은 과거제를 실시해 왕권을 강화했어요."
+    },
+    {
+      question: "여진 정벌을 위해 별무반을 조직한 인물은 누구일까요?",
+      options: ["윤관", "강감찬", "서희", "김부식"],
+      answer: "윤관",
+      explanation: "윤관은 별무반을 이끌고 동북 9성을 쌓았어요."
+    },
+    {
+      question: "직지심체요절이 인쇄된 시기의 국가는 어디일까요?",
+      options: ["고려", "조선", "신라", "대한제국"],
+      answer: "고려",
+      explanation: "직지는 고려 후기 금속활자로 인쇄된 책이에요."
+    },
+    {
+      question: "탕평책을 적극적으로 추진한 조선의 왕은 누구일까요?",
+      options: ["영조", "선조", "중종", "고종"],
+      answer: "영조",
+      explanation: "영조는 붕당 간 갈등을 줄이기 위해 탕평책을 폈어요."
+    },
+    {
+      question: "대동법을 처음 시행한 조선의 왕은 누구일까요?",
+      options: ["광해군", "태조", "세종", "순조"],
+      answer: "광해군",
+      explanation: "대동법은 광해군 때 경기도에서 처음 시행되었어요."
+    },
+    {
+      question: "흥선대원군의 통상 수교 거부 정책을 보여주는 상징물은 무엇일까요?",
+      options: ["척화비", "독립문", "황룡사 9층 목탑", "대동여지도"],
+      answer: "척화비",
+      explanation: "척화비에는 외세를 배척한다는 내용이 새겨졌어요."
+    },
+    {
+      question: "1884년에 일어난 갑신정변을 주도한 세력은 누구일까요?",
+      options: ["급진 개화파", "온건 개화파", "위정척사파", "동학 농민군"],
+      answer: "급진 개화파",
+      explanation: "갑신정변은 급진 개화파가 일본의 도움을 받아 추진했어요."
+    },
+    {
+      question: "동학 농민 운동이 본격적으로 전개된 해는 언제일까요?",
+      options: ["1894년", "1882년", "1905년", "1919년"],
+      answer: "1894년",
+      explanation: "1894년 전봉준이 이끈 동학 농민군이 봉기했어요."
+    },
+    {
+      question: "대한제국을 선포한 인물은 누구일까요?",
+      options: ["고종", "순종", "흥선대원군", "김홍집"],
+      answer: "고종",
+      explanation: "고종은 1897년에 대한제국을 선포했어요."
+    },
+    {
+      question: "독립협회 활동을 주도한 인물은 누구일까요?",
+      options: ["서재필", "안창호", "신채호", "윤봉길"],
+      answer: "서재필",
+      explanation: "서재필은 독립신문을 발행하고 독립협회를 이끌었어요."
+    },
+    {
+      question: "을사늑약이 강제로 체결된 해는 언제일까요?",
+      options: ["1905년", "1910년", "1895년", "1945년"],
+      answer: "1905년",
+      explanation: "을사늑약으로 대한제국의 외교권이 빼앗겼어요."
+    },
+    {
+      question: "대한민국 임시정부가 수립된 도시는 어디일까요?",
+      options: ["상하이", "도쿄", "서울", "평양"],
+      answer: "상하이",
+      explanation: "대한민국 임시정부는 1919년 중국 상하이에서 수립되었어요."
+    }
+  ],
+  grade2: [
+    {
+      question: "고려 공민왕 때 권문세족의 토지 문제를 바로잡기 위해 설치한 기구는 무엇일까요?",
+      options: ["전민변정도감", "의정부", "집현전", "홍문관"],
+      answer: "전민변정도감",
+      explanation: "전민변정도감은 불법 점유 토지와 노비 문제를 바로잡았어요."
+    },
+    {
+      question: "조선 성종 때 완성된 기본 법전은 무엇일까요?",
+      options: ["경국대전", "대전회통", "속대전", "대명률"],
+      answer: "경국대전",
+      explanation: "경국대전은 조선의 통치 체계를 정리한 기본 법전이에요."
+    },
+    {
+      question: "조선 후기 균역법을 시행한 왕은 누구일까요?",
+      options: ["영조", "숙종", "정조", "헌종"],
+      answer: "영조",
+      explanation: "균역법은 군포 부담을 줄이기 위해 영조 때 시행되었어요."
+    },
+    {
+      question: "정조가 정치 개혁을 위해 설치한 왕립 도서관은 무엇일까요?",
+      options: ["규장각", "승정원", "비변사", "성균관"],
+      answer: "규장각",
+      explanation: "정조는 규장각을 설치해 개혁 정치 기반을 만들었어요."
+    },
+    {
+      question: "흥선대원군이 경복궁 중건 재원 마련을 위해 발행한 화폐는 무엇일까요?",
+      options: ["당백전", "상평통보", "건원중보", "별전"],
+      answer: "당백전",
+      explanation: "당백전 발행은 물가 상승 등 부작용을 낳았어요."
+    },
+    {
+      question: "강화도조약(조일수호조규)을 체결한 상대 국가는 어디일까요?",
+      options: ["일본", "청", "미국", "러시아"],
+      answer: "일본",
+      explanation: "1876년 강화도조약은 일본과 맺은 불평등 조약이에요."
+    },
+    {
+      question: "갑오개혁 때 폐지된 제도로 옳은 것은 무엇일까요?",
+      options: ["과거제", "훈구 제도", "노비 세습", "향약"],
+      answer: "과거제",
+      explanation: "갑오개혁으로 과거제가 폐지되고 근대적 제도 개편이 추진되었어요."
+    },
+    {
+      question: "1910년 대한제국의 국권을 빼앗은 조약은 무엇일까요?",
+      options: ["한일병합조약", "을사늑약", "강화도조약", "정미7조약"],
+      answer: "한일병합조약",
+      explanation: "한일병합조약으로 대한제국은 일제의 식민지가 되었어요."
+    },
+    {
+      question: "1927년에 결성된 대표적 민족 협동 전선 단체는 무엇일까요?",
+      options: ["신간회", "독립협회", "보안회", "조선물산장려회"],
+      answer: "신간회",
+      explanation: "신간회는 민족주의와 사회주의 계열이 함께한 단체예요."
+    },
+    {
+      question: "1940년 중국 충칭에서 창설된 무장 독립군은 무엇일까요?",
+      options: ["한국광복군", "의열단", "대한독립군", "광복회"],
+      answer: "한국광복군",
+      explanation: "한국광복군은 임시정부 산하 정규군으로 활동했어요."
+    },
+    {
+      question: "6.10 만세 운동이 일어난 해는 언제일까요?",
+      options: ["1926년", "1919년", "1929년", "1937년"],
+      answer: "1926년",
+      explanation: "순종 인산일을 계기로 6.10 만세 운동이 전개되었어요."
+    },
+    {
+      question: "대한민국 헌법이 공포된 해는 언제일까요?",
+      options: ["1948년", "1945년", "1950년", "1960년"],
+      answer: "1948년",
+      explanation: "제헌 헌법은 1948년에 공포되었어요."
+    }
+  ],
+  grade1: [
+    {
+      question: "신라 법흥왕 때 불교가 공인된 해는 언제일까요?",
+      options: ["527년", "372년", "612년", "676년"],
+      answer: "527년",
+      explanation: "이차돈의 순교를 계기로 불교가 공인되었어요."
+    },
+    {
+      question: "귀주대첩에서 거란군을 크게 물리친 고려의 장군은 누구일까요?",
+      options: ["강감찬", "윤관", "서희", "김부식"],
+      answer: "강감찬",
+      explanation: "강감찬은 1019년 귀주대첩에서 승리를 거두었어요."
+    },
+    {
+      question: "조광조가 현량과 실시 등 개혁 정치를 추진한 왕은 누구일까요?",
+      options: ["중종", "연산군", "선조", "인조"],
+      answer: "중종",
+      explanation: "중종 때 조광조가 사림 중심 개혁을 추진했어요."
+    },
+    {
+      question: "숙종 시기에 빈번하게 나타난 정치 형태는 무엇일까요?",
+      options: ["환국", "호패법", "실학", "북벌"],
+      answer: "환국",
+      explanation: "숙종 때는 정권이 급격히 교체되는 환국 정치가 반복되었어요."
+    },
+    {
+      question: "정미7조약 체결 이후 대한제국에서 일어난 일로 옳은 것은 무엇일까요?",
+      options: ["군대 해산", "독립협회 창립", "대동법 시행", "갑오개혁 단행"],
+      answer: "군대 해산",
+      explanation: "정미7조약 이후 대한제국 군대가 강제로 해산되었어요."
+    },
+    {
+      question: "1911년에 일제가 민족 운동가를 탄압한 사건은 무엇일까요?",
+      options: ["105인 사건", "치안유지법", "보안법 사건", "광주학생항일운동"],
+      answer: "105인 사건",
+      explanation: "105인 사건은 데라우치 총독 암살 모의 혐의 조작 사건이에요."
+    },
+    {
+      question: "1929년에 시작되어 전국으로 확산된 학생 항일 운동은 무엇일까요?",
+      options: ["광주학생항일운동", "6.10 만세 운동", "물산장려운동", "형평운동"],
+      answer: "광주학생항일운동",
+      explanation: "광주학생항일운동은 1929년 시작된 대규모 학생 독립운동이에요."
+    },
+    {
+      question: "윤봉길 의사가 의거를 일으킨 장소는 어디일까요?",
+      options: ["상하이 훙커우 공원", "도쿄 황궁", "서울 탑골공원", "난징 총독부"],
+      answer: "상하이 훙커우 공원",
+      explanation: "윤봉길 의사는 1932년 상하이 훙커우 공원에서 의거를 거행했어요."
+    },
+    {
+      question: "1950년에 발발한 전쟁은 무엇일까요?",
+      options: ["6.25 전쟁", "중일전쟁", "태평양전쟁", "러일전쟁"],
+      answer: "6.25 전쟁",
+      explanation: "1950년 6월 25일 한국전쟁이 시작되었어요."
+    },
+    {
+      question: "남북이 자주, 평화 통일, 민족 대단결 원칙을 발표한 선언은 무엇일까요?",
+      options: ["7.4 남북 공동 성명", "6.15 공동 선언", "남북 기본 합의서", "판문점 선언"],
+      answer: "7.4 남북 공동 성명",
+      explanation: "7.4 남북 공동 성명은 1972년에 발표되었어요."
+    },
+    {
+      question: "1987년 대통령 직선제 개헌을 이끈 시민 운동은 무엇일까요?",
+      options: ["6월 민주 항쟁", "4.19 혁명", "5.18 민주화 운동", "부마 민주 항쟁"],
+      answer: "6월 민주 항쟁",
+      explanation: "6월 민주 항쟁의 결과로 대통령 직선제가 도입되었어요."
+    },
+    {
+      question: "일제 강점기 우리말과 한글을 지키기 위한 연구를 주도한 단체는 무엇일까요?",
+      options: ["조선어학회", "신간회", "독립협회", "흥사단"],
+      answer: "조선어학회",
+      explanation: "조선어학회는 한글 맞춤법 통일안 제정 등 우리말 보존에 힘썼어요."
+    }
+  ]
+};
 
 const SUBJECT_COPY = {
   math: {
@@ -159,6 +464,11 @@ const SUBJECT_COPY = {
     title: "곰돌이 영어",
     subtitle: "곰돌이 선생님과 단어, 말하기 미션으로 영어를 재미있게 연습해요.",
     bearMessage: "안녕! 난 곰돌이 선생님이야. 오늘도 즐겁게 영어 문제 풀어볼까?"
+  },
+  history: {
+    title: "곰돌이 한국사",
+    subtitle: "곰돌이 선생님과 한국사능력검정시험 문제를 단계별로 연습해요.",
+    bearMessage: "안녕! 난 곰돌이 선생님이야. 오늘은 한국사 실력을 키워볼까?"
   }
 };
 
@@ -166,6 +476,7 @@ const els = {
   subjectTabs: Array.from(document.querySelectorAll("[data-subject]")),
   mathViews: Array.from(document.querySelectorAll(".math-view")),
   englishViews: Array.from(document.querySelectorAll(".english-view")),
+  historyViews: Array.from(document.querySelectorAll(".history-view")),
   heroTitle: document.querySelector("#heroTitle"),
   heroSubtitle: document.querySelector("#heroSubtitle"),
 
@@ -239,7 +550,22 @@ const els = {
   englishStreak: document.querySelector("#englishStreak"),
   englishBestStreak: document.querySelector("#englishBestStreak"),
   englishAccuracy: document.querySelector("#englishAccuracy"),
-  englishVoiceSupport: document.querySelector("#englishVoiceSupport")
+  englishVoiceSupport: document.querySelector("#englishVoiceSupport"),
+
+  historyStartBtn: document.querySelector("#historyStartBtn"),
+  historyLevelButtons: Array.from(document.querySelectorAll("[data-history-level]")),
+  historyQuestionCount: document.querySelector("#historyQuestionCount"),
+  historyModePill: document.querySelector("#historyModePill"),
+  historyPrompt: document.querySelector("#historyPrompt"),
+  historyOptions: document.querySelector("#historyOptions"),
+  historyNextBtn: document.querySelector("#historyNextBtn"),
+  historyFeedback: document.querySelector("#historyFeedback"),
+  historyFeedbackBear: document.querySelector("#historyFeedbackBear"),
+  historyFeedbackText: document.querySelector("#historyFeedbackText"),
+  historyCorrect: document.querySelector("#historyCorrect"),
+  historyStreak: document.querySelector("#historyStreak"),
+  historyBestStreak: document.querySelector("#historyBestStreak"),
+  historyAccuracy: document.querySelector("#historyAccuracy")
 };
 
 const state = {
@@ -291,6 +617,18 @@ const englishState = {
   recognition: null,
   recognizing: false
 };
+const historyState = {
+  level: "grade4",
+  sessionActive: false,
+  questionNumber: 0,
+  correct: 0,
+  wrong: 0,
+  streak: 0,
+  bestStreak: 0,
+  answered: false,
+  current: null,
+  usedQuestionIndexes: new Set()
+};
 
 let googleScriptLoadPromise = null;
 
@@ -323,6 +661,7 @@ function createDefaultProfile() {
     lastOperation: "add",
     lastLevel: "easy",
     lastEnglishLevel: "beginner",
+    lastHistoryLevel: "grade4",
     theme: "pink"
   };
 }
@@ -353,6 +692,9 @@ function loadProfile() {
     }
     if (!ENGLISH_LEVELS[merged.lastEnglishLevel]) {
       merged.lastEnglishLevel = defaults.lastEnglishLevel;
+    }
+    if (!HISTORY_LEVELS[merged.lastHistoryLevel]) {
+      merged.lastHistoryLevel = defaults.lastHistoryLevel;
     }
 
     return merged;
@@ -403,7 +745,9 @@ function clearAuthState() {
 function loadTabPreference() {
   try {
     const saved = String(localStorage.getItem(TAB_STORAGE_KEY) || "").trim();
-    return saved === "english" ? "english" : "math";
+    if (saved === "english") return "english";
+    if (saved === "history") return "history";
+    return "math";
   } catch {
     return "math";
   }
@@ -432,7 +776,7 @@ function applySubjectCopy(subjectKey) {
 
 function setSubjectTab(tabKey, options = {}) {
   const { persist = true } = options;
-  const safeTab = tabKey === "english" ? "english" : "math";
+  const safeTab = tabKey === "english" || tabKey === "history" ? tabKey : "math";
   state.subject = safeTab;
 
   setActive(els.subjectTabs, "subject", safeTab);
@@ -441,6 +785,9 @@ function setSubjectTab(tabKey, options = {}) {
   });
   els.englishViews.forEach((element) => {
     element.classList.toggle("hidden", safeTab !== "english");
+  });
+  els.historyViews.forEach((element) => {
+    element.classList.toggle("hidden", safeTab !== "history");
   });
   applySubjectCopy(safeTab);
   document.title = "곰돌이 선생님";
@@ -451,6 +798,9 @@ function setSubjectTab(tabKey, options = {}) {
 
   if (safeTab === "english" && !englishState.sessionActive && !englishState.current) {
     renderEnglishIdle();
+  }
+  if (safeTab === "history" && !historyState.sessionActive && !historyState.current) {
+    renderHistoryIdle();
   }
 
   if (persist) {
@@ -564,6 +914,12 @@ function setBear(mood, message) {
   }
   if (els.englishFeedbackBear) {
     els.englishFeedbackBear.dataset.mood = mood;
+  }
+  if (els.historyFeedback) {
+    els.historyFeedback.dataset.mood = mood;
+  }
+  if (els.historyFeedbackBear) {
+    els.historyFeedbackBear.dataset.mood = mood;
   }
 }
 
@@ -1047,8 +1403,57 @@ function setEnglishSpeakingFeedback(message, isError = false) {
   els.englishSpeakFeedback.classList.toggle("is-error", isError);
 }
 
+function setHistoryFeedback(message) {
+  if (!els.historyFeedbackText) return;
+  els.historyFeedbackText.textContent = `곰돌이 선생님: ${message}`;
+}
+
 function getEnglishLevel(levelKey) {
   return ENGLISH_LEVELS[levelKey] || ENGLISH_LEVELS.beginner;
+}
+
+function getHistoryLevel(levelKey) {
+  return HISTORY_LEVELS[levelKey] || HISTORY_LEVELS.grade4;
+}
+
+function getHistoryQuestions(levelKey) {
+  const safeLevel = getHistoryLevel(levelKey).key;
+  const questions = HISTORY_QUESTION_BANK[safeLevel];
+  return Array.isArray(questions) && questions.length > 0 ? questions : HISTORY_QUESTION_BANK.grade4;
+}
+
+function updateHistoryLevelUi() {
+  const level = getHistoryLevel(historyState.level);
+  setActive(els.historyLevelButtons, "historyLevel", level.key);
+  if (els.historyStartBtn) {
+    els.historyStartBtn.textContent = `${level.label} 10문제 시작`;
+  }
+}
+
+function pickHistoryQuestionIndex() {
+  const pool = getHistoryQuestions(historyState.level);
+  const allIndexes = Array.from({ length: pool.length }, (_, index) => index);
+  let availableIndexes = allIndexes.filter((index) => !historyState.usedQuestionIndexes.has(index));
+  if (availableIndexes.length === 0) {
+    historyState.usedQuestionIndexes.clear();
+    availableIndexes = allIndexes;
+  }
+
+  const questionIndex = availableIndexes[randomInt(0, availableIndexes.length - 1)];
+  historyState.usedQuestionIndexes.add(questionIndex);
+  return questionIndex;
+}
+
+function buildHistoryQuestion() {
+  const pool = getHistoryQuestions(historyState.level);
+  const questionIndex = pickHistoryQuestionIndex();
+  const question = pool[questionIndex];
+  return {
+    question: question.question,
+    options: shuffleList([...question.options]),
+    answer: question.answer,
+    explanation: question.explanation
+  };
 }
 
 function buildEnglishLevelPool(levelKey) {
@@ -1622,6 +2027,146 @@ function setupEnglishVoiceSupport() {
   els.englishVoiceSupport.textContent = supportMessage;
 }
 
+function updateHistoryStats() {
+  const solved = historyState.correct + historyState.wrong;
+  const accuracy = solved > 0 ? Math.round((historyState.correct / solved) * 100) : 0;
+  els.historyCorrect.textContent = String(historyState.correct);
+  els.historyStreak.textContent = String(historyState.streak);
+  els.historyBestStreak.textContent = String(historyState.bestStreak);
+  els.historyAccuracy.textContent = `${accuracy}%`;
+}
+
+function renderHistoryIdle() {
+  const level = getHistoryLevel(historyState.level);
+  historyState.current = null;
+  historyState.answered = false;
+  historyState.sessionActive = false;
+  els.historyQuestionCount.textContent = "준비 완료";
+  els.historyModePill.textContent = `${level.label} 객관식`;
+  els.historyPrompt.textContent = `${level.label} 시작 버튼을 누르면 한국사 10문제가 나와요.`;
+  els.historyOptions.innerHTML = "";
+  els.historyNextBtn.textContent = "다음 문제";
+  els.historyNextBtn.disabled = true;
+  setHistoryFeedback(`${level.label} 준비 완료! 시작 버튼을 눌러보자.`);
+  updateHistoryLevelUi();
+  updateHistoryStats();
+}
+
+function renderHistoryQuestion() {
+  if (!historyState.current) return;
+
+  const level = getHistoryLevel(historyState.level);
+  els.historyQuestionCount.textContent = `${historyState.questionNumber} / ${TARGET_QUESTIONS} 문제`;
+  els.historyModePill.textContent = `${level.label} 객관식`;
+  els.historyPrompt.textContent = historyState.current.question;
+  els.historyOptions.innerHTML = historyState.current.options
+    .map((option) => {
+      return `<button class="english-option" type="button" data-history-option="${option}">${option}</button>`;
+    })
+    .join("");
+  els.historyNextBtn.textContent = "다음 문제";
+  els.historyNextBtn.disabled = true;
+  historyState.answered = false;
+}
+
+function startHistorySession() {
+  const level = getHistoryLevel(historyState.level);
+  historyState.sessionActive = true;
+  historyState.questionNumber = 1;
+  historyState.correct = 0;
+  historyState.wrong = 0;
+  historyState.streak = 0;
+  historyState.bestStreak = 0;
+  historyState.answered = false;
+  historyState.current = null;
+  historyState.usedQuestionIndexes.clear();
+  historyState.current = buildHistoryQuestion();
+  updateHistoryStats();
+  renderHistoryQuestion();
+  setHistoryFeedback(`${level.label} 시작! 문제를 차근차근 풀어보자.`);
+  setBear("thinking", `${level.label} 한국사 라운드 시작!`);
+}
+
+function completeHistorySession() {
+  historyState.sessionActive = false;
+  historyState.answered = false;
+  historyState.current = null;
+
+  const total = historyState.correct + historyState.wrong;
+  const accuracy = total > 0 ? Math.round((historyState.correct / total) * 100) : 0;
+  let mood = "happy";
+  if (accuracy >= 90) mood = "celebrate";
+  if (accuracy < 60) mood = "thinking";
+
+  els.historyQuestionCount.textContent = "한국사 라운드 완료";
+  els.historyModePill.textContent = "한국사 라운드 완료";
+  els.historyPrompt.textContent = `총 ${historyState.correct}/${total}문제 정답 (${accuracy}%)`;
+  els.historyOptions.innerHTML = "";
+  els.historyNextBtn.textContent = "다음 문제";
+  els.historyNextBtn.disabled = true;
+  setHistoryFeedback(`완료! ${getHistoryLevel(historyState.level).label} 라운드를 끝냈어요. 다시 도전해볼까?`);
+  updateHistoryStats();
+  setBear(mood, "한국사 라운드 완료! 꾸준히 하면 더 강해져.");
+}
+
+function handleHistoryOptionSelect(option) {
+  if (!historyState.sessionActive || historyState.answered || !historyState.current) return;
+
+  historyState.answered = true;
+  const isCorrect = option === historyState.current.answer;
+
+  if (isCorrect) {
+    historyState.correct += 1;
+    historyState.streak += 1;
+    historyState.bestStreak = Math.max(historyState.bestStreak, historyState.streak);
+    setHistoryFeedback(`정답! ${historyState.current.explanation}`);
+    setBear("love", "한국사 정답! 곰돌이 선생님이 칭찬 중이야.");
+  } else {
+    historyState.wrong += 1;
+    historyState.streak = 0;
+    setHistoryFeedback(`오답! 정답은 "${historyState.current.answer}" · ${historyState.current.explanation}`);
+    setBear("cry", "괜찮아! 다음 문제에서 만회하자.");
+  }
+
+  Array.from(els.historyOptions.querySelectorAll(".english-option")).forEach((button) => {
+    if (!(button instanceof HTMLElement)) return;
+    const value = button.dataset.historyOption || "";
+    button.setAttribute("disabled", "true");
+    if (value === historyState.current.answer) {
+      button.classList.add("is-correct");
+      return;
+    }
+    if (value === option && !isCorrect) {
+      button.classList.add("is-wrong");
+    }
+  });
+
+  updateHistoryStats();
+  if (isCorrect) {
+    handleHistoryNext();
+    return;
+  }
+
+  els.historyNextBtn.textContent = historyState.questionNumber >= TARGET_QUESTIONS ? "결과 보기" : "다음 문제";
+  els.historyNextBtn.disabled = false;
+  els.historyNextBtn.focus();
+}
+
+function handleHistoryNext() {
+  if (!historyState.answered) return;
+
+  if (historyState.questionNumber >= TARGET_QUESTIONS) {
+    completeHistorySession();
+    return;
+  }
+
+  historyState.questionNumber += 1;
+  historyState.current = buildHistoryQuestion();
+  renderHistoryQuestion();
+  setBear("idle", "좋아! 한국사 다음 문제로 가자.");
+  setHistoryFeedback("다음 문제도 집중해서 풀어보자.");
+}
+
 function renderQuestion() {
   const question = state.currentQuestion;
   if (!question) return;
@@ -2059,6 +2604,28 @@ function handleLevelSelect(nextLevel) {
   }
 }
 
+function handleHistoryLevelSelect(nextLevel) {
+  if (!HISTORY_LEVELS[nextLevel]) return;
+
+  historyState.level = nextLevel;
+  profile.lastHistoryLevel = nextLevel;
+  saveProfile();
+  updateHistoryLevelUi();
+  historyState.usedQuestionIndexes.clear();
+
+  const label = getHistoryLevel(nextLevel).label;
+  if (historyState.sessionActive) {
+    setHistoryFeedback(`${label} 난이도로 바꿨어. 다음 문제부터 적용돼요.`);
+    setBear("happy", `${label} 난이도로 변경 완료!`);
+    return;
+  }
+
+  if (state.subject === "history") {
+    renderHistoryIdle();
+    setBear("happy", `${label} 난이도 준비 완료!`);
+  }
+}
+
 function handleEnglishLevelSelect(nextLevel) {
   if (!ENGLISH_LEVELS[nextLevel]) return;
 
@@ -2307,6 +2874,12 @@ function bindEvents() {
     });
   });
 
+  els.historyLevelButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      handleHistoryLevelSelect(button.dataset.historyLevel);
+    });
+  });
+
   els.bearAvatar.addEventListener("click", (event) => {
     event.stopPropagation();
     setThemePicker(!state.themePickerOpen);
@@ -2381,6 +2954,10 @@ function bindEvents() {
     startEnglishSession();
   });
 
+  els.historyStartBtn.addEventListener("click", () => {
+    startHistorySession();
+  });
+
   els.englishOptions.addEventListener("click", (event) => {
     const target = event.target;
     if (!(target instanceof HTMLElement)) return;
@@ -2402,6 +2979,17 @@ function bindEvents() {
 
   els.englishNextBtn.addEventListener("click", () => {
     handleEnglishNext();
+  });
+
+  els.historyOptions.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    if (!target.classList.contains("english-option")) return;
+    handleHistoryOptionSelect(String(target.dataset.historyOption || ""));
+  });
+
+  els.historyNextBtn.addEventListener("click", () => {
+    handleHistoryNext();
   });
 
   els.englishSpeakActionBtn.addEventListener("click", () => {
@@ -2461,15 +3049,25 @@ function bindEvents() {
 
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Enter") return;
-    if (state.subject !== "english") return;
+    if (state.subject !== "english" && state.subject !== "history") return;
 
     const target = event.target;
     if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) return;
-    if (!englishState.sessionActive) return;
+    if (state.subject === "english") {
+      if (!englishState.sessionActive) return;
+      if (englishState.answered) {
+        event.preventDefault();
+        handleEnglishNext();
+      }
+      return;
+    }
 
-    if (englishState.answered) {
-      event.preventDefault();
-      handleEnglishNext();
+    if (state.subject === "history") {
+      if (!historyState.sessionActive) return;
+      if (historyState.answered) {
+        event.preventDefault();
+        handleHistoryNext();
+      }
     }
   });
 
@@ -2482,11 +3080,13 @@ function init() {
   state.operation = OPERATIONS[profile.lastOperation] ? profile.lastOperation : "add";
   state.level = LEVELS[profile.lastLevel] ? profile.lastLevel : "easy";
   englishState.level = ENGLISH_LEVELS[profile.lastEnglishLevel] ? profile.lastEnglishLevel : "beginner";
+  historyState.level = HISTORY_LEVELS[profile.lastHistoryLevel] ? profile.lastHistoryLevel : "grade4";
   state.subject = loadTabPreference();
 
   setActive(els.operationButtons, "operation", state.operation);
   setActive(els.levelButtons, "level", state.level);
   setActive(els.englishLevelButtons, "englishLevel", englishState.level);
+  setActive(els.historyLevelButtons, "historyLevel", historyState.level);
 
   applyTheme(profile.theme, { persist: false });
   setThemePicker(false);
@@ -2497,6 +3097,7 @@ function init() {
   updateProgress();
   setupEnglishVoiceSupport();
   renderEnglishIdle();
+  renderHistoryIdle();
   setBear("idle", "안녕! 난 곰돌이 선생님이야. 오늘도 즐겁게 문제 풀어볼까?");
   setFeedback("천천히, 정확하게! 준비되면 시작해요.");
 

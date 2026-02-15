@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20260215-9" />
+    <link rel="stylesheet" href="styles.css?v=20260215-10" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20260215-1" />
   </head>
   <body>
@@ -85,6 +85,7 @@
       <nav class="subject-tabs" aria-label="학습 과목 탭">
         <button class="subject-tab is-active" data-subject="math" type="button">곰돌이 수학</button>
         <button class="subject-tab" data-subject="english" type="button">곰돌이 영어</button>
+        <button class="subject-tab" data-subject="history" type="button">곰돌이 한국사</button>
       </nav>
 
       <section class="panel settings-panel math-view">
@@ -281,9 +282,75 @@
           <ol class="ranking-list" id="englishRankingList"></ol>
         </section>
       </section>
+
+      <section class="panel settings-panel history-view hidden" id="historySettingsPanel">
+        <h2>곰돌이 한국사</h2>
+        <p class="english-guide">한국사능력검정시험 대비 문제를 단계별로 연습해요.</p>
+        <div class="option-wrap">
+          <p class="option-title">한국사 난이도</p>
+          <div class="chip-row" id="historyLevelRow">
+            <button class="chip is-active" data-history-level="grade4" type="button">한국사 4급</button>
+            <button class="chip" data-history-level="grade3" type="button">한국사 3급</button>
+            <button class="chip" data-history-level="grade2" type="button">한국사 2급</button>
+            <button class="chip" data-history-level="grade1" type="button">한국사 1급</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="historyStartBtn" type="button">한국사 4급 10문제 시작</button>
+      </section>
+
+      <section class="panel quiz-panel history-view hidden" id="historyQuizPanel">
+        <div class="quiz-head">
+          <p class="question-count" id="historyQuestionCount">준비 완료</p>
+          <p class="mode-pill" id="historyModePill">한국사 4급 객관식</p>
+        </div>
+
+        <p class="english-label">한국사 시험 대비 문제를 골라보세요.</p>
+        <p class="equation english-equation" id="historyPrompt">한국사 시작 버튼을 누르면 문제가 나와요.</p>
+
+        <div class="english-options" id="historyOptions"></div>
+        <div class="english-actions">
+          <button class="btn btn-primary" id="historyNextBtn" type="button" disabled>다음 문제</button>
+        </div>
+
+        <section class="feedback english-feedback" id="historyFeedback" data-mood="idle" aria-live="polite">
+          <div class="feedback-bear english-feedback-bear" id="historyFeedbackBear" data-mood="idle" aria-hidden="true">
+            <span class="fb-ear fb-ear-left"></span>
+            <span class="fb-ear fb-ear-right"></span>
+            <span class="fb-eye fb-eye-left"></span>
+            <span class="fb-eye fb-eye-right"></span>
+            <span class="fb-snout"></span>
+            <span class="fb-mouth"></span>
+            <span class="fb-blush fb-blush-left"></span>
+            <span class="fb-blush fb-blush-right"></span>
+          </div>
+          <p class="feedback-text english-feedback-text" id="historyFeedbackText">곰돌이 선생님: 한국사 탭 준비 완료!</p>
+        </section>
+      </section>
+
+      <section class="panel stats-panel history-view hidden" id="historyStatsPanel">
+        <h2>오늘의 한국사 성과판</h2>
+        <div class="stat-grid">
+          <article class="stat-card">
+            <p class="stat-label">맞힌 문제</p>
+            <p class="stat-value" id="historyCorrect">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-label">현재 연속 정답</p>
+            <p class="stat-value" id="historyStreak">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-label">최고 연속 기록</p>
+            <p class="stat-value" id="historyBestStreak">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-label">정답률</p>
+            <p class="stat-value" id="historyAccuracy">0%</p>
+          </article>
+        </div>
+      </section>
     </main>
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="app.js?v=20260215-10"></script>
+    <script src="app.js?v=20260215-11"></script>
   </body>
 </html>
