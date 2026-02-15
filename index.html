@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20260215-1" />
+    <link rel="stylesheet" href="styles.css?v=20260215-2" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20260215-1" />
   </head>
   <body>
@@ -34,7 +34,7 @@
             </div>
 
             <div class="nickname-box hidden" id="nicknameSection">
-              <p class="nickname-label">곰돌이 닉네임</p>
+              <p class="nickname-label">나의 닉네임</p>
               <div class="nickname-row">
                 <input id="nicknameInput" type="text" maxlength="12" placeholder="2~12자 닉네임" />
                 <button class="btn btn-primary nickname-save" id="saveNicknameBtn" type="button">등록/수정</button>
@@ -223,7 +223,19 @@
           </p>
         </section>
 
-        <p class="english-feedback-text" id="englishFeedbackText">곰돌이 선생님: 영어 탭 준비 완료!</p>
+        <section class="feedback english-feedback" id="englishFeedback" data-mood="idle" aria-live="polite">
+          <div class="feedback-bear english-feedback-bear" id="englishFeedbackBear" data-mood="idle" aria-hidden="true">
+            <span class="fb-ear fb-ear-left"></span>
+            <span class="fb-ear fb-ear-right"></span>
+            <span class="fb-eye fb-eye-left"></span>
+            <span class="fb-eye fb-eye-right"></span>
+            <span class="fb-snout"></span>
+            <span class="fb-mouth"></span>
+            <span class="fb-blush fb-blush-left"></span>
+            <span class="fb-blush fb-blush-right"></span>
+          </div>
+          <p class="feedback-text english-feedback-text" id="englishFeedbackText">곰돌이 선생님: 영어 탭 준비 완료!</p>
+        </section>
       </section>
 
       <section class="panel stats-panel english-view hidden" id="englishStatsPanel">
@@ -251,6 +263,6 @@
     </main>
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="app.js?v=20260215-1"></script>
+    <script src="app.js?v=20260215-2"></script>
   </body>
 </html>

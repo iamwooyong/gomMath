@@ -122,6 +122,8 @@ const els = {
   englishModePill: document.querySelector("#englishModePill"),
   englishOptions: document.querySelector("#englishOptions"),
   englishNextBtn: document.querySelector("#englishNextBtn"),
+  englishFeedback: document.querySelector("#englishFeedback"),
+  englishFeedbackBear: document.querySelector("#englishFeedbackBear"),
   englishFeedbackText: document.querySelector("#englishFeedbackText"),
   englishSpeakTarget: document.querySelector("#englishSpeakTarget"),
   englishListenBtn: document.querySelector("#englishListenBtn"),
@@ -424,6 +426,12 @@ function setBear(mood, message) {
   els.bearMessage.textContent = message;
   els.feedback.dataset.mood = mood;
   els.feedbackBear.dataset.mood = mood;
+  if (els.englishFeedback) {
+    els.englishFeedback.dataset.mood = mood;
+  }
+  if (els.englishFeedbackBear) {
+    els.englishFeedbackBear.dataset.mood = mood;
+  }
 }
 
 function setFeedback(message) {
