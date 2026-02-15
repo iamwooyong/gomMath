@@ -52,9 +52,9 @@ const ENGLISH_PHASES = {
   SPEAKING: "speaking"
 };
 const ENGLISH_LEVELS = {
-  beginner: { key: "beginner", label: "초급", rangeStart: 0, rangeEnd: 89 },
-  intermediate: { key: "intermediate", label: "중급", rangeStart: 60, rangeEnd: 169 },
-  advanced: { key: "advanced", label: "고급", rangeStart: 120, rangeEnd: Number.POSITIVE_INFINITY }
+  beginner: { key: "beginner", label: "초급" },
+  intermediate: { key: "intermediate", label: "중급" },
+  advanced: { key: "advanced", label: "고급" }
 };
 const ENGLISH_LEVEL_KEYS = Object.keys(ENGLISH_LEVELS);
 const HISTORY_LEVELS = {
@@ -496,15 +496,86 @@ const ENGLISH_MEGA_WORDS = [
   ["과거", "past"],
   ["현재", "present"]
 ];
-const ENGLISH_MEGA_LESSONS = ENGLISH_MEGA_WORDS.map(([korean, english]) => ({
+function buildWordPracticeSentence(english, index = 0) {
+  const safe = String(english || "").trim();
+  const templates = [
+    `I use "${safe}" a lot these days.`,
+    `Could you explain what "${safe}" means?`,
+    `Let's practice "${safe}" in a real conversation.`,
+    `I heard "${safe}" in a daily situation.`,
+    `I want to remember "${safe}" for real life.`
+  ];
+  return templates[Math.abs(index) % templates.length];
+}
+const ENGLISH_ADVANCED_WORD_LESSONS = [
+  { korean: "예약을 확정하다", english: "confirm a reservation", sentence: "I'd like to confirm a reservation under Kim." },
+  { korean: "예약을 변경하다", english: "change my reservation", sentence: "Can I change my reservation to tomorrow?" },
+  { korean: "예약을 취소하다", english: "cancel my reservation", sentence: "I need to cancel my reservation due to an emergency." },
+  { korean: "환불을 요청하다", english: "request a refund", sentence: "I'd like to request a refund for this order." },
+  { korean: "교환을 요청하다", english: "ask for an exchange", sentence: "Could I ask for an exchange in a different size?" },
+  { korean: "영수증을 재발급받다", english: "get a duplicate receipt", sentence: "Could I get a duplicate receipt, please?" },
+  { korean: "탑승권", english: "boarding pass", sentence: "Please show your boarding pass at the gate." },
+  { korean: "휴대 수하물", english: "carry-on luggage", sentence: "Is this bag okay as carry-on luggage?" },
+  { korean: "수하물 찾는 곳", english: "baggage claim", sentence: "Where is the baggage claim area?" },
+  { korean: "환승 게이트", english: "connecting gate", sentence: "How long will it take to reach the connecting gate?" },
+  { korean: "체크인하다", english: "check in", sentence: "I'd like to check in for my flight." },
+  { korean: "체크아웃하다", english: "check out", sentence: "I'd like to check out early tomorrow morning." },
+  { korean: "마감 시간을 맞추다", english: "meet the deadline", sentence: "We have to meet the deadline by Friday." },
+  { korean: "일정을 다시 조정하다", english: "reschedule the meeting", sentence: "Could we reschedule the meeting to next week?" },
+  { korean: "우선순위를 정하다", english: "set priorities", sentence: "Let's set priorities before we start." },
+  { korean: "진행 상황 보고서", english: "progress report", sentence: "I'll send the progress report this evening." },
+  { korean: "장기 계획", english: "long-term strategy", sentence: "We need a long-term strategy for this project." },
+  { korean: "단기 목표", english: "short-term objective", sentence: "Our short-term objective is to stabilize the service." },
+  { korean: "협업 도구", english: "collaboration tool", sentence: "Which collaboration tool does your team use?" },
+  { korean: "의사 결정", english: "decision-making process", sentence: "Please explain your decision-making process." },
+  { korean: "문제 해결책", english: "practical solution", sentence: "We need a practical solution, not just an idea." },
+  { korean: "예외 상황", english: "edge case", sentence: "Did we test this edge case in production-like data?" },
+  { korean: "대체 방안", english: "backup plan", sentence: "Let's prepare a backup plan just in case." },
+  { korean: "임시 해결책", english: "temporary workaround", sentence: "This is a temporary workaround until we patch it." },
+  { korean: "근본 원인", english: "root cause", sentence: "We should identify the root cause first." },
+  { korean: "호환성", english: "cross-platform compatibility", sentence: "Cross-platform compatibility is a key requirement." },
+  { korean: "배포하다", english: "deploy to production", sentence: "We plan to deploy to production tonight." },
+  { korean: "롤백하다", english: "roll back the release", sentence: "If errors spike, we'll roll back the release." },
+  { korean: "서비스 중단", english: "service outage", sentence: "We experienced a brief service outage this morning." },
+  { korean: "접속 지연", english: "network latency", sentence: "Network latency is affecting the response time." },
+  { korean: "권한 설정", english: "access permission", sentence: "You need access permission to view this document." },
+  { korean: "이중 인증", english: "two-factor authentication", sentence: "Please enable two-factor authentication for security." },
+  { korean: "개인정보 처리방침", english: "privacy policy", sentence: "Our privacy policy was updated yesterday." },
+  { korean: "약관", english: "terms and conditions", sentence: "Please read the terms and conditions carefully." },
+  { korean: "취소 수수료", english: "cancellation fee", sentence: "There is a cancellation fee after midnight." },
+  { korean: "환율", english: "exchange rate", sentence: "The exchange rate changed significantly today." },
+  { korean: "세전 가격", english: "price before tax", sentence: "What's the price before tax?" },
+  { korean: "배송 조회 번호", english: "tracking number", sentence: "Could you send me the tracking number?" },
+  { korean: "배송 지연", english: "shipping delay", sentence: "We're sorry for the unexpected shipping delay." },
+  { korean: "재고 부족", english: "out of stock", sentence: "That item is currently out of stock." },
+  { korean: "재입고 알림", english: "restock notification", sentence: "Please sign up for a restock notification." },
+  { korean: "공식 공지", english: "official announcement", sentence: "Please check the official announcement for details." },
+  { korean: "문의 사항", english: "customer inquiry", sentence: "We responded to every customer inquiry." },
+  { korean: "양해 부탁드립니다", english: "thank you for your understanding", sentence: "Thank you for your understanding while we fix the issue." },
+  { korean: "불편을 드려 죄송합니다", english: "we apologize for the inconvenience", sentence: "We apologize for the inconvenience caused by the delay." },
+  { korean: "확인 후 연락드리겠습니다", english: "I'll get back to you after checking", sentence: "I'll get back to you after checking with the team." },
+  { korean: "잠시만 기다려 주세요", english: "please bear with us for a moment", sentence: "Please bear with us for a moment while we investigate." },
+  { korean: "좀 더 구체적으로 설명해 주실래요?", english: "could you clarify that a bit more", sentence: "Could you clarify that a bit more?" },
+  { korean: "요점을 정리해 주세요", english: "summarize the key points", sentence: "Could you summarize the key points for me?" },
+  { korean: "핵심만 말씀드리면", english: "to put it briefly", sentence: "To put it briefly, we need more time." },
+  { korean: "다시 확인해 보겠습니다", english: "let me double-check", sentence: "Let me double-check and update you soon." },
+  { korean: "가능한 한 빨리", english: "as soon as possible", sentence: "I'll send the file as soon as possible." },
+  { korean: "일정이 겹치다", english: "have a scheduling conflict", sentence: "I have a scheduling conflict at that time." }
+];
+const ENGLISH_MEGA_LESSONS = ENGLISH_MEGA_WORDS.map(([korean, english], index) => ({
   korean,
   english,
-  sentence: `Please say ${english}.`
+  sentence: buildWordPracticeSentence(english, index)
 }));
-const mergedEnglishLessons = [...ENGLISH_LESSONS, ...ENGLISH_EXTRA_LESSONS, ...ENGLISH_MEGA_LESSONS];
+const mergedEnglishLessons = [
+  ...ENGLISH_LESSONS,
+  ...ENGLISH_EXTRA_LESSONS,
+  ...ENGLISH_MEGA_LESSONS,
+  ...ENGLISH_ADVANCED_WORD_LESSONS
+];
 const seenEnglishWords = new Set();
 ENGLISH_LESSONS.length = 0;
-mergedEnglishLessons.forEach((lesson) => {
+mergedEnglishLessons.forEach((lesson, index) => {
   if (!lesson || typeof lesson !== "object") return;
   const english = String(lesson.english || "")
     .trim()
@@ -515,9 +586,64 @@ mergedEnglishLessons.forEach((lesson) => {
   ENGLISH_LESSONS.push({
     korean,
     english,
-    sentence: String(lesson.sentence || `Please say ${english}.`).trim()
+    sentence: String(lesson.sentence || buildWordPracticeSentence(english, index)).trim()
   });
 });
+const ENGLISH_ADVANCED_WORD_SET = new Set(
+  ENGLISH_ADVANCED_WORD_LESSONS.map((lesson) => String(lesson.english || "").trim().toLowerCase()).filter(Boolean)
+);
+const ENGLISH_SPEAKING_MISSIONS = [
+  { level: "beginner", korean: "처음 만난 사람에게 인사", sentence: "Hi, nice to meet you." },
+  { level: "beginner", korean: "오늘 기분 묻기", sentence: "How are you today?" },
+  { level: "beginner", korean: "도움 요청", sentence: "Can you help me, please?" },
+  { level: "beginner", korean: "길 묻기", sentence: "Where is the subway station?" },
+  { level: "beginner", korean: "가게에서 가격 묻기", sentence: "How much is this?" },
+  { level: "beginner", korean: "메뉴 주문", sentence: "I'd like a sandwich, please." },
+  { level: "beginner", korean: "물 요청", sentence: "Could I have some water?" },
+  { level: "beginner", korean: "시간 묻기", sentence: "What time is it now?" },
+  { level: "beginner", korean: "화장실 위치 묻기", sentence: "Excuse me, where is the restroom?" },
+  { level: "beginner", korean: "감사 인사", sentence: "Thank you for your help." },
+  { level: "beginner", korean: "사과 표현", sentence: "I'm sorry I'm late." },
+  { level: "beginner", korean: "반복 요청", sentence: "Could you say that again?" },
+  { level: "beginner", korean: "천천히 말해달라고 요청", sentence: "Please speak a little slower." },
+  { level: "beginner", korean: "의견 말하기", sentence: "I think this is a good idea." },
+  { level: "beginner", korean: "작별 인사", sentence: "See you tomorrow." },
+
+  { level: "intermediate", korean: "카페 추천 받기", sentence: "Could you recommend a good cafe nearby?" },
+  { level: "intermediate", korean: "회의 일정 조정", sentence: "Can we move the meeting to Friday afternoon?" },
+  { level: "intermediate", korean: "지각 양해 구하기", sentence: "I might be ten minutes late because of traffic." },
+  { level: "intermediate", korean: "음식 알레르기 설명", sentence: "I have a peanut allergy, so I can't eat this." },
+  { level: "intermediate", korean: "호텔 체크인 요청", sentence: "I have a reservation under the name Minji Kim." },
+  { level: "intermediate", korean: "와이파이 비밀번호 문의", sentence: "Could you tell me the Wi-Fi password, please?" },
+  { level: "intermediate", korean: "교환/환불 문의", sentence: "Can I exchange this item if it does not fit?" },
+  { level: "intermediate", korean: "택시 기사에게 목적지 설명", sentence: "Could you take me to the city hall, please?" },
+  { level: "intermediate", korean: "전화 연결 요청", sentence: "May I speak to the customer support team?" },
+  { level: "intermediate", korean: "프로젝트 진행 공유", sentence: "The project is on track, but we need more testing." },
+  { level: "intermediate", korean: "이유 설명", sentence: "I couldn't join because I was finishing another task." },
+  { level: "intermediate", korean: "제안하기", sentence: "Why don't we split the work and finish faster?" },
+  { level: "intermediate", korean: "확인 요청", sentence: "Could you check this file before we send it?" },
+  { level: "intermediate", korean: "약속 변경 요청", sentence: "Would it be okay to reschedule our appointment?" },
+  { level: "intermediate", korean: "길 상세 안내 요청", sentence: "Is there an easier way to get there by bus?" },
+
+  { level: "advanced", korean: "회의 시작 전 정중한 요청", sentence: "Before we begin, could everyone briefly share their priorities for this week?" },
+  { level: "advanced", korean: "문제 원인 분석 요청", sentence: "Let's identify the root cause first before deciding on a temporary workaround." },
+  { level: "advanced", korean: "일정 지연 설명", sentence: "The release was delayed because we found a critical issue in final testing." },
+  { level: "advanced", korean: "협업 방식 제안", sentence: "If we align on the scope today, we can avoid unnecessary revisions later." },
+  { level: "advanced", korean: "합리적 반대 의견", sentence: "I understand your point, but we should also consider the long-term impact." },
+  { level: "advanced", korean: "대안 제시", sentence: "As an alternative, we could roll out the feature to a smaller user group first." },
+  { level: "advanced", korean: "고객 응대 문장", sentence: "We apologize for the inconvenience and appreciate your patience while we resolve this." },
+  { level: "advanced", korean: "요점 정리", sentence: "To summarize, we need approval on budget, timeline, and staffing by tomorrow." },
+  { level: "advanced", korean: "위험 요소 경고", sentence: "There is a high risk of service disruption unless we complete the migration tonight." },
+  { level: "advanced", korean: "의사 결정 촉구", sentence: "Could we make a final decision now so the team can proceed without confusion?" },
+  { level: "advanced", korean: "상대 의견 수용 후 제안", sentence: "That makes sense, and I'd suggest adding a backup plan as well." },
+  { level: "advanced", korean: "업무 우선순위 조정", sentence: "Given the deadline, we should prioritize stability over adding new features." },
+  { level: "advanced", korean: "문서 수정 요청", sentence: "Please revise the document to reflect the updated terms and conditions." },
+  { level: "advanced", korean: "협상 문장", sentence: "If you can lower the cancellation fee, we are ready to sign the contract today." },
+  { level: "advanced", korean: "명확화 요청", sentence: "Could you clarify what success would look like for this project?" },
+  { level: "advanced", korean: "조건부 동의", sentence: "I'm okay with that plan as long as we monitor the results closely." },
+  { level: "advanced", korean: "후속 조치 안내", sentence: "I'll follow up with a detailed report once we validate the data." },
+  { level: "advanced", korean: "회의 종료 멘트", sentence: "Thanks everyone, let's reconvene next Tuesday with updated action items." }
+];
 const ENGLISH_ALL_LESSON_INDEXES = Array.from({ length: ENGLISH_LESSONS.length }, (_, index) => index);
 const ENGLISH_LEVEL_POOLS = Object.fromEntries(ENGLISH_LEVEL_KEYS.map((levelKey) => [levelKey, buildEnglishLevelPool(levelKey)]));
 const HISTORY_QUESTION_BANK = {
@@ -1505,6 +1631,7 @@ const englishState = {
   current: null,
   speakingAction: ENGLISH_SPEAK_ACTIONS.START,
   usedLessonIndexes: new Set(),
+  usedSpeakingMissionIndexes: new Set(),
   recognition: null,
   recognizing: false
 };
@@ -2417,22 +2544,69 @@ function buildHistoryQuestion() {
 
 function buildEnglishLevelPool(levelKey) {
   const level = getEnglishLevel(levelKey);
-  const maxIndex = ENGLISH_ALL_LESSON_INDEXES.length - 1;
-  if (maxIndex < 0) return [];
-
-  const rangeEnd = Number.isFinite(level.rangeEnd) ? level.rangeEnd : maxIndex;
-  const start = Math.max(0, Math.min(level.rangeStart, maxIndex));
-  const end = Math.max(start, Math.min(rangeEnd, maxIndex));
-  const pool = [];
-  for (let index = start; index <= end; index += 1) {
-    pool.push(index);
+  if (ENGLISH_ALL_LESSON_INDEXES.length < 4) {
+    return ENGLISH_ALL_LESSON_INDEXES;
   }
 
-  return pool.length >= 4 ? pool : ENGLISH_ALL_LESSON_INDEXES;
+  if (level.key === "advanced") {
+    const advancedPool = ENGLISH_ALL_LESSON_INDEXES.filter((index) => {
+      const lesson = ENGLISH_LESSONS[index];
+      if (!lesson) return false;
+      const answer = String(lesson.english || "").trim().toLowerCase();
+      const sentenceWordCount = normalizeEnglishText(lesson.sentence).split(" ").filter(Boolean).length;
+      return ENGLISH_ADVANCED_WORD_SET.has(answer) || sentenceWordCount >= 8;
+    });
+    return advancedPool.length >= 4 ? advancedPool : ENGLISH_ALL_LESSON_INDEXES;
+  }
+
+  if (level.key === "intermediate") {
+    const intermediatePool = ENGLISH_ALL_LESSON_INDEXES.filter((index) => {
+      const lesson = ENGLISH_LESSONS[index];
+      if (!lesson) return false;
+      const answer = String(lesson.english || "").trim().toLowerCase();
+      const tokenCount = answer.split(/\s+/).filter(Boolean).length;
+      const sentenceWordCount = normalizeEnglishText(lesson.sentence).split(" ").filter(Boolean).length;
+      return !ENGLISH_ADVANCED_WORD_SET.has(answer) && (tokenCount >= 2 || answer.length >= 7 || sentenceWordCount >= 6);
+    });
+    return intermediatePool.length >= 4 ? intermediatePool : ENGLISH_ALL_LESSON_INDEXES;
+  }
+
+  const beginnerPool = ENGLISH_ALL_LESSON_INDEXES.filter((index) => {
+    const lesson = ENGLISH_LESSONS[index];
+    if (!lesson) return false;
+    const answer = String(lesson.english || "").trim().toLowerCase();
+    const tokenCount = answer.split(/\s+/).filter(Boolean).length;
+    return !ENGLISH_ADVANCED_WORD_SET.has(answer) && tokenCount === 1 && answer.length <= 8;
+  });
+  return beginnerPool.length >= 4 ? beginnerPool : ENGLISH_ALL_LESSON_INDEXES;
 }
 
 function getEnglishLevelPool(levelKey) {
   return ENGLISH_LEVEL_POOLS[levelKey] || ENGLISH_LEVEL_POOLS.beginner || ENGLISH_ALL_LESSON_INDEXES;
+}
+
+function getEnglishSpeakingPool(levelKey) {
+  const safeLevel = getEnglishLevel(levelKey).key;
+  const pool = [];
+  ENGLISH_SPEAKING_MISSIONS.forEach((mission, index) => {
+    if (mission.level === safeLevel) {
+      pool.push(index);
+    }
+  });
+  return pool.length > 0 ? pool : ENGLISH_SPEAKING_MISSIONS.map((_, index) => index);
+}
+
+function pickEnglishSpeakingMissionIndex(levelKey) {
+  const pool = getEnglishSpeakingPool(levelKey);
+  let availableIndexes = pool.filter((index) => !englishState.usedSpeakingMissionIndexes.has(index));
+  if (availableIndexes.length === 0) {
+    englishState.usedSpeakingMissionIndexes.clear();
+    availableIndexes = pool;
+  }
+
+  const missionIndex = availableIndexes[randomInt(0, availableIndexes.length - 1)];
+  englishState.usedSpeakingMissionIndexes.add(missionIndex);
+  return missionIndex;
 }
 
 function updateEnglishLevelUi() {
@@ -2506,13 +2680,13 @@ function buildEnglishWordQuestion() {
 }
 
 function buildEnglishSpeakingQuestion() {
-  const lessonIndex = pickEnglishLessonIndex(englishState.level);
-  const lesson = ENGLISH_LESSONS[lessonIndex];
+  const missionIndex = pickEnglishSpeakingMissionIndex(englishState.level);
+  const mission = ENGLISH_SPEAKING_MISSIONS[missionIndex];
   return {
     kind: ENGLISH_PHASES.SPEAKING,
-    korean: lesson.korean,
-    answer: lesson.english,
-    sentence: lesson.sentence,
+    korean: mission.korean,
+    answer: mission.sentence,
+    sentence: mission.sentence,
     options: []
   };
 }
@@ -2613,7 +2787,10 @@ function renderEnglishQuestion() {
   if (isEnglishSpeakingPhase()) {
     els.englishQuestionCount.textContent = `말하기 ${englishState.questionNumber} / ${TARGET_QUESTIONS} 문제`;
     els.englishModePill.textContent = `${levelLabel} 말하기 미션`;
-    els.englishPrompt.textContent = "아래 문장을 듣고 따라 말해보세요.";
+    const situation = String(englishState.current.korean || "").trim();
+    els.englishPrompt.textContent = situation
+      ? `[${situation}] 아래 문장을 듣고 따라 말해보세요.`
+      : "아래 문장을 듣고 따라 말해보세요.";
     els.englishOptions.innerHTML = "";
     els.englishSpeakTarget.textContent = englishState.current.sentence;
     els.englishTranscript.textContent = "내 말하기 결과: 아직 없음";
@@ -2668,6 +2845,8 @@ function startEnglishSession() {
   englishState.bestStreak = 0;
   englishState.answered = false;
   englishState.speakingAction = ENGLISH_SPEAK_ACTIONS.START;
+  englishState.usedLessonIndexes.clear();
+  englishState.usedSpeakingMissionIndexes.clear();
   englishState.current = buildEnglishWordQuestion();
   updateEnglishStats();
   renderEnglishQuestion();
@@ -2680,6 +2859,7 @@ function startEnglishSpeakingMission() {
   englishState.questionNumber = 1;
   englishState.answered = false;
   englishState.speakingAction = ENGLISH_SPEAK_ACTIONS.START;
+  englishState.usedSpeakingMissionIndexes.clear();
   englishState.current = buildEnglishSpeakingQuestion();
   renderEnglishQuestion();
   setBear("thinking", "좋아! 이제 말하기 미션 10문제를 시작해보자.");
@@ -3864,6 +4044,7 @@ function handleEnglishLevelSelect(nextLevel) {
   saveProfile();
   updateEnglishLevelUi();
   englishState.usedLessonIndexes.clear();
+  englishState.usedSpeakingMissionIndexes.clear();
 
   const label = getEnglishLevel(nextLevel).label;
   if (englishState.sessionActive) {
