@@ -1224,6 +1224,14 @@ h2 {
   line-height: 1.35;
 }
 
+.english-level-wrap {
+  margin-bottom: 12px;
+}
+
+#englishLevelRow .chip {
+  min-width: 88px;
+}
+
 #englishStartBtn {
   width: 100%;
   min-height: 56px;

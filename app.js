@@ -51,6 +51,12 @@ const ENGLISH_PHASES = {
   WORD: "word",
   SPEAKING: "speaking"
 };
+const ENGLISH_LEVELS = {
+  beginner: { key: "beginner", label: "초급", rangeStart: 0, rangeEnd: 33 },
+  intermediate: { key: "intermediate", label: "중급", rangeStart: 24, rangeEnd: 63 },
+  advanced: { key: "advanced", label: "고급", rangeStart: 48, rangeEnd: Number.POSITIVE_INFINITY }
+};
+const ENGLISH_LEVEL_KEYS = Object.keys(ENGLISH_LEVELS);
 const ENGLISH_SPEAK_ACTIONS = {
   START: "start",
   RECORD: "record",
@@ -140,6 +146,8 @@ const ENGLISH_LESSONS = [
   { korean: "도와주다", english: "help", sentence: "Can you help me?" },
   { korean: "미소 짓다", english: "smile", sentence: "Please smile for the photo." }
 ];
+const ENGLISH_ALL_LESSON_INDEXES = Array.from({ length: ENGLISH_LESSONS.length }, (_, index) => index);
+const ENGLISH_LEVEL_POOLS = Object.fromEntries(ENGLISH_LEVEL_KEYS.map((levelKey) => [levelKey, buildEnglishLevelPool(levelKey)]));
 
 const SUBJECT_COPY = {
   math: {
@@ -211,6 +219,8 @@ const els = {
   englishRankingList: document.querySelector("#englishRankingList"),
 
   englishStartBtn: document.querySelector("#englishStartBtn"),
+  englishGuide: document.querySelector(".english-guide"),
+  englishLevelButtons: Array.from(document.querySelectorAll("[data-english-level]")),
   englishQuestionCount: document.querySelector("#englishQuestionCount"),
   englishPrompt: document.querySelector("#englishPrompt"),
   englishModePill: document.querySelector("#englishModePill"),
@@ -260,6 +270,7 @@ const authState = {
 };
 
 const englishState = {
+  level: "beginner",
   sessionActive: false,
   sessionStartedAt: 0,
   phase: ENGLISH_PHASES.WORD,
@@ -311,6 +322,7 @@ function createDefaultProfile() {
     bestStreak: 0,
     lastOperation: "add",
     lastLevel: "easy",
+    lastEnglishLevel: "beginner",
     theme: "pink"
   };
 }
@@ -338,6 +350,9 @@ function loadProfile() {
 
     if (!THEME_KEYS.includes(merged.theme)) {
       merged.theme = defaults.theme;
+    }
+    if (!ENGLISH_LEVELS[merged.lastEnglishLevel]) {
+      merged.lastEnglishLevel = defaults.lastEnglishLevel;
     }
 
     return merged;
@@ -1015,6 +1030,42 @@ function setEnglishSpeakingFeedback(message, isError = false) {
   els.englishSpeakFeedback.classList.toggle("is-error", isError);
 }
 
+function getEnglishLevel(levelKey) {
+  return ENGLISH_LEVELS[levelKey] || ENGLISH_LEVELS.beginner;
+}
+
+function buildEnglishLevelPool(levelKey) {
+  const level = getEnglishLevel(levelKey);
+  const maxIndex = ENGLISH_ALL_LESSON_INDEXES.length - 1;
+  if (maxIndex < 0) return [];
+
+  const rangeEnd = Number.isFinite(level.rangeEnd) ? level.rangeEnd : maxIndex;
+  const start = Math.max(0, Math.min(level.rangeStart, maxIndex));
+  const end = Math.max(start, Math.min(rangeEnd, maxIndex));
+  const pool = [];
+  for (let index = start; index <= end; index += 1) {
+    pool.push(index);
+  }
+
+  return pool.length >= 4 ? pool : ENGLISH_ALL_LESSON_INDEXES;
+}
+
+function getEnglishLevelPool(levelKey) {
+  return ENGLISH_LEVEL_POOLS[levelKey] || ENGLISH_LEVEL_POOLS.beginner || ENGLISH_ALL_LESSON_INDEXES;
+}
+
+function updateEnglishLevelUi() {
+  const level = getEnglishLevel(englishState.level);
+  setActive(els.englishLevelButtons, "englishLevel", level.key);
+
+  if (els.englishGuide) {
+    els.englishGuide.textContent = `듀오링고처럼 듣고 말하며 영어를 익혀요. 현재 난이도: ${level.label}`;
+  }
+  if (els.englishStartBtn) {
+    els.englishStartBtn.textContent = `${level.label} 영어 10문제 시작`;
+  }
+}
+
 function getSpeakingNextLabel() {
   return englishState.questionNumber >= TARGET_QUESTIONS ? "결과 보기" : "다음 문제";
 }
@@ -1023,12 +1074,12 @@ function isEnglishSpeakingPhase() {
   return englishState.phase === ENGLISH_PHASES.SPEAKING;
 }
 
-function pickEnglishLessonIndex(usedIndexes) {
-  const allIndexes = Array.from({ length: ENGLISH_LESSONS.length }, (_, index) => index);
-  let availableIndexes = allIndexes.filter((index) => !usedIndexes.has(index));
+function pickEnglishLessonIndex(usedIndexes, levelKey) {
+  const levelPool = getEnglishLevelPool(levelKey);
+  let availableIndexes = levelPool.filter((index) => !usedIndexes.has(index));
   if (availableIndexes.length === 0) {
     usedIndexes.clear();
-    availableIndexes = allIndexes;
+    availableIndexes = levelPool;
   }
 
   const lessonIndex = availableIndexes[randomInt(0, availableIndexes.length - 1)];
@@ -1037,12 +1088,30 @@ function pickEnglishLessonIndex(usedIndexes) {
 }
 
 function buildEnglishWordQuestion() {
-  const lessonIndex = pickEnglishLessonIndex(englishState.usedWordLessonIndexes);
+  const levelPool = getEnglishLevelPool(englishState.level);
+  const lessonIndex = pickEnglishLessonIndex(englishState.usedWordLessonIndexes, englishState.level);
   const lesson = ENGLISH_LESSONS[lessonIndex];
   const options = new Set([lesson.english]);
-  while (options.size < 4) {
-    const candidate = ENGLISH_LESSONS[randomInt(0, ENGLISH_LESSONS.length - 1)];
-    options.add(candidate.english);
+
+  const levelCandidates = shuffleList(
+    levelPool
+      .filter((index) => index !== lessonIndex)
+      .map((index) => ENGLISH_LESSONS[index].english)
+      .filter((word, index, list) => list.indexOf(word) === index)
+  );
+  levelCandidates.forEach((word) => {
+    if (options.size < 4) options.add(word);
+  });
+
+  if (options.size < 4) {
+    const fallbackCandidates = shuffleList(
+      ENGLISH_ALL_LESSON_INDEXES.map((index) => ENGLISH_LESSONS[index].english).filter(
+        (word, index, list) => list.indexOf(word) === index
+      )
+    );
+    fallbackCandidates.forEach((word) => {
+      if (options.size < 4) options.add(word);
+    });
   }
 
   return {
@@ -1055,7 +1124,7 @@ function buildEnglishWordQuestion() {
 }
 
 function buildEnglishSpeakingQuestion() {
-  const lessonIndex = pickEnglishLessonIndex(englishState.usedSpeakingLessonIndexes);
+  const lessonIndex = pickEnglishLessonIndex(englishState.usedSpeakingLessonIndexes, englishState.level);
   const lesson = ENGLISH_LESSONS[lessonIndex];
   return {
     kind: ENGLISH_PHASES.SPEAKING,
@@ -1142,29 +1211,32 @@ function updateEnglishStats() {
 
 function renderEnglishIdle() {
   stopEnglishRecognition();
+  const levelLabel = getEnglishLevel(englishState.level).label;
   englishState.phase = ENGLISH_PHASES.WORD;
   englishState.current = null;
   englishState.answered = false;
   englishState.speakingAction = ENGLISH_SPEAK_ACTIONS.START;
   els.englishQuestionCount.textContent = "준비 완료";
-  els.englishModePill.textContent = "단어 10문제 · 말하기 10문제";
-  els.englishPrompt.textContent = "영어 시작 버튼을 누르면 단어 10문제가 먼저 나와요.";
+  els.englishModePill.textContent = `${levelLabel} 단어 10문제 · 말하기 10문제`;
+  els.englishPrompt.textContent = `${levelLabel} 영어 시작 버튼을 누르면 단어 10문제가 먼저 나와요.`;
   els.englishOptions.innerHTML = "";
   els.englishNextBtn.textContent = "다음 문제";
   els.englishSpeakTarget.textContent = "단어 10문제를 끝내면 말하기 미션 10문제가 시작돼요.";
   els.englishTranscript.textContent = "내 말하기 결과: 아직 없음";
   setEnglishSpeakingFeedback("단어를 끝낸 뒤 말하기 미션에서 문제 시작 버튼을 눌러 연습해요.");
-  setEnglishFeedback("영어 탭 준비 완료! 시작 버튼을 눌러보자.");
+  setEnglishFeedback(`${levelLabel} 영어 준비 완료! 시작 버튼을 눌러보자.`);
+  updateEnglishLevelUi();
   updateEnglishSpeakingControls();
   updateEnglishStats();
 }
 
 function renderEnglishQuestion() {
   if (!englishState.current) return;
+  const levelLabel = getEnglishLevel(englishState.level).label;
 
   if (isEnglishSpeakingPhase()) {
     els.englishQuestionCount.textContent = `말하기 ${englishState.questionNumber} / ${TARGET_QUESTIONS} 문제`;
-    els.englishModePill.textContent = "문장 말하기 미션";
+    els.englishModePill.textContent = `${levelLabel} 말하기 미션`;
     els.englishPrompt.textContent = "아래 문장을 듣고 따라 말해보세요.";
     els.englishOptions.innerHTML = "";
     els.englishSpeakTarget.textContent = englishState.current.sentence;
@@ -1173,7 +1245,7 @@ function renderEnglishQuestion() {
     setEnglishFeedback("말하기 미션 시작! 문장을 듣고 따라 말해보자.");
   } else {
     els.englishQuestionCount.textContent = `${englishState.questionNumber} / ${TARGET_QUESTIONS} 단어`;
-    els.englishModePill.textContent = "기초 단어 4지선다";
+    els.englishModePill.textContent = `${levelLabel} 단어 4지선다`;
     els.englishPrompt.textContent = `"${englishState.current.korean}" 는 영어로?`;
     els.englishOptions.innerHTML = englishState.current.options
       .map((option) => {
@@ -1195,6 +1267,7 @@ function renderEnglishQuestion() {
 
 function startEnglishSession() {
   stopEnglishRecognition();
+  const levelLabel = getEnglishLevel(englishState.level).label;
   englishState.sessionActive = true;
   englishState.sessionStartedAt = Date.now();
   englishState.phase = ENGLISH_PHASES.WORD;
@@ -1214,7 +1287,7 @@ function startEnglishSession() {
   englishState.current = buildEnglishWordQuestion();
   updateEnglishStats();
   renderEnglishQuestion();
-  setBear("thinking", "영어 시간 시작! 먼저 단어 10문제를 같이 풀어보자.");
+  setBear("thinking", `${levelLabel} 영어 시간 시작! 먼저 단어 10문제를 같이 풀어보자.`);
 }
 
 function startEnglishSpeakingMission() {
@@ -1227,7 +1300,7 @@ function startEnglishSpeakingMission() {
   englishState.current = buildEnglishSpeakingQuestion();
   renderEnglishQuestion();
   setBear("thinking", "좋아! 이제 말하기 미션 10문제를 시작해보자.");
-  setEnglishFeedback("말하기 미션 시작! 문장 듣기 후 따라 말해보자.");
+  setEnglishFeedback(`${getEnglishLevel(englishState.level).label} 말하기 미션 시작! 문장 듣기 후 따라 말해보자.`);
 }
 
 function completeEnglishSession() {
@@ -1943,6 +2016,27 @@ function handleLevelSelect(nextLevel) {
   }
 }
 
+function handleEnglishLevelSelect(nextLevel) {
+  if (!ENGLISH_LEVELS[nextLevel]) return;
+
+  englishState.level = nextLevel;
+  profile.lastEnglishLevel = nextLevel;
+  saveProfile();
+  updateEnglishLevelUi();
+  englishState.usedWordLessonIndexes.clear();
+  englishState.usedSpeakingLessonIndexes.clear();
+
+  const label = getEnglishLevel(nextLevel).label;
+  if (englishState.sessionActive) {
+    setEnglishFeedback(`${label} 난이도로 바꿨어. 다음 문제부터 적용돼요.`);
+    setBear("happy", `${label} 난이도로 변경 완료!`);
+    return;
+  }
+
+  renderEnglishIdle();
+  setBear("happy", `${label} 난이도 준비 완료!`);
+}
+
 async function handleThemeSelect(nextTheme) {
   if (!THEMES[nextTheme]) return;
 
@@ -2164,6 +2258,12 @@ function bindEvents() {
     });
   });
 
+  els.englishLevelButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      handleEnglishLevelSelect(button.dataset.englishLevel);
+    });
+  });
+
   els.bearAvatar.addEventListener("click", (event) => {
     event.stopPropagation();
     setThemePicker(!state.themePickerOpen);
@@ -2326,10 +2426,12 @@ function bindEvents() {
 function init() {
   state.operation = OPERATIONS[profile.lastOperation] ? profile.lastOperation : "add";
   state.level = LEVELS[profile.lastLevel] ? profile.lastLevel : "easy";
+  englishState.level = ENGLISH_LEVELS[profile.lastEnglishLevel] ? profile.lastEnglishLevel : "beginner";
   state.subject = loadTabPreference();
 
   setActive(els.operationButtons, "operation", state.operation);
   setActive(els.levelButtons, "level", state.level);
+  setActive(els.englishLevelButtons, "englishLevel", englishState.level);
 
   applyTheme(profile.theme, { persist: false });
   setThemePicker(false);
