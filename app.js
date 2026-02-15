@@ -957,6 +957,24 @@ const ENGLISH_HIGHSCHOOL_WORD_LESSONS = [
   { korean: "사회적 책임", english: "social responsibility", sentence: "Social responsibility should guide technological progress." },
   { korean: "글로벌 관점", english: "global perspective", sentence: "A global perspective broadens policy discussions." }
 ];
+const ENGLISH_CORE_WORD_SET = new Set(
+  ENGLISH_LESSONS.map((lesson) => String(lesson.english || "").trim().toLowerCase()).filter(Boolean)
+);
+const ENGLISH_EXTRA_WORD_SET = new Set(
+  ENGLISH_EXTRA_LESSONS.map((lesson) => String(lesson.english || "").trim().toLowerCase()).filter(Boolean)
+);
+const ENGLISH_MEGA_WORD_SET = new Set(
+  ENGLISH_MEGA_WORDS.map(([, english]) => String(english || "").trim().toLowerCase()).filter(Boolean)
+);
+const ENGLISH_ULTRA_WORD_SET = new Set(
+  ENGLISH_ULTRA_WORDS.map(([, english]) => String(english || "").trim().toLowerCase()).filter(Boolean)
+);
+const ENGLISH_GENERATED_PHRASE_SET = new Set(
+  ENGLISH_GENERATED_PHRASE_LESSONS.map((lesson) => String(lesson.english || "").trim().toLowerCase()).filter(Boolean)
+);
+const ENGLISH_HIGHSCHOOL_WORD_SET = new Set(
+  ENGLISH_HIGHSCHOOL_WORD_LESSONS.map((lesson) => String(lesson.english || "").trim().toLowerCase()).filter(Boolean)
+);
 const ENGLISH_MEGA_LESSONS = ENGLISH_MEGA_WORDS.map(([korean, english], index) => ({
   korean,
   english,
@@ -2987,6 +3005,66 @@ function getHistoryQuestions(levelKey) {
   return Array.isArray(questions) && questions.length > 0 ? questions : HISTORY_QUESTION_BANK.grade4;
 }
 
+function normalizeEnglishAnswer(answer) {
+  return String(answer || "").trim().toLowerCase();
+}
+
+function getEnglishAnswerTokenCount(answer) {
+  return normalizeEnglishAnswer(answer).split(/\s+/).filter(Boolean).length;
+}
+
+function classifyEnglishWordLevel(answer) {
+  const normalized = normalizeEnglishAnswer(answer);
+  if (!normalized) return "beginner";
+
+  const tokenCount = getEnglishAnswerTokenCount(normalized);
+  const compactLength = normalized.replace(/[^a-z0-9]/g, "").length;
+  const hasComplexSymbol = /[-']/u.test(normalized);
+
+  if (
+    ENGLISH_ADVANCED_WORD_SET.has(normalized) ||
+    ENGLISH_HIGHSCHOOL_WORD_SET.has(normalized) ||
+    tokenCount >= 3 ||
+    compactLength >= 15 ||
+    hasComplexSymbol
+  ) {
+    return "advanced";
+  }
+
+  if (ENGLISH_STARTER_WORD_SET.has(normalized)) {
+    return tokenCount <= 1 && compactLength <= 8 ? "starter" : "beginner";
+  }
+
+  if (ENGLISH_CORE_WORD_SET.has(normalized)) {
+    return "beginner";
+  }
+
+  if (ENGLISH_EXTRA_WORD_SET.has(normalized)) {
+    return tokenCount <= 1 && compactLength <= 9 ? "beginner" : "intermediate";
+  }
+
+  if (ENGLISH_GENERATED_PHRASE_SET.has(normalized)) {
+    return compactLength >= 12 || tokenCount >= 2 ? "intermediate" : "beginner";
+  }
+
+  if (ENGLISH_ULTRA_WORD_SET.has(normalized)) {
+    if (tokenCount === 1 && compactLength <= 8) return "intermediate";
+    if (tokenCount === 1 && compactLength <= 10) return "advanced";
+    return "advanced";
+  }
+
+  if (ENGLISH_MEGA_WORD_SET.has(normalized)) {
+    if (tokenCount <= 1 && compactLength <= 6) return "beginner";
+    if (tokenCount <= 2 && compactLength <= 13) return "intermediate";
+    return "advanced";
+  }
+
+  if (tokenCount <= 1 && compactLength <= 5) return "starter";
+  if (tokenCount <= 2 && compactLength <= 10) return "beginner";
+  if (tokenCount <= 2 && compactLength <= 14) return "intermediate";
+  return "advanced";
+}
+
 function updateHistoryLevelUi() {
   const level = getHistoryLevel(historyState.level);
   setActive(els.historyLevelButtons, "historyLevel", level.key);
@@ -3027,54 +3105,36 @@ function buildEnglishLevelPool(levelKey) {
     return ENGLISH_ALL_LESSON_INDEXES;
   }
 
-  if (level.key === "starter") {
-    const starterPool = ENGLISH_ALL_LESSON_INDEXES.filter((index) => {
-      const lesson = ENGLISH_LESSONS[index];
-      if (!lesson) return false;
-      const answer = String(lesson.english || "").trim().toLowerCase();
-      const tokenCount = answer.split(/\s+/).filter(Boolean).length;
-      const sentenceWordCount = normalizeEnglishText(lesson.sentence).split(" ").filter(Boolean).length;
-      return (
-        !ENGLISH_ADVANCED_WORD_SET.has(answer) &&
-        (ENGLISH_STARTER_WORD_SET.has(answer) || (tokenCount === 1 && answer.length <= 6 && sentenceWordCount <= 6))
-      );
-    });
-    return starterPool.length >= 4 ? starterPool : ENGLISH_ALL_LESSON_INDEXES;
-  }
-
-  if (level.key === "advanced") {
-    const advancedPool = ENGLISH_ALL_LESSON_INDEXES.filter((index) => {
-      const lesson = ENGLISH_LESSONS[index];
-      if (!lesson) return false;
-      const answer = String(lesson.english || "").trim().toLowerCase();
-      const sentenceWordCount = normalizeEnglishText(lesson.sentence).split(" ").filter(Boolean).length;
-      const tokenCount = answer.split(/\s+/).filter(Boolean).length;
-      return ENGLISH_ADVANCED_WORD_SET.has(answer) || tokenCount >= 3 || answer.length >= 14 || sentenceWordCount >= 9;
-    });
-    return advancedPool.length >= 4 ? advancedPool : ENGLISH_ALL_LESSON_INDEXES;
-  }
-
-  if (level.key === "intermediate") {
-    const intermediatePool = ENGLISH_ALL_LESSON_INDEXES.filter((index) => {
-      const lesson = ENGLISH_LESSONS[index];
-      if (!lesson) return false;
-      const answer = String(lesson.english || "").trim().toLowerCase();
-      const tokenCount = answer.split(/\s+/).filter(Boolean).length;
-      const sentenceWordCount = normalizeEnglishText(lesson.sentence).split(" ").filter(Boolean).length;
-      return !ENGLISH_ADVANCED_WORD_SET.has(answer) && (tokenCount >= 2 || answer.length >= 8 || sentenceWordCount >= 7);
-    });
-    return intermediatePool.length >= 4 ? intermediatePool : ENGLISH_ALL_LESSON_INDEXES;
-  }
-
-  const beginnerPool = ENGLISH_ALL_LESSON_INDEXES.filter((index) => {
+  const primaryPool = ENGLISH_ALL_LESSON_INDEXES.filter((index) => {
     const lesson = ENGLISH_LESSONS[index];
     if (!lesson) return false;
-    const answer = String(lesson.english || "").trim().toLowerCase();
-    const tokenCount = answer.split(/\s+/).filter(Boolean).length;
-    const sentenceWordCount = normalizeEnglishText(lesson.sentence).split(" ").filter(Boolean).length;
-    return !ENGLISH_ADVANCED_WORD_SET.has(answer) && !ENGLISH_STARTER_WORD_SET.has(answer) && tokenCount <= 2 && answer.length <= 10 && sentenceWordCount <= 8;
+    return classifyEnglishWordLevel(lesson.english) === level.key;
   });
-  return beginnerPool.length >= 4 ? beginnerPool : ENGLISH_ALL_LESSON_INDEXES;
+  if (primaryPool.length >= 4) {
+    return primaryPool;
+  }
+
+  const fallbackOrder = {
+    starter: ["beginner", "intermediate", "advanced"],
+    beginner: ["starter", "intermediate", "advanced"],
+    intermediate: ["beginner", "advanced", "starter"],
+    advanced: ["intermediate", "beginner", "starter"]
+  };
+
+  const mergedPool = [...primaryPool];
+  const seen = new Set(primaryPool);
+  (fallbackOrder[level.key] || []).forEach((fallbackLevel) => {
+    ENGLISH_ALL_LESSON_INDEXES.forEach((index) => {
+      if (seen.has(index)) return;
+      const lesson = ENGLISH_LESSONS[index];
+      if (!lesson) return;
+      if (classifyEnglishWordLevel(lesson.english) !== fallbackLevel) return;
+      mergedPool.push(index);
+      seen.add(index);
+    });
+  });
+
+  return mergedPool.length > 0 ? mergedPool : ENGLISH_ALL_LESSON_INDEXES;
 }
 
 function getEnglishLevelPool(levelKey) {
