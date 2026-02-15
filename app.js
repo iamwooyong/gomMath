@@ -58,6 +58,13 @@ const ENGLISH_LEVELS = {
   advanced: { key: "advanced", label: "고급(고등학교)" }
 };
 const ENGLISH_LEVEL_KEYS = Object.keys(ENGLISH_LEVELS);
+const SCIENCE_LEVELS = {
+  starter: { key: "starter", label: "스타터(유치원)" },
+  beginner: { key: "beginner", label: "초급(초등학생)" },
+  intermediate: { key: "intermediate", label: "중급(중학교)" },
+  advanced: { key: "advanced", label: "고급(고등학교)" }
+};
+const SCIENCE_LEVEL_KEYS = Object.keys(SCIENCE_LEVELS);
 const HISTORY_LEVELS = {
   grade4: { key: "grade4", label: "한국사 4급" },
   grade3: { key: "grade3", label: "한국사 3급" },
@@ -1954,6 +1961,305 @@ HISTORY_LEVEL_KEYS.forEach((levelKey) => {
   HISTORY_QUESTION_BANK[levelKey] = dedupeHistoryQuestions(mergedQuestions);
 });
 
+const SCIENCE_QUESTION_BANK = {
+  starter: [
+    {
+      question: "해가 떠 있는 시간은 언제일까요?",
+      options: ["낮", "밤", "새벽", "자정"],
+      answer: "낮",
+      explanation: "해가 떠 있는 시간은 보통 낮이에요."
+    },
+    {
+      question: "소리를 들을 때 사용하는 신체 기관은 무엇일까요?",
+      options: ["귀", "코", "손", "눈"],
+      answer: "귀",
+      explanation: "귀는 소리를 듣는 역할을 해요."
+    },
+    {
+      question: "냄새를 맡을 때 사용하는 신체 기관은 무엇일까요?",
+      options: ["코", "귀", "발", "입"],
+      answer: "코",
+      explanation: "코로 냄새를 맡을 수 있어요."
+    },
+    {
+      question: "얼음은 어떤 상태의 물질일까요?",
+      options: ["고체", "액체", "기체", "플라스마"],
+      answer: "고체",
+      explanation: "얼음은 단단한 고체 상태예요."
+    },
+    {
+      question: "물을 많이 주면 잘 자라는 것은 무엇일까요?",
+      options: ["식물", "돌", "장난감", "종이컵"],
+      answer: "식물",
+      explanation: "식물은 물을 받아 자라요."
+    },
+    {
+      question: "하늘에서 비가 올 때 가장 잘 보이는 것은 무엇일까요?",
+      options: ["구름", "별", "달", "해"],
+      answer: "구름",
+      explanation: "비는 보통 비구름에서 내려요."
+    },
+    {
+      question: "낮에 햇빛이 비치면 생기는 것은 무엇일까요?",
+      options: ["그림자", "눈", "얼음", "안개"],
+      answer: "그림자",
+      explanation: "빛이 물체를 만나면 그림자가 생겨요."
+    },
+    {
+      question: "숨을 쉴 때 우리 몸으로 들어오는 것은 무엇일까요?",
+      options: ["공기", "모래", "나무", "돌"],
+      answer: "공기",
+      explanation: "우리는 공기를 들이마시며 숨 쉬어요."
+    },
+    {
+      question: "밤하늘에서 반짝이는 천체로 가장 알맞은 것은 무엇일까요?",
+      options: ["별", "구름", "비", "무지개"],
+      answer: "별",
+      explanation: "별은 밤하늘에서 반짝여 보여요."
+    },
+    {
+      question: "눈이 올 때 하얗게 쌓이는 것은 무엇일까요?",
+      options: ["눈", "모래", "낙엽", "물고기"],
+      answer: "눈",
+      explanation: "눈은 하얀 얼음 결정이 모여 내리는 거예요."
+    },
+    {
+      question: "자석에 잘 붙는 물체는 무엇일까요?",
+      options: ["철못", "나무젓가락", "고무공", "플라스틱 컵"],
+      answer: "철못",
+      explanation: "철 성분이 있는 물체는 자석에 잘 붙어요."
+    },
+    {
+      question: "물을 마시면 우리 몸은 어떻게 될까요?",
+      options: ["갈증이 줄어요", "숨을 못 쉬어요", "몸이 작아져요", "귀가 안 들려요"],
+      answer: "갈증이 줄어요",
+      explanation: "물을 마시면 몸에 필요한 수분을 채울 수 있어요."
+    }
+  ],
+  beginner: [
+    {
+      question: "물이 100°C에서 끓으면 주로 어떤 상태가 될까요?",
+      options: ["기체(수증기)", "고체", "금속", "모래"],
+      answer: "기체(수증기)",
+      explanation: "물이 끓으면 수증기 같은 기체 상태로 변해요."
+    },
+    {
+      question: "지구가 공전하는 중심 천체는 무엇일까요?",
+      options: ["태양", "달", "화성", "금성"],
+      answer: "태양",
+      explanation: "지구는 태양 주위를 공전해요."
+    },
+    {
+      question: "식물이 스스로 양분을 만드는 작용은 무엇일까요?",
+      options: ["광합성", "호흡", "발효", "응축"],
+      answer: "광합성",
+      explanation: "식물은 광합성으로 양분을 만들어요."
+    },
+    {
+      question: "달의 모양이 바뀌어 보이는 주된 이유는 무엇일까요?",
+      options: ["달과 지구, 태양의 위치 변화", "달이 매일 커졌다 작아짐", "구름의 색 변화", "지구 자전 속도 감소"],
+      answer: "달과 지구, 태양의 위치 변화",
+      explanation: "세 천체의 상대적 위치가 달의 위상 변화를 만들어요."
+    },
+    {
+      question: "전구가 켜지려면 전기 회로는 어떤 상태여야 할까요?",
+      options: ["닫힌 회로", "열린 회로", "끊긴 회로", "없어도 됨"],
+      answer: "닫힌 회로",
+      explanation: "전류가 흐르려면 회로가 닫혀 있어야 해요."
+    },
+    {
+      question: "지구의 계절 변화에 가장 큰 영향을 주는 것은 무엇일까요?",
+      options: ["지구의 자전축 기울기와 공전", "달의 공전만", "구름 양", "바람 세기"],
+      answer: "지구의 자전축 기울기와 공전",
+      explanation: "지구 축 기울기와 공전 때문에 계절이 달라져요."
+    },
+    {
+      question: "고체가 열을 받아 액체로 변하는 현상은 무엇일까요?",
+      options: ["녹는 현상", "증발", "응결", "승화"],
+      answer: "녹는 현상",
+      explanation: "고체가 액체로 변하는 것은 녹는 현상이에요."
+    },
+    {
+      question: "화석은 주로 무엇을 알려줄까요?",
+      options: ["옛 생물과 옛 환경", "오늘 날씨", "내일 기온", "전기 사용량"],
+      answer: "옛 생물과 옛 환경",
+      explanation: "화석은 과거 생물과 환경 정보를 알려줘요."
+    },
+    {
+      question: "빛이 직진한다는 성질을 이용한 현상은 무엇일까요?",
+      options: ["그림자 생성", "소리 반사", "중력 증가", "질량 보존"],
+      answer: "그림자 생성",
+      explanation: "빛이 곧게 가기 때문에 그림자가 생겨요."
+    },
+    {
+      question: "물의 상태 변화 중 액체가 기체로 변하는 것은 무엇일까요?",
+      options: ["증발", "응고", "응축", "승화"],
+      answer: "증발",
+      explanation: "액체가 기체로 변하는 현상은 증발이에요."
+    },
+    {
+      question: "지층이 쌓여 만들어지는 순서를 알맞게 고르면 무엇일까요?",
+      options: ["아래가 오래되고 위가 새로운 층", "위가 오래되고 아래가 새로운 층", "항상 같은 나이", "무작위로 뒤바뀜"],
+      answer: "아래가 오래되고 위가 새로운 층",
+      explanation: "지층은 보통 아래층이 먼저 쌓여 더 오래돼요."
+    },
+    {
+      question: "생태계에서 생산자에 해당하는 것은 무엇일까요?",
+      options: ["식물", "호랑이", "사람", "버섯"],
+      answer: "식물",
+      explanation: "식물은 광합성으로 양분을 만들기 때문에 생산자예요."
+    }
+  ],
+  intermediate: [
+    {
+      question: "세포에서 유전 정보를 주로 담고 있는 구조는 무엇일까요?",
+      options: ["핵", "미토콘드리아", "리보솜", "세포막"],
+      answer: "핵",
+      explanation: "핵에는 DNA가 들어 있어 유전 정보를 담아요."
+    },
+    {
+      question: "뉴턴의 제2법칙을 올바르게 나타낸 식은 무엇일까요?",
+      options: ["F = ma", "E = mc²", "V = IR", "pH = -log[H⁺]"],
+      answer: "F = ma",
+      explanation: "힘은 질량과 가속도의 곱으로 나타내요."
+    },
+    {
+      question: "중성 용액의 pH 값으로 가장 알맞은 것은 무엇일까요?",
+      options: ["7", "1", "3", "11"],
+      answer: "7",
+      explanation: "중성 용액은 보통 pH 7이에요."
+    },
+    {
+      question: "전류의 단위는 무엇일까요?",
+      options: ["암페어(A)", "볼트(V)", "와트(W)", "옴(Ω)"],
+      answer: "암페어(A)",
+      explanation: "전류의 SI 단위는 암페어예요."
+    },
+    {
+      question: "전기 저항의 단위는 무엇일까요?",
+      options: ["옴(Ω)", "암페어(A)", "줄(J)", "뉴턴(N)"],
+      answer: "옴(Ω)",
+      explanation: "저항은 옴으로 나타내요."
+    },
+    {
+      question: "원소를 원자 번호 순으로 배열한 표는 무엇일까요?",
+      options: ["주기율표", "별자리표", "기상도", "성적표"],
+      answer: "주기율표",
+      explanation: "주기율표는 원자 번호에 따라 원소를 배열한 표예요."
+    },
+    {
+      question: "질량 보존 법칙에 대한 설명으로 옳은 것은 무엇일까요?",
+      options: ["반응 전후 전체 질량은 같다", "생성물 질량이 항상 더 크다", "반응물 질량이 항상 더 크다", "질량은 항상 사라진다"],
+      answer: "반응 전후 전체 질량은 같다",
+      explanation: "닫힌계에서 화학 반응 전후 질량 총합은 같아요."
+    },
+    {
+      question: "판 경계에서 지진과 화산 활동이 활발한 주된 이유는 무엇일까요?",
+      options: ["판이 이동하며 서로 상호작용하기 때문", "바다색이 달라서", "달의 인력만으로", "비가 많이 와서"],
+      answer: "판이 이동하며 서로 상호작용하기 때문",
+      explanation: "판의 충돌, 발산, 변환 운동이 지질 활동을 일으켜요."
+    },
+    {
+      question: "빛이 서로 다른 매질 경계면을 지날 때 진행 방향이 바뀌는 현상은 무엇일까요?",
+      options: ["굴절", "회절", "반사", "간섭"],
+      answer: "굴절",
+      explanation: "매질이 바뀌면 빛의 속도가 달라져 굴절이 일어나요."
+    },
+    {
+      question: "속력을 구하는 기본 식으로 알맞은 것은 무엇일까요?",
+      options: ["속력 = 거리 / 시간", "속력 = 질량 / 힘", "속력 = 전압 × 전류", "속력 = 온도 / 압력"],
+      answer: "속력 = 거리 / 시간",
+      explanation: "단위 시간당 이동한 거리가 속력이에요."
+    },
+    {
+      question: "금속 원자와 비금속 원자가 전자를 주고받아 형성하는 결합은 무엇일까요?",
+      options: ["이온 결합", "공유 결합", "수소 결합", "금속 결합"],
+      answer: "이온 결합",
+      explanation: "전자 이동으로 양이온과 음이온이 결합해요."
+    },
+    {
+      question: "광합성 결과로 생성되는 물질로 옳은 것은 무엇일까요?",
+      options: ["포도당과 산소", "질소와 헬륨", "메탄과 암모니아", "철과 구리"],
+      answer: "포도당과 산소",
+      explanation: "광합성으로 포도당을 만들고 산소를 방출해요."
+    }
+  ],
+  advanced: [
+    {
+      question: "해당 과정(glycolysis)이 주로 일어나는 세포 내 위치는 어디일까요?",
+      options: ["세포질", "핵", "골지체", "리소좀"],
+      answer: "세포질",
+      explanation: "해당 과정은 세포질에서 진행돼요."
+    },
+    {
+      question: "DNA 복제 방식으로 옳은 것은 무엇일까요?",
+      options: ["반보존적 복제", "완전보존적 복제", "분산적 복제만", "무작위 복제"],
+      answer: "반보존적 복제",
+      explanation: "새 DNA는 기존 가닥 1개와 새 가닥 1개로 이루어져요."
+    },
+    {
+      question: "르샤틀리에 원리에 대한 설명으로 옳은 것은 무엇일까요?",
+      options: ["평형계가 변화에 대응해 그 변화를 줄이는 방향으로 이동", "평형계는 항상 정지", "압력 변화는 영향 없음", "농도 변화는 영향 없음"],
+      answer: "평형계가 변화에 대응해 그 변화를 줄이는 방향으로 이동",
+      explanation: "평형은 외부 조건 변화에 대해 상쇄 방향으로 이동해요."
+    },
+    {
+      question: "이상기체 상태방정식으로 알맞은 것은 무엇일까요?",
+      options: ["PV = nRT", "E = hf", "F = Gm₁m₂/r²", "Q = mcΔT"],
+      answer: "PV = nRT",
+      explanation: "이상기체의 압력, 부피, 몰수, 온도 관계식이에요."
+    },
+    {
+      question: "전기 유도 현상에서 유도 기전력이 생기는 직접 원인은 무엇일까요?",
+      options: ["자기선속 변화", "온도 고정", "질량 증가", "압력 일정"],
+      answer: "자기선속 변화",
+      explanation: "패러데이 법칙에 따라 자기선속 변화가 유도 기전력을 만들어요."
+    },
+    {
+      question: "광전 효과에서 전자가 방출되기 위한 핵심 조건은 무엇일까요?",
+      options: ["임계 진동수 이상의 빛", "빛의 세기만 증가", "온도 상승", "압력 증가"],
+      answer: "임계 진동수 이상의 빛",
+      explanation: "진동수가 임계값보다 커야 전자가 방출돼요."
+    },
+    {
+      question: "완충 용액의 주요 특징으로 옳은 것은 무엇일까요?",
+      options: ["소량의 산/염기 첨가에도 pH 변화가 작다", "항상 pH 7이다", "반드시 강산만 포함", "반드시 강염기만 포함"],
+      answer: "소량의 산/염기 첨가에도 pH 변화가 작다",
+      explanation: "완충 용액은 pH 변화를 억제해요."
+    },
+    {
+      question: "산화에 대한 설명으로 옳은 것은 무엇일까요?",
+      options: ["산화수 증가 또는 전자 잃음", "산화수 감소", "전자 얻음", "반응 정지"],
+      answer: "산화수 증가 또는 전자 잃음",
+      explanation: "산화는 전자를 잃는 과정으로 볼 수 있어요."
+    },
+    {
+      question: "반응 속도를 증가시키는 촉매의 역할은 무엇일까요?",
+      options: ["활성화 에너지를 낮춘다", "평형 상수를 바꾼다", "생성물의 종류를 바꾼다", "반응열의 부호를 바꾼다"],
+      answer: "활성화 에너지를 낮춘다",
+      explanation: "촉매는 다른 경로를 제공해 활성화 에너지를 낮춰요."
+    },
+    {
+      question: "스넬의 법칙을 올바르게 나타낸 식은 무엇일까요?",
+      options: ["n₁sinθ₁ = n₂sinθ₂", "F = ma", "V = IR", "pV = const (항상)"],
+      answer: "n₁sinθ₁ = n₂sinθ₂",
+      explanation: "굴절률과 입사/굴절각의 관계를 나타내요."
+    },
+    {
+      question: "건설적 간섭이 일어나는 조건으로 가장 알맞은 것은 무엇일까요?",
+      options: ["위상 차가 0 또는 2π의 정수배", "위상 차가 π/2", "진폭이 0", "주파수가 다르면 항상 간섭 불가"],
+      answer: "위상 차가 0 또는 2π의 정수배",
+      explanation: "동위상일 때 파동이 강화되어 건설적 간섭이 나타나요."
+    },
+    {
+      question: "신경 세포의 활동 전위 상승 구간에서 주로 일어나는 일은 무엇일까요?",
+      options: ["Na⁺ 유입 증가", "K⁺ 유출 증가만", "Cl⁻ 유입만", "ATP 완전 고갈"],
+      answer: "Na⁺ 유입 증가",
+      explanation: "전압 개폐성 Na⁺ 통로가 열리며 막전위가 빠르게 상승해요."
+    }
+  ]
+};
+
 const SUBJECT_COPY = {
   math: {
     title: "곰돌이 수학",
@@ -1969,6 +2275,11 @@ const SUBJECT_COPY = {
     title: "곰돌이 한국사",
     subtitle: "곰돌이 선생님과 한국사능력검정시험 문제를 단계별로 연습해요.",
     bearMessage: "안녕! 난 곰돌이 선생님이야. 오늘은 한국사 실력을 키워볼까?"
+  },
+  science: {
+    title: "곰돌이 과학",
+    subtitle: "곰돌이 선생님과 생활 속 과학 개념을 단계별로 연습해요.",
+    bearMessage: "안녕! 난 곰돌이 선생님이야. 오늘은 과학 탐험을 시작해볼까?"
   }
 };
 
@@ -1977,6 +2288,7 @@ const els = {
   mathViews: Array.from(document.querySelectorAll(".math-view")),
   englishViews: Array.from(document.querySelectorAll(".english-view")),
   historyViews: Array.from(document.querySelectorAll(".history-view")),
+  scienceViews: Array.from(document.querySelectorAll(".science-view")),
   heroTitle: document.querySelector("#heroTitle"),
   heroSubtitle: document.querySelector("#heroSubtitle"),
 
@@ -2027,9 +2339,11 @@ const els = {
   refreshRankingBtn: document.querySelector("#refreshRankingBtn"),
   refreshEnglishRankingBtn: document.querySelector("#refreshEnglishRankingBtn"),
   refreshHistoryRankingBtn: document.querySelector("#refreshHistoryRankingBtn"),
+  refreshScienceRankingBtn: document.querySelector("#refreshScienceRankingBtn"),
   rankingList: document.querySelector("#rankingList"),
   englishRankingList: document.querySelector("#englishRankingList"),
   historyRankingList: document.querySelector("#historyRankingList"),
+  scienceRankingList: document.querySelector("#scienceRankingList"),
 
   englishStartBtn: document.querySelector("#englishStartBtn"),
   englishGuide: document.querySelector(".english-guide"),
@@ -2071,7 +2385,22 @@ const els = {
   historyAccuracy: document.querySelector("#historyAccuracy"),
   historyWrongNoteGuide: document.querySelector("#historyWrongNoteGuide"),
   historyWrongNoteList: document.querySelector("#historyWrongNoteList"),
-  historyRetryWrongBtn: document.querySelector("#historyRetryWrongBtn")
+  historyRetryWrongBtn: document.querySelector("#historyRetryWrongBtn"),
+
+  scienceStartBtn: document.querySelector("#scienceStartBtn"),
+  scienceLevelButtons: Array.from(document.querySelectorAll("[data-science-level]")),
+  scienceQuestionCount: document.querySelector("#scienceQuestionCount"),
+  scienceModePill: document.querySelector("#scienceModePill"),
+  sciencePrompt: document.querySelector("#sciencePrompt"),
+  scienceOptions: document.querySelector("#scienceOptions"),
+  scienceNextBtn: document.querySelector("#scienceNextBtn"),
+  scienceFeedback: document.querySelector("#scienceFeedback"),
+  scienceFeedbackBear: document.querySelector("#scienceFeedbackBear"),
+  scienceFeedbackText: document.querySelector("#scienceFeedbackText"),
+  scienceCorrect: document.querySelector("#scienceCorrect"),
+  scienceStreak: document.querySelector("#scienceStreak"),
+  scienceBestStreak: document.querySelector("#scienceBestStreak"),
+  scienceAccuracy: document.querySelector("#scienceAccuracy")
 };
 
 const state = {
@@ -2094,6 +2423,7 @@ const state = {
   rankingCorrect: null,
   englishRankingCorrect: null,
   historyRankingCorrect: null,
+  scienceRankingCorrect: null,
   subject: "math"
 };
 
@@ -2150,6 +2480,20 @@ const historyState = {
   reviewTotal: 0
 };
 
+const scienceState = {
+  level: "starter",
+  sessionActive: false,
+  sessionStartedAt: 0,
+  questionNumber: 0,
+  correct: 0,
+  wrong: 0,
+  streak: 0,
+  bestStreak: 0,
+  answered: false,
+  current: null,
+  usedQuestionIndexes: new Set()
+};
+
 let googleScriptLoadPromise = null;
 
 let profile = loadProfile();
@@ -2182,6 +2526,7 @@ function createDefaultProfile() {
     lastLevel: "easy",
     lastEnglishLevel: "starter",
     lastHistoryLevel: "grade4",
+    lastScienceLevel: "starter",
     theme: "pink"
   };
 }
@@ -2215,6 +2560,9 @@ function loadProfile() {
     }
     if (!HISTORY_LEVELS[merged.lastHistoryLevel]) {
       merged.lastHistoryLevel = defaults.lastHistoryLevel;
+    }
+    if (!SCIENCE_LEVELS[merged.lastScienceLevel]) {
+      merged.lastScienceLevel = defaults.lastScienceLevel;
     }
 
     return merged;
@@ -2267,6 +2615,7 @@ function loadTabPreference() {
     const saved = String(localStorage.getItem(TAB_STORAGE_KEY) || "").trim();
     if (saved === "english") return "english";
     if (saved === "history") return "history";
+    if (saved === "science") return "science";
     return "math";
   } catch {
     return "math";
@@ -2296,7 +2645,8 @@ function applySubjectCopy(subjectKey) {
 
 function setSubjectTab(tabKey, options = {}) {
   const { persist = true } = options;
-  const safeTab = tabKey === "english" || tabKey === "history" ? tabKey : "math";
+  const validTabs = new Set(["math", "english", "history", "science"]);
+  const safeTab = validTabs.has(tabKey) ? tabKey : "math";
   state.subject = safeTab;
 
   setActive(els.subjectTabs, "subject", safeTab);
@@ -2308,6 +2658,9 @@ function setSubjectTab(tabKey, options = {}) {
   });
   els.historyViews.forEach((element) => {
     element.classList.toggle("hidden", safeTab !== "history");
+  });
+  els.scienceViews.forEach((element) => {
+    element.classList.toggle("hidden", safeTab !== "science");
   });
   applySubjectCopy(safeTab);
   document.title = "곰돌이 선생님";
@@ -2321,6 +2674,9 @@ function setSubjectTab(tabKey, options = {}) {
   }
   if (safeTab === "history" && !historyState.sessionActive && !historyState.current) {
     renderHistoryIdle();
+  }
+  if (safeTab === "science" && !scienceState.sessionActive && !scienceState.current) {
+    renderScienceIdle();
   }
 
   if (persist) {
@@ -2440,6 +2796,12 @@ function setBear(mood, message) {
   }
   if (els.historyFeedbackBear) {
     els.historyFeedbackBear.dataset.mood = mood;
+  }
+  if (els.scienceFeedback) {
+    els.scienceFeedback.dataset.mood = mood;
+  }
+  if (els.scienceFeedbackBear) {
+    els.scienceFeedbackBear.dataset.mood = mood;
   }
 }
 
@@ -2621,6 +2983,21 @@ async function fetchHistoryRankings(limit = 10) {
   }
 }
 
+async function fetchScienceRankings(limit = 10) {
+  try {
+    const response = await fetch(getApiUrl(`/api/science/rankings?limit=${encodeURIComponent(limit)}`));
+    if (!response.ok) {
+      throw new Error("failed to fetch science rankings");
+    }
+
+    const payload = await response.json();
+    return Array.isArray(payload.items) ? payload.items : [];
+  } catch (error) {
+    console.error("fetchScienceRankings failed", error);
+    return [];
+  }
+}
+
 async function refreshMathRankings() {
   const items = await fetchMathRankings(10);
   if (authState.user) {
@@ -2655,8 +3032,19 @@ async function refreshHistoryRankings() {
   renderRanking(els.historyRankingList, items);
 }
 
+async function refreshScienceRankings() {
+  const items = await fetchScienceRankings(10);
+  if (authState.user) {
+    const me = items.find((item) => item.userId === authState.user.id);
+    state.scienceRankingCorrect = me ? Number(me.totalCorrect || 0) : 0;
+  } else {
+    state.scienceRankingCorrect = null;
+  }
+  renderRanking(els.scienceRankingList, items);
+}
+
 async function refreshRankings() {
-  await Promise.all([refreshMathRankings(), refreshEnglishRankings(), refreshHistoryRankings()]);
+  await Promise.all([refreshMathRankings(), refreshEnglishRankings(), refreshHistoryRankings(), refreshScienceRankings()]);
 }
 
 function renderGoogleSignInButton() {
@@ -2991,6 +3379,11 @@ function setHistoryFeedback(message) {
   els.historyFeedbackText.textContent = `곰돌이 선생님: ${message}`;
 }
 
+function setScienceFeedback(message) {
+  if (!els.scienceFeedbackText) return;
+  els.scienceFeedbackText.textContent = `곰돌이 선생님: ${message}`;
+}
+
 function getEnglishLevel(levelKey) {
   return ENGLISH_LEVELS[levelKey] || ENGLISH_LEVELS.starter;
 }
@@ -3003,6 +3396,16 @@ function getHistoryQuestions(levelKey) {
   const safeLevel = getHistoryLevel(levelKey).key;
   const questions = HISTORY_QUESTION_BANK[safeLevel];
   return Array.isArray(questions) && questions.length > 0 ? questions : HISTORY_QUESTION_BANK.grade4;
+}
+
+function getScienceLevel(levelKey) {
+  return SCIENCE_LEVELS[levelKey] || SCIENCE_LEVELS.starter;
+}
+
+function getScienceQuestions(levelKey) {
+  const safeLevel = getScienceLevel(levelKey).key;
+  const questions = SCIENCE_QUESTION_BANK[safeLevel];
+  return Array.isArray(questions) && questions.length > 0 ? questions : SCIENCE_QUESTION_BANK.starter;
 }
 
 function normalizeEnglishAnswer(answer) {
@@ -3073,6 +3476,14 @@ function updateHistoryLevelUi() {
   }
 }
 
+function updateScienceLevelUi() {
+  const level = getScienceLevel(scienceState.level);
+  setActive(els.scienceLevelButtons, "scienceLevel", level.key);
+  if (els.scienceStartBtn) {
+    els.scienceStartBtn.textContent = `${level.label} 과학 10문제 시작`;
+  }
+}
+
 function pickHistoryQuestionIndex() {
   const pool = getHistoryQuestions(historyState.level);
   const allIndexes = Array.from({ length: pool.length }, (_, index) => index);
@@ -3090,6 +3501,32 @@ function pickHistoryQuestionIndex() {
 function buildHistoryQuestion() {
   const pool = getHistoryQuestions(historyState.level);
   const questionIndex = pickHistoryQuestionIndex();
+  const question = pool[questionIndex];
+  return {
+    question: question.question,
+    options: shuffleList([...question.options]),
+    answer: question.answer,
+    explanation: question.explanation
+  };
+}
+
+function pickScienceQuestionIndex() {
+  const pool = getScienceQuestions(scienceState.level);
+  const allIndexes = Array.from({ length: pool.length }, (_, index) => index);
+  let availableIndexes = allIndexes.filter((index) => !scienceState.usedQuestionIndexes.has(index));
+  if (availableIndexes.length === 0) {
+    scienceState.usedQuestionIndexes.clear();
+    availableIndexes = allIndexes;
+  }
+
+  const questionIndex = availableIndexes[randomInt(0, availableIndexes.length - 1)];
+  scienceState.usedQuestionIndexes.add(questionIndex);
+  return questionIndex;
+}
+
+function buildScienceQuestion() {
+  const pool = getScienceQuestions(scienceState.level);
+  const questionIndex = pickScienceQuestionIndex();
   const question = pool[questionIndex];
   return {
     question: question.question,
@@ -3946,6 +4383,150 @@ function updateHistoryStats() {
   els.historyAccuracy.textContent = `${accuracy}%`;
 }
 
+function updateScienceStats() {
+  const solved = scienceState.correct + scienceState.wrong;
+  const accuracy = solved > 0 ? Math.round((scienceState.correct / solved) * 100) : 0;
+  els.scienceCorrect.textContent = String(scienceState.correct);
+  els.scienceStreak.textContent = String(scienceState.streak);
+  els.scienceBestStreak.textContent = String(scienceState.bestStreak);
+  els.scienceAccuracy.textContent = `${accuracy}%`;
+}
+
+function renderScienceIdle() {
+  const level = getScienceLevel(scienceState.level);
+  scienceState.current = null;
+  scienceState.answered = false;
+  scienceState.sessionActive = false;
+  els.scienceQuestionCount.textContent = "준비 완료";
+  els.scienceModePill.textContent = `${level.label} 객관식`;
+  els.sciencePrompt.textContent = `${level.label} 시작 버튼을 누르면 과학 10문제가 나와요.`;
+  els.scienceOptions.innerHTML = "";
+  els.scienceNextBtn.textContent = "다음 문제";
+  els.scienceNextBtn.disabled = true;
+  setScienceFeedback(`${level.label} 준비 완료! 시작 버튼을 눌러보자.`);
+  updateScienceLevelUi();
+  updateScienceStats();
+}
+
+function renderScienceQuestion() {
+  if (!scienceState.current) return;
+
+  const level = getScienceLevel(scienceState.level);
+  els.scienceQuestionCount.textContent = `${scienceState.questionNumber} / ${TARGET_QUESTIONS} 문제`;
+  els.scienceModePill.textContent = `${level.label} 객관식`;
+  els.sciencePrompt.textContent = scienceState.current.question;
+  els.scienceOptions.innerHTML = scienceState.current.options
+    .map((option) => {
+      return `<button class="english-option" type="button" data-science-option="${option}">${option}</button>`;
+    })
+    .join("");
+  els.scienceNextBtn.textContent = scienceState.questionNumber >= TARGET_QUESTIONS ? "결과 보기" : "다음 문제";
+  els.scienceNextBtn.disabled = true;
+  scienceState.answered = false;
+}
+
+function startScienceSession() {
+  const level = getScienceLevel(scienceState.level);
+  scienceState.sessionActive = true;
+  scienceState.sessionStartedAt = Date.now();
+  scienceState.questionNumber = 1;
+  scienceState.correct = 0;
+  scienceState.wrong = 0;
+  scienceState.streak = 0;
+  scienceState.bestStreak = 0;
+  scienceState.answered = false;
+  scienceState.current = null;
+  scienceState.usedQuestionIndexes.clear();
+  scienceState.current = buildScienceQuestion();
+  updateScienceStats();
+  renderScienceQuestion();
+  setScienceFeedback(`${level.label} 과학 시작! 차근차근 풀어보자.`);
+  setBear("thinking", `${level.label} 과학 라운드 시작!`);
+}
+
+function completeScienceSession() {
+  scienceState.sessionActive = false;
+  scienceState.answered = false;
+  scienceState.current = null;
+
+  const total = scienceState.correct + scienceState.wrong;
+  const accuracy = total > 0 ? Math.round((scienceState.correct / total) * 100) : 0;
+  let mood = "happy";
+  if (accuracy >= 90) mood = "celebrate";
+  if (accuracy < 60) mood = "thinking";
+
+  els.scienceQuestionCount.textContent = "과학 라운드 완료";
+  els.scienceModePill.textContent = "과학 라운드 완료";
+  els.sciencePrompt.textContent = `총 ${scienceState.correct}/${total}문제 정답 (${accuracy}%)`;
+  els.scienceOptions.innerHTML = "";
+  els.scienceNextBtn.textContent = "다음 문제";
+  els.scienceNextBtn.disabled = true;
+  setScienceFeedback(`완료! ${getScienceLevel(scienceState.level).label} 라운드를 끝냈어요. 다시 도전해볼까?`);
+  updateScienceStats();
+  setBear(mood, "과학 라운드 완료! 관찰력이 점점 좋아지고 있어.");
+
+  const summary = buildScienceRoundSummary();
+  void syncScienceRoundResult(summary);
+}
+
+function handleScienceOptionSelect(option) {
+  if (!scienceState.sessionActive || scienceState.answered || !scienceState.current) return;
+
+  scienceState.answered = true;
+  const isCorrect = option === scienceState.current.answer;
+
+  if (isCorrect) {
+    scienceState.correct += 1;
+    scienceState.streak += 1;
+    scienceState.bestStreak = Math.max(scienceState.bestStreak, scienceState.streak);
+    setScienceFeedback(`정답! ${scienceState.current.explanation}`);
+    setBear("love", "과학 정답! 곰돌이 선생님이 칭찬 중이야.");
+  } else {
+    scienceState.wrong += 1;
+    scienceState.streak = 0;
+    setScienceFeedback(`오답! 정답은 "${scienceState.current.answer}" · ${scienceState.current.explanation}`);
+    setBear("cry", "괜찮아! 다음 문제에서 만회하자.");
+  }
+
+  Array.from(els.scienceOptions.querySelectorAll(".english-option")).forEach((button) => {
+    if (!(button instanceof HTMLElement)) return;
+    const value = button.dataset.scienceOption || "";
+    button.setAttribute("disabled", "true");
+    if (value === scienceState.current.answer) {
+      button.classList.add("is-correct");
+      return;
+    }
+    if (value === option && !isCorrect) {
+      button.classList.add("is-wrong");
+    }
+  });
+
+  updateScienceStats();
+  if (isCorrect) {
+    handleScienceNext();
+    return;
+  }
+
+  els.scienceNextBtn.textContent = scienceState.questionNumber >= TARGET_QUESTIONS ? "결과 보기" : "다음 문제";
+  els.scienceNextBtn.disabled = false;
+  els.scienceNextBtn.focus();
+}
+
+function handleScienceNext() {
+  if (!scienceState.answered) return;
+
+  if (scienceState.questionNumber >= TARGET_QUESTIONS) {
+    completeScienceSession();
+    return;
+  }
+
+  scienceState.questionNumber += 1;
+  scienceState.current = buildScienceQuestion();
+  renderScienceQuestion();
+  setBear("idle", "좋아! 과학 다음 문제로 가자.");
+  setScienceFeedback("다음 문제도 집중해서 풀어보자.");
+}
+
 function renderHistoryWrongNotes() {
   if (!els.historyWrongNoteList) return;
 
@@ -4533,6 +5114,54 @@ async function syncHistoryRoundResult(summary) {
   setAuthStatus("한국사 라운드 저장에 실패했어요. 로그인 상태와 DB 설정을 확인해 주세요.");
 }
 
+async function saveScienceSessionToDb(summary) {
+  if (!authState.user || !authState.token) {
+    return { ok: false, reason: "not-logged-in" };
+  }
+
+  try {
+    const response = await fetch(getApiUrl("/api/science/sessions"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authState.token}`
+      },
+      body: JSON.stringify(summary)
+    });
+
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({ error: "failed to save" }));
+      throw new Error(payload.error || "failed to save");
+    }
+
+    return { ok: true };
+  } catch (error) {
+    console.error("saveScienceSessionToDb failed", error);
+    return { ok: false, reason: "request-failed" };
+  }
+}
+
+async function syncScienceRoundResult(summary) {
+  if (!authState.user) {
+    return;
+  }
+
+  const result = await saveScienceSessionToDb(summary);
+
+  if (result.ok) {
+    setAuthStatus(`${authState.user.name || "사용자"}님, 과학 라운드 기록이 저장됐어요.`);
+    void refreshScienceRankings();
+    return;
+  }
+
+  if (result.reason === "not-logged-in") {
+    setAuthStatus("로그인하면 과학 라운드 결과를 저장할 수 있어요.");
+    return;
+  }
+
+  setAuthStatus("과학 라운드 저장에 실패했어요. 로그인 상태와 DB 설정을 확인해 주세요.");
+}
+
 function buildRoundSummary() {
   const total = state.sessionCorrect + state.sessionWrong;
   const accuracy = total ? Math.round((state.sessionCorrect / total) * 100) : 0;
@@ -4584,6 +5213,24 @@ function buildHistoryRoundSummary() {
     bestStreak: historyState.bestStreak,
     durationMs,
     externalKey: `history:${getDateKey()}:${historyState.level}:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`
+  };
+}
+
+function buildScienceRoundSummary() {
+  const total = scienceState.correct + scienceState.wrong;
+  const accuracy = total ? Math.round((scienceState.correct / total) * 100) : 0;
+  const durationMs = Math.max(Date.now() - scienceState.sessionStartedAt, 0);
+
+  return {
+    date: getDateKey(),
+    level: scienceState.level,
+    totalQuestions: total,
+    correctAnswers: scienceState.correct,
+    wrongAnswers: scienceState.wrong,
+    accuracy,
+    bestStreak: scienceState.bestStreak,
+    durationMs,
+    externalKey: `science:${getDateKey()}:${scienceState.level}:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`
   };
 }
 
@@ -4813,6 +5460,28 @@ function handleHistoryLevelSelect(nextLevel) {
   }
 }
 
+function handleScienceLevelSelect(nextLevel) {
+  if (!SCIENCE_LEVELS[nextLevel]) return;
+
+  scienceState.level = nextLevel;
+  profile.lastScienceLevel = nextLevel;
+  saveProfile();
+  updateScienceLevelUi();
+  scienceState.usedQuestionIndexes.clear();
+
+  const label = getScienceLevel(nextLevel).label;
+  if (scienceState.sessionActive) {
+    setScienceFeedback(`${label} 난이도로 바꿨어. 다음 문제부터 적용돼요.`);
+    setBear("happy", `${label} 난이도로 변경 완료!`);
+    return;
+  }
+
+  if (state.subject === "science") {
+    renderScienceIdle();
+    setBear("happy", `${label} 난이도 준비 완료!`);
+  }
+}
+
 function handleEnglishLevelSelect(nextLevel) {
   if (!ENGLISH_LEVELS[nextLevel]) return;
 
@@ -5026,6 +5695,7 @@ function handleLogout() {
   state.rankingCorrect = null;
   state.englishRankingCorrect = null;
   state.historyRankingCorrect = null;
+  state.scienceRankingCorrect = null;
   renderAuthUser();
 
   if (window.google?.accounts?.id) {
@@ -5065,6 +5735,12 @@ function bindEvents() {
   els.historyLevelButtons.forEach((button) => {
     button.addEventListener("click", () => {
       handleHistoryLevelSelect(button.dataset.historyLevel);
+    });
+  });
+
+  els.scienceLevelButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      handleScienceLevelSelect(button.dataset.scienceLevel);
     });
   });
 
@@ -5142,6 +5818,10 @@ function bindEvents() {
     void refreshHistoryRankings();
   });
 
+  els.refreshScienceRankingBtn.addEventListener("click", () => {
+    void refreshScienceRankings();
+  });
+
   els.historyRetryWrongBtn.addEventListener("click", () => {
     startHistoryWrongReview();
   });
@@ -5152,6 +5832,10 @@ function bindEvents() {
 
   els.historyStartBtn.addEventListener("click", () => {
     startHistorySession();
+  });
+
+  els.scienceStartBtn.addEventListener("click", () => {
+    startScienceSession();
   });
 
   els.englishOptions.addEventListener("click", (event) => {
@@ -5186,6 +5870,17 @@ function bindEvents() {
 
   els.historyNextBtn.addEventListener("click", () => {
     handleHistoryNext();
+  });
+
+  els.scienceOptions.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    if (!target.classList.contains("english-option")) return;
+    handleScienceOptionSelect(String(target.dataset.scienceOption || ""));
+  });
+
+  els.scienceNextBtn.addEventListener("click", () => {
+    handleScienceNext();
   });
 
   els.englishSpeakActionBtn.addEventListener("click", () => {
@@ -5249,7 +5944,7 @@ function bindEvents() {
 
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Enter") return;
-    if (state.subject !== "english" && state.subject !== "history") return;
+    if (state.subject !== "english" && state.subject !== "history" && state.subject !== "science") return;
 
     const target = event.target;
     if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) return;
@@ -5268,6 +5963,15 @@ function bindEvents() {
         event.preventDefault();
         handleHistoryNext();
       }
+      return;
+    }
+
+    if (state.subject === "science") {
+      if (!scienceState.sessionActive) return;
+      if (scienceState.answered) {
+        event.preventDefault();
+        handleScienceNext();
+      }
     }
   });
 
@@ -5281,12 +5985,14 @@ function init() {
   state.level = LEVELS[profile.lastLevel] ? profile.lastLevel : "easy";
   englishState.level = ENGLISH_LEVELS[profile.lastEnglishLevel] ? profile.lastEnglishLevel : "starter";
   historyState.level = HISTORY_LEVELS[profile.lastHistoryLevel] ? profile.lastHistoryLevel : "grade4";
+  scienceState.level = SCIENCE_LEVELS[profile.lastScienceLevel] ? profile.lastScienceLevel : "starter";
   state.subject = loadTabPreference();
 
   setActive(els.operationButtons, "operation", state.operation);
   setActive(els.levelButtons, "level", state.level);
   setActive(els.englishLevelButtons, "englishLevel", englishState.level);
   setActive(els.historyLevelButtons, "historyLevel", historyState.level);
+  setActive(els.scienceLevelButtons, "scienceLevel", scienceState.level);
 
   applyTheme(profile.theme, { persist: false });
   setThemePicker(false);
@@ -5298,6 +6004,7 @@ function init() {
   setupEnglishVoiceSupport();
   renderEnglishIdle();
   renderHistoryIdle();
+  renderScienceIdle();
   setBear("idle", "안녕! 난 곰돌이 선생님이야. 오늘도 즐겁게 문제 풀어볼까?");
   setFeedback("천천히, 정확하게! 준비되면 시작해요.");
 
