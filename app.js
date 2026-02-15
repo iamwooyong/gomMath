@@ -69,10 +69,25 @@ const ENGLISH_LESSONS = [
   { korean: "공원", english: "park", sentence: "We play in the park." }
 ];
 
+const SUBJECT_COPY = {
+  math: {
+    title: "곰돌이 수학",
+    subtitle: "곰돌이 선생님과 더하기, 빼기, 곱하기, 나누기를 재미있게 연습해요.",
+    bearMessage: "안녕! 난 곰돌이 선생님이야. 오늘도 즐겁게 수학 문제 풀어볼까?"
+  },
+  english: {
+    title: "곰돌이 영어",
+    subtitle: "곰돌이 선생님과 단어, 말하기 미션으로 영어를 재미있게 연습해요.",
+    bearMessage: "안녕! 난 곰돌이 선생님이야. 오늘도 즐겁게 영어 문제 풀어볼까?"
+  }
+};
+
 const els = {
   subjectTabs: Array.from(document.querySelectorAll("[data-subject]")),
   mathViews: Array.from(document.querySelectorAll(".math-view")),
   englishViews: Array.from(document.querySelectorAll(".english-view")),
+  heroTitle: document.querySelector("#heroTitle"),
+  heroSubtitle: document.querySelector("#heroSubtitle"),
 
   operationButtons: Array.from(document.querySelectorAll("[data-operation]")),
   levelButtons: Array.from(document.querySelectorAll("[data-level]")),
@@ -316,6 +331,19 @@ function saveTabPreference(tabKey) {
   }
 }
 
+function applySubjectCopy(subjectKey) {
+  const copy = SUBJECT_COPY[subjectKey] || SUBJECT_COPY.math;
+  if (els.heroTitle) {
+    els.heroTitle.textContent = copy.title;
+  }
+  if (els.heroSubtitle) {
+    els.heroSubtitle.textContent = copy.subtitle;
+  }
+  if (els.bearMessage) {
+    els.bearMessage.textContent = copy.bearMessage;
+  }
+}
+
 function setSubjectTab(tabKey, options = {}) {
   const { persist = true } = options;
   const safeTab = tabKey === "english" ? "english" : "math";
@@ -328,6 +356,7 @@ function setSubjectTab(tabKey, options = {}) {
   els.englishViews.forEach((element) => {
     element.classList.toggle("hidden", safeTab !== "english");
   });
+  applySubjectCopy(safeTab);
   document.title = safeTab === "english" ? "곰돌이 영어" : "곰돌이 수학";
 
   if (safeTab !== "english") {
