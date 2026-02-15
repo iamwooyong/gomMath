@@ -170,6 +170,7 @@ const englishState = {
   bestStreak: 0,
   answered: false,
   current: null,
+  usedLessonIndexes: new Set(),
   recognition: null,
   recognizing: false
 };
@@ -881,7 +882,16 @@ function renderEnglishIdle() {
 }
 
 function buildEnglishQuestion() {
-  const lesson = ENGLISH_LESSONS[randomInt(0, ENGLISH_LESSONS.length - 1)];
+  const allIndexes = Array.from({ length: ENGLISH_LESSONS.length }, (_, index) => index);
+  let availableIndexes = allIndexes.filter((index) => !englishState.usedLessonIndexes.has(index));
+  if (availableIndexes.length === 0) {
+    englishState.usedLessonIndexes.clear();
+    availableIndexes = allIndexes;
+  }
+
+  const lessonIndex = availableIndexes[randomInt(0, availableIndexes.length - 1)];
+  englishState.usedLessonIndexes.add(lessonIndex);
+  const lesson = ENGLISH_LESSONS[lessonIndex];
   const options = new Set([lesson.english]);
   while (options.size < 4) {
     const candidate = ENGLISH_LESSONS[randomInt(0, ENGLISH_LESSONS.length - 1)];
@@ -928,6 +938,7 @@ function startEnglishSession() {
   englishState.streak = 0;
   englishState.bestStreak = 0;
   englishState.answered = false;
+  englishState.usedLessonIndexes.clear();
   englishState.current = buildEnglishQuestion();
   updateEnglishStats();
   renderEnglishQuestion();
