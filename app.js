@@ -52,9 +52,10 @@ const ENGLISH_PHASES = {
   SPEAKING: "speaking"
 };
 const ENGLISH_LEVELS = {
-  beginner: { key: "beginner", label: "초급" },
-  intermediate: { key: "intermediate", label: "중급" },
-  advanced: { key: "advanced", label: "고급" }
+  starter: { key: "starter", label: "스타터(유치원)" },
+  beginner: { key: "beginner", label: "초급(초등학생)" },
+  intermediate: { key: "intermediate", label: "중급(중학교)" },
+  advanced: { key: "advanced", label: "고급(고등학교)" }
 };
 const ENGLISH_LEVEL_KEYS = Object.keys(ENGLISH_LEVELS);
 const HISTORY_LEVELS = {
@@ -564,16 +565,412 @@ const ENGLISH_ADVANCED_WORD_LESSONS = [
   { korean: "가능한 한 빨리", english: "as soon as possible", sentence: "I'll send the file as soon as possible." },
   { korean: "일정이 겹치다", english: "have a scheduling conflict", sentence: "I have a scheduling conflict at that time." }
 ];
+const ENGLISH_STARTER_WORDS = [
+  ["공", "ball"],
+  ["별", "star"],
+  ["꽃", "flower"],
+  ["해", "sun"],
+  ["달", "moon"],
+  ["비", "rain"],
+  ["눈", "snow"],
+  ["바람", "wind"],
+  ["하트", "heart"],
+  ["모래", "sand"],
+  ["돌", "stone"],
+  ["나뭇잎", "leaf"],
+  ["씨앗", "seed"],
+  ["벌", "bee"],
+  ["개미", "ant"],
+  ["개구리", "frog"],
+  ["오리", "duck"],
+  ["염소", "goat"],
+  ["양", "sheep"],
+  ["말", "horse"],
+  ["지갑", "wallet"],
+  ["지도", "map"],
+  ["열쇠", "key"],
+  ["초", "candle"],
+  ["상자", "box"],
+  ["리본", "ribbon"],
+  ["인형", "doll"],
+  ["연", "kite"],
+  ["종", "bell"],
+  ["북", "drum"],
+  ["소풍", "picnic"],
+  ["게임", "game"],
+  ["미소", "smile"],
+  ["포옹", "hug"],
+  ["줄", "line"],
+  ["원", "circle"],
+  ["삼각형", "triangle"],
+  ["네모", "square"],
+  ["세모", "shape"],
+  ["사진", "photo"],
+  ["카드", "card"],
+  ["선물", "gift"],
+  ["초콜릿", "chocolate"],
+  ["쿠키", "cookie"],
+  ["케이크", "cake"],
+  ["사탕", "candy"],
+  ["수박", "melon"],
+  ["배", "pear"],
+  ["체리", "cherry"],
+  ["키위", "kiwi"],
+  ["망고", "mango"],
+  ["버터", "butter"],
+  ["치즈", "cheese"],
+  ["소스", "sauce"],
+  ["소금", "salt"],
+  ["후추", "pepper"],
+  ["숟가락", "spoon"],
+  ["포크", "fork"],
+  ["칼", "knife"],
+  ["접시", "plate"],
+  ["그릇", "bowl"],
+  ["컵", "cup"],
+  ["병", "bottle"],
+  ["실", "yarn"],
+  ["테이프", "tape"],
+  ["풀", "glue"],
+  ["초크", "chalk"],
+  ["큐브", "cube"],
+  ["구슬", "bead"],
+  ["놀이", "playtime"],
+  ["쉬는시간", "recess"],
+  ["가위", "scissors"],
+  ["문구점", "stationery"],
+  ["칠판", "blackboard"],
+  ["화이트보드", "whiteboard"],
+  ["버튼", "button"],
+  ["지퍼", "zipper"],
+  ["주머니", "pocket"],
+  ["계단", "stairs"],
+  ["복도", "hallway"],
+  ["교문", "gate"],
+  ["운동장", "playground"],
+  ["창고", "storage"]
+];
+const ENGLISH_STARTER_WORD_LESSONS = ENGLISH_STARTER_WORDS.map(([korean, english], index) => ({
+  korean,
+  english,
+  sentence: buildWordPracticeSentence(english, index)
+}));
+const ENGLISH_ULTRA_WORDS = [
+  ["약국", "pharmacy"],
+  ["처방전", "prescription"],
+  ["체온", "temperature"],
+  ["혈압", "blood pressure"],
+  ["응급실", "emergency room"],
+  ["진료 예약", "medical appointment"],
+  ["알림", "notification"],
+  ["설정", "settings"],
+  ["계정", "account"],
+  ["보안", "security"],
+  ["인증", "verification"],
+  ["로그", "log"],
+  ["대시보드", "dashboard"],
+  ["업데이트", "update"],
+  ["업그레이드", "upgrade"],
+  ["성능", "performance"],
+  ["오류", "error"],
+  ["버그", "bug"],
+  ["해결책", "solution"],
+  ["알고리즘", "algorithm"],
+  ["인공지능", "artificial intelligence"],
+  ["머신러닝", "machine learning"],
+  ["모델", "model"],
+  ["학습 데이터", "training data"],
+  ["실험", "experiment"],
+  ["측정", "measurement"],
+  ["결과", "result"],
+  ["지표", "metric"],
+  ["통계", "statistics"],
+  ["그래프", "graph"],
+  ["표", "table"],
+  ["비율", "ratio"],
+  ["증가", "increase"],
+  ["감소", "decrease"],
+  ["예산", "budget"],
+  ["지출", "expense"],
+  ["수익", "revenue"],
+  ["손익", "profit and loss"],
+  ["청구서", "invoice"],
+  ["세금", "tax"],
+  ["보험", "insurance"],
+  ["계약", "contract"],
+  ["조항", "clause"],
+  ["면책", "disclaimer"],
+  ["합의", "agreement"],
+  ["기한", "deadline"],
+  ["우선순위", "priority"],
+  ["일정", "timeline"],
+  ["의제", "agenda"],
+  ["회의록", "minutes"],
+  ["발표", "presentation"],
+  ["리허설", "rehearsal"],
+  ["피드백", "feedback"],
+  ["검토", "review"],
+  ["수정", "revision"],
+  ["제출", "submission"],
+  ["승인", "approval"],
+  ["거절", "rejection"],
+  ["협상", "negotiation"],
+  ["리더십", "leadership"],
+  ["책임", "responsibility"],
+  ["협력", "cooperation"],
+  ["신뢰", "trust"],
+  ["존중", "respect"],
+  ["동기", "motivation"],
+  ["습관", "habit"],
+  ["집중력", "focus"],
+  ["계획표", "planner"],
+  ["목표", "goal"],
+  ["성취", "achievement"],
+  ["도전", "challenge"],
+  ["실패", "failure"],
+  ["회복", "recovery"],
+  ["건강", "wellness"],
+  ["수면", "sleep"],
+  ["운동", "exercise"],
+  ["스트레칭", "stretching"],
+  ["영양", "nutrition"],
+  ["균형", "balance"],
+  ["환경", "environment"],
+  ["재활용", "recycling"],
+  ["에너지", "energy"],
+  ["태양광", "solar power"],
+  ["바이오", "biotech"],
+  ["기후", "climate"],
+  ["탄소", "carbon"],
+  ["배출", "emission"],
+  ["절약", "saving"],
+  ["보존", "conservation"],
+  ["문화", "culture"],
+  ["전통", "tradition"],
+  ["예절", "manners"],
+  ["예술", "arts"],
+  ["문학", "literature"],
+  ["철학", "philosophy"],
+  ["역사", "history"],
+  ["지리", "geography"],
+  ["경제", "economics"],
+  ["사회", "society"],
+  ["정치", "politics"],
+  ["법률", "law"],
+  ["인권", "human rights"],
+  ["평등", "equality"],
+  ["공정성", "fairness"],
+  ["다양성", "diversity"],
+  ["포용성", "inclusion"],
+  ["커뮤니티", "community"],
+  ["자원봉사", "volunteering"],
+  ["기부", "donation"],
+  ["캠페인", "campaign"],
+  ["이벤트", "event"],
+  ["행사", "festival"],
+  ["여행 일정", "itinerary"],
+  ["탑승 시간", "boarding time"],
+  ["출국 심사", "passport control"],
+  ["환승", "transfer"],
+  ["현지 교통", "local transit"],
+  ["가이드북", "guidebook"],
+  ["예약 확인", "booking confirmation"],
+  ["체크리스트", "checklist"],
+  ["필수품", "essentials"],
+  ["세면도구", "toiletries"],
+  ["충전 케이블", "charging cable"],
+  ["어댑터", "adapter"],
+  ["비상약", "first-aid kit"],
+  ["우산", "umbrella"],
+  ["방수", "waterproof"],
+  ["날씨 예보", "weather forecast"],
+  ["교통 체증", "traffic jam"],
+  ["우회로", "detour"],
+  ["안전벨트", "seat belt"],
+  ["신호등", "traffic light"],
+  ["횡단보도", "crosswalk"],
+  ["제한 속도", "speed limit"],
+  ["운전면허", "driver's license"],
+  ["정류장 안내", "stop announcement"],
+  ["출구", "exit"],
+  ["입구", "entrance"],
+  ["엘리베이터", "elevator"],
+  ["에스컬레이터", "escalator"],
+  ["층수", "floor number"],
+  ["안내 데스크", "information desk"],
+  ["분실물", "lost and found"],
+  ["접수", "reception"],
+  ["호출", "call"],
+  ["응답", "response"],
+  ["요청사항", "request"],
+  ["우선 처리", "priority handling"],
+  ["비상 연락처", "emergency contact"],
+  ["개인 정보", "personal data"],
+  ["접근 권한", "access control"],
+  ["암호화", "encryption"],
+  ["백업", "backup"],
+  ["복구", "recovery plan"],
+  ["서버 점검", "maintenance window"],
+  ["배포 일정", "release schedule"],
+  ["품질 보증", "quality assurance"],
+  ["자동화", "automation"],
+  ["테스트 케이스", "test case"],
+  ["통합 테스트", "integration test"],
+  ["사용자 경험", "user experience"],
+  ["화면 설계", "interface design"],
+  ["프로토타입", "prototype"],
+  ["요구사항", "requirements"],
+  ["범위", "scope"],
+  ["우선 과제", "key task"],
+  ["이슈 추적", "issue tracking"],
+  ["상태 보고", "status update"],
+  ["진척도", "progress"],
+  ["완료율", "completion rate"],
+  ["업무 인수인계", "handover"],
+  ["사후 분석", "postmortem"],
+  ["교훈", "lesson learned"],
+  ["개선점", "improvement point"],
+  ["실행 계획", "action plan"],
+  ["다음 단계", "next step"],
+  ["장기 목표", "long-term goal"],
+  ["단기 목표", "short-term goal"],
+  ["핵심 역량", "core competency"],
+  ["문제 정의", "problem statement"],
+  ["가설", "hypothesis"],
+  ["검증", "validation"],
+  ["증거", "evidence"],
+  ["근거", "rationale"],
+  ["해석", "interpretation"],
+  ["비교 분석", "comparative analysis"],
+  ["위험도", "risk level"],
+  ["완화 방안", "mitigation plan"],
+  ["대응 전략", "response strategy"],
+  ["성과 지표", "key metric"],
+  ["평가 기준", "evaluation criteria"]
+];
+const ENGLISH_ULTRA_LESSONS = ENGLISH_ULTRA_WORDS.map(([korean, english], index) => ({
+  korean,
+  english,
+  sentence: buildWordPracticeSentence(english, index + ENGLISH_STARTER_WORDS.length)
+}));
+const ENGLISH_PHRASE_ADJECTIVES = [
+  ["지역", "local"],
+  ["국제", "global"],
+  ["디지털", "digital"],
+  ["모바일", "mobile"],
+  ["원격", "remote"],
+  ["공공", "public"],
+  ["개인", "personal"],
+  ["공동", "shared"],
+  ["핵심", "core"],
+  ["기본", "basic"],
+  ["고급", "advanced"],
+  ["실전", "practical"]
+];
+const ENGLISH_PHRASE_TOPICS = [
+  ["서비스", "service"],
+  ["프로젝트", "project"],
+  ["플랫폼", "platform"],
+  ["네트워크", "network"],
+  ["콘텐츠", "content"],
+  ["정책", "policy"],
+  ["계획", "plan"],
+  ["시스템", "system"],
+  ["지원", "support"],
+  ["교육", "education"],
+  ["연구", "research"],
+  ["분석", "analysis"],
+  ["전략", "strategy"],
+  ["리포트", "report"],
+  ["워크숍", "workshop"]
+];
+const ENGLISH_GENERATED_PHRASE_LESSONS = [];
+ENGLISH_PHRASE_ADJECTIVES.forEach(([adjKr, adjEn], adjIndex) => {
+  ENGLISH_PHRASE_TOPICS.forEach(([topicKr, topicEn], topicIndex) => {
+    const english = `${adjEn} ${topicEn}`;
+    const korean = `${adjKr} ${topicKr}`;
+    const sentence = `We're preparing the ${english} for this week's class.`;
+    ENGLISH_GENERATED_PHRASE_LESSONS.push({
+      korean,
+      english,
+      sentence: topicIndex % 2 === 0 ? sentence : buildWordPracticeSentence(english, adjIndex + topicIndex)
+    });
+  });
+});
+const ENGLISH_HIGHSCHOOL_WORD_LESSONS = [
+  { korean: "비판적 사고", english: "critical thinking", sentence: "Critical thinking helps us evaluate information objectively." },
+  { korean: "논리적 추론", english: "logical reasoning", sentence: "Logical reasoning is essential for solving complex problems." },
+  { korean: "통계적 유의성", english: "statistical significance", sentence: "The report shows statistical significance at the 95% level." },
+  { korean: "실험 설계", english: "experimental design", sentence: "We improved the experimental design before collecting data." },
+  { korean: "변수 통제", english: "control variables", sentence: "Please control variables to avoid biased outcomes." },
+  { korean: "근거 기반 결론", english: "evidence-based conclusion", sentence: "Your argument needs an evidence-based conclusion." },
+  { korean: "가설 검증", english: "hypothesis testing", sentence: "Hypothesis testing supports objective decision-making." },
+  { korean: "자료 해석", english: "data interpretation", sentence: "Data interpretation can change depending on context." },
+  { korean: "상관관계와 인과관계", english: "correlation versus causation", sentence: "Correlation versus causation is a key concept in research." },
+  { korean: "문헌 검토", english: "literature review", sentence: "A literature review helps identify gaps in prior studies." },
+  { korean: "연구 방법론", english: "research methodology", sentence: "Research methodology determines how reliable the results are." },
+  { korean: "개념 정의", english: "conceptual definition", sentence: "We need a clear conceptual definition before analysis." },
+  { korean: "운영적 정의", english: "operational definition", sentence: "Use an operational definition that can be measured." },
+  { korean: "편향 제거", english: "bias reduction", sentence: "Bias reduction improves the quality of our findings." },
+  { korean: "표본 대표성", english: "sample representativeness", sentence: "Sample representativeness affects external validity." },
+  { korean: "정성 분석", english: "qualitative analysis", sentence: "Qualitative analysis reveals patterns in interview data." },
+  { korean: "정량 분석", english: "quantitative analysis", sentence: "Quantitative analysis is useful for large datasets." },
+  { korean: "변동성", english: "variability", sentence: "Variability in scores increased after the intervention." },
+  { korean: "신뢰도", english: "reliability", sentence: "The test has high reliability across different groups." },
+  { korean: "타당도", english: "validity", sentence: "Validity matters more than speed in this assessment." },
+  { korean: "경제적 불평등", english: "economic inequality", sentence: "Economic inequality remains a major social issue." },
+  { korean: "사회적 이동성", english: "social mobility", sentence: "Education can improve social mobility over time." },
+  { korean: "정책 효과", english: "policy impact", sentence: "We evaluated the policy impact after one year." },
+  { korean: "지속 가능성", english: "sustainability", sentence: "Sustainability should be part of every development plan." },
+  { korean: "탄소 중립", english: "carbon neutrality", sentence: "Many countries are targeting carbon neutrality by 2050." },
+  { korean: "재생 에너지 전환", english: "energy transition", sentence: "Energy transition requires long-term investment." },
+  { korean: "공급망 관리", english: "supply chain management", sentence: "Supply chain management became harder during the crisis." },
+  { korean: "시장 변동성", english: "market volatility", sentence: "Market volatility increased after the announcement." },
+  { korean: "인플레이션 압력", english: "inflation pressure", sentence: "Inflation pressure is affecting household spending." },
+  { korean: "재정 정책", english: "fiscal policy", sentence: "Fiscal policy can stimulate growth during a slowdown." },
+  { korean: "통화 정책", english: "monetary policy", sentence: "Monetary policy decisions influence borrowing costs." },
+  { korean: "기회 비용", english: "opportunity cost", sentence: "Consider the opportunity cost before choosing an option." },
+  { korean: "한계 효용", english: "marginal utility", sentence: "Marginal utility decreases as consumption rises." },
+  { korean: "수요 탄력성", english: "demand elasticity", sentence: "Demand elasticity varies across product categories." },
+  { korean: "비교 우위", english: "comparative advantage", sentence: "Comparative advantage supports international trade." },
+  { korean: "글의 논지", english: "main argument", sentence: "Identify the main argument in the first paragraph." },
+  { korean: "반론 제시", english: "counterargument", sentence: "A strong counterargument improves your essay." },
+  { korean: "주장 뒷받침", english: "supporting evidence", sentence: "Use supporting evidence from reliable sources." },
+  { korean: "결론 도출", english: "logical conclusion", sentence: "Your paragraph needs a clear logical conclusion." },
+  { korean: "문단 전개", english: "paragraph development", sentence: "Paragraph development should follow a consistent structure." },
+  { korean: "문체와 어조", english: "tone and style", sentence: "Tone and style can change the reader's perception." },
+  { korean: "핵심 문장", english: "topic sentence", sentence: "Start each paragraph with a strong topic sentence." },
+  { korean: "문법 정확성", english: "grammatical accuracy", sentence: "Grammatical accuracy is crucial in academic writing." },
+  { korean: "어휘 다양성", english: "lexical variety", sentence: "Lexical variety can make your writing more persuasive." },
+  { korean: "발표 구성", english: "presentation structure", sentence: "Presentation structure should guide the audience clearly." },
+  { korean: "청중 분석", english: "audience analysis", sentence: "Audience analysis helps tailor your message effectively." },
+  { korean: "핵심 메시지", english: "key message", sentence: "Repeat the key message at the end of your talk." },
+  { korean: "질의응답 대비", english: "question handling", sentence: "Question handling is part of strong presentation skills." },
+  { korean: "시간 관리", english: "time management", sentence: "Time management is essential during exams." },
+  { korean: "학습 전략", english: "study strategy", sentence: "A study strategy helps reduce test anxiety." },
+  { korean: "메타인지", english: "metacognition", sentence: "Metacognition helps students monitor their own learning." },
+  { korean: "장기 기억", english: "long-term memory", sentence: "Spaced repetition improves long-term memory." },
+  { korean: "문제 해결 능력", english: "problem-solving skills", sentence: "Problem-solving skills grow through deliberate practice." },
+  { korean: "추상적 사고", english: "abstract reasoning", sentence: "Abstract reasoning is required in advanced mathematics." },
+  { korean: "다학제 접근", english: "interdisciplinary approach", sentence: "An interdisciplinary approach can reveal new insights." },
+  { korean: "윤리적 판단", english: "ethical judgment", sentence: "Ethical judgment matters in scientific innovation." },
+  { korean: "사회적 책임", english: "social responsibility", sentence: "Social responsibility should guide technological progress." },
+  { korean: "글로벌 관점", english: "global perspective", sentence: "A global perspective broadens policy discussions." }
+];
 const ENGLISH_MEGA_LESSONS = ENGLISH_MEGA_WORDS.map(([korean, english], index) => ({
   korean,
   english,
   sentence: buildWordPracticeSentence(english, index)
 }));
 const mergedEnglishLessons = [
+  ...ENGLISH_STARTER_WORD_LESSONS,
   ...ENGLISH_LESSONS,
   ...ENGLISH_EXTRA_LESSONS,
   ...ENGLISH_MEGA_LESSONS,
-  ...ENGLISH_ADVANCED_WORD_LESSONS
+  ...ENGLISH_ULTRA_LESSONS,
+  ...ENGLISH_GENERATED_PHRASE_LESSONS,
+  ...ENGLISH_ADVANCED_WORD_LESSONS,
+  ...ENGLISH_HIGHSCHOOL_WORD_LESSONS
 ];
 const seenEnglishWords = new Set();
 ENGLISH_LESSONS.length = 0;
@@ -592,9 +989,35 @@ mergedEnglishLessons.forEach((lesson, index) => {
   });
 });
 const ENGLISH_ADVANCED_WORD_SET = new Set(
-  ENGLISH_ADVANCED_WORD_LESSONS.map((lesson) => String(lesson.english || "").trim().toLowerCase()).filter(Boolean)
+  [...ENGLISH_ADVANCED_WORD_LESSONS, ...ENGLISH_HIGHSCHOOL_WORD_LESSONS]
+    .map((lesson) => String(lesson.english || "").trim().toLowerCase())
+    .filter(Boolean)
+);
+const ENGLISH_STARTER_WORD_SET = new Set(
+  ENGLISH_STARTER_WORD_LESSONS.map((lesson) => String(lesson.english || "").trim().toLowerCase()).filter(Boolean)
 );
 const ENGLISH_SPEAKING_MISSIONS = [
+  { level: "starter", korean: "안녕 인사하기", sentence: "Hello!" },
+  { level: "starter", korean: "이름 말하기", sentence: "My name is Mina." },
+  { level: "starter", korean: "나이 말하기", sentence: "I am seven years old." },
+  { level: "starter", korean: "색깔 말하기", sentence: "It is red." },
+  { level: "starter", korean: "숫자 세기", sentence: "One, two, three, four." },
+  { level: "starter", korean: "좋아하는 과일 말하기", sentence: "I like apples." },
+  { level: "starter", korean: "학교 가는 말하기", sentence: "I go to school." },
+  { level: "starter", korean: "기분 말하기", sentence: "I am happy." },
+  { level: "starter", korean: "감사 인사", sentence: "Thank you!" },
+  { level: "starter", korean: "작별 인사", sentence: "Goodbye!" },
+  { level: "starter", korean: "물 요청하기", sentence: "Can I have water?" },
+  { level: "starter", korean: "화장실 물어보기", sentence: "Where is the restroom?" },
+  { level: "starter", korean: "연필 빌리기", sentence: "Can I use your pencil?" },
+  { level: "starter", korean: "날씨 말하기", sentence: "It is sunny today." },
+  { level: "starter", korean: "가족 소개", sentence: "This is my mom." },
+  { level: "starter", korean: "동물 말하기", sentence: "I see a cute dog." },
+  { level: "starter", korean: "간단한 부탁", sentence: "Please help me." },
+  { level: "starter", korean: "수업 시작 준비", sentence: "I am ready to learn." },
+  { level: "starter", korean: "간식 고르기", sentence: "I want a cookie." },
+  { level: "starter", korean: "친구와 놀기", sentence: "Let's play together." },
+
   { level: "beginner", korean: "처음 만난 사람에게 인사", sentence: "Hi, nice to meet you." },
   { level: "beginner", korean: "오늘 기분 묻기", sentence: "How are you today?" },
   { level: "beginner", korean: "도움 요청", sentence: "Can you help me, please?" },
@@ -647,6 +1070,17 @@ const ENGLISH_SPEAKING_MISSIONS = [
   { level: "advanced", korean: "회의 종료 멘트", sentence: "Thanks everyone, let's reconvene next Tuesday with updated action items." }
 ];
 const ENGLISH_EXTRA_SPEAKING_MISSIONS = [
+  { level: "starter", korean: "아침 인사", sentence: "Good morning, teacher." },
+  { level: "starter", korean: "자리 안내 받기", sentence: "Where should I sit?" },
+  { level: "starter", korean: "화장실 다녀오기", sentence: "May I go to the restroom?" },
+  { level: "starter", korean: "연필이 없다고 말하기", sentence: "I need a pencil." },
+  { level: "starter", korean: "친구 이름 묻기", sentence: "What is your name?" },
+  { level: "starter", korean: "점심 메뉴 말하기", sentence: "I want rice and soup." },
+  { level: "starter", korean: "숫자 말하기", sentence: "I can count to ten." },
+  { level: "starter", korean: "색깔 고르기", sentence: "My favorite color is blue." },
+  { level: "starter", korean: "노래 좋아한다고 말하기", sentence: "I like this song." },
+  { level: "starter", korean: "수업 마무리 인사", sentence: "See you tomorrow, teacher." },
+
   { level: "beginner", korean: "간단한 자기소개", sentence: "Hi, I'm Jisoo, and I'm from Seoul." },
   { level: "beginner", korean: "취미 말하기", sentence: "I like listening to music after school." },
   { level: "beginner", korean: "날씨 이야기", sentence: "It's sunny today, so let's go outside." },
@@ -1652,7 +2086,7 @@ const authState = {
 };
 
 const englishState = {
-  level: "beginner",
+  level: "starter",
   sessionActive: false,
   sessionStartedAt: 0,
   phase: ENGLISH_PHASES.WORD,
@@ -1728,7 +2162,7 @@ function createDefaultProfile() {
     bestStreak: 0,
     lastOperation: "add",
     lastLevel: "easy",
-    lastEnglishLevel: "beginner",
+    lastEnglishLevel: "starter",
     lastHistoryLevel: "grade4",
     theme: "pink"
   };
@@ -2540,7 +2974,7 @@ function setHistoryFeedback(message) {
 }
 
 function getEnglishLevel(levelKey) {
-  return ENGLISH_LEVELS[levelKey] || ENGLISH_LEVELS.beginner;
+  return ENGLISH_LEVELS[levelKey] || ENGLISH_LEVELS.starter;
 }
 
 function getHistoryLevel(levelKey) {
@@ -2593,13 +3027,29 @@ function buildEnglishLevelPool(levelKey) {
     return ENGLISH_ALL_LESSON_INDEXES;
   }
 
+  if (level.key === "starter") {
+    const starterPool = ENGLISH_ALL_LESSON_INDEXES.filter((index) => {
+      const lesson = ENGLISH_LESSONS[index];
+      if (!lesson) return false;
+      const answer = String(lesson.english || "").trim().toLowerCase();
+      const tokenCount = answer.split(/\s+/).filter(Boolean).length;
+      const sentenceWordCount = normalizeEnglishText(lesson.sentence).split(" ").filter(Boolean).length;
+      return (
+        !ENGLISH_ADVANCED_WORD_SET.has(answer) &&
+        (ENGLISH_STARTER_WORD_SET.has(answer) || (tokenCount === 1 && answer.length <= 6 && sentenceWordCount <= 6))
+      );
+    });
+    return starterPool.length >= 4 ? starterPool : ENGLISH_ALL_LESSON_INDEXES;
+  }
+
   if (level.key === "advanced") {
     const advancedPool = ENGLISH_ALL_LESSON_INDEXES.filter((index) => {
       const lesson = ENGLISH_LESSONS[index];
       if (!lesson) return false;
       const answer = String(lesson.english || "").trim().toLowerCase();
       const sentenceWordCount = normalizeEnglishText(lesson.sentence).split(" ").filter(Boolean).length;
-      return ENGLISH_ADVANCED_WORD_SET.has(answer) || sentenceWordCount >= 8;
+      const tokenCount = answer.split(/\s+/).filter(Boolean).length;
+      return ENGLISH_ADVANCED_WORD_SET.has(answer) || tokenCount >= 3 || answer.length >= 14 || sentenceWordCount >= 9;
     });
     return advancedPool.length >= 4 ? advancedPool : ENGLISH_ALL_LESSON_INDEXES;
   }
@@ -2611,7 +3061,7 @@ function buildEnglishLevelPool(levelKey) {
       const answer = String(lesson.english || "").trim().toLowerCase();
       const tokenCount = answer.split(/\s+/).filter(Boolean).length;
       const sentenceWordCount = normalizeEnglishText(lesson.sentence).split(" ").filter(Boolean).length;
-      return !ENGLISH_ADVANCED_WORD_SET.has(answer) && (tokenCount >= 2 || answer.length >= 7 || sentenceWordCount >= 6);
+      return !ENGLISH_ADVANCED_WORD_SET.has(answer) && (tokenCount >= 2 || answer.length >= 8 || sentenceWordCount >= 7);
     });
     return intermediatePool.length >= 4 ? intermediatePool : ENGLISH_ALL_LESSON_INDEXES;
   }
@@ -2621,13 +3071,14 @@ function buildEnglishLevelPool(levelKey) {
     if (!lesson) return false;
     const answer = String(lesson.english || "").trim().toLowerCase();
     const tokenCount = answer.split(/\s+/).filter(Boolean).length;
-    return !ENGLISH_ADVANCED_WORD_SET.has(answer) && tokenCount === 1 && answer.length <= 8;
+    const sentenceWordCount = normalizeEnglishText(lesson.sentence).split(" ").filter(Boolean).length;
+    return !ENGLISH_ADVANCED_WORD_SET.has(answer) && !ENGLISH_STARTER_WORD_SET.has(answer) && tokenCount <= 2 && answer.length <= 10 && sentenceWordCount <= 8;
   });
   return beginnerPool.length >= 4 ? beginnerPool : ENGLISH_ALL_LESSON_INDEXES;
 }
 
 function getEnglishLevelPool(levelKey) {
-  return ENGLISH_LEVEL_POOLS[levelKey] || ENGLISH_LEVEL_POOLS.beginner || ENGLISH_ALL_LESSON_INDEXES;
+  return ENGLISH_LEVEL_POOLS[levelKey] || ENGLISH_LEVEL_POOLS.starter || ENGLISH_ALL_LESSON_INDEXES;
 }
 
 function getEnglishSpeakingPool(levelKey) {
@@ -4768,7 +5219,7 @@ function bindEvents() {
 function init() {
   state.operation = OPERATIONS[profile.lastOperation] ? profile.lastOperation : "add";
   state.level = LEVELS[profile.lastLevel] ? profile.lastLevel : "easy";
-  englishState.level = ENGLISH_LEVELS[profile.lastEnglishLevel] ? profile.lastEnglishLevel : "beginner";
+  englishState.level = ENGLISH_LEVELS[profile.lastEnglishLevel] ? profile.lastEnglishLevel : "starter";
   historyState.level = HISTORY_LEVELS[profile.lastHistoryLevel] ? profile.lastHistoryLevel : "grade4";
   state.subject = loadTabPreference();
 
