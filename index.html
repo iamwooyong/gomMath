@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20260215-3" />
+    <link rel="stylesheet" href="styles.css?v=20260215-4" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20260215-1" />
   </head>
   <body>
@@ -64,7 +64,7 @@
             <span class="blush blush-left"></span>
             <span class="blush blush-right"></span>
           </button>
-          <p class="bear-message" id="bearMessage">안녕! 오늘은 우리가 수학 히어로야.</p>
+          <p class="bear-message" id="bearMessage">안녕! 난 곰돌이 선생님이야. 오늘도 즐겁게 문제 풀어볼까?</p>
           <p class="bear-tip">곰돌이 선생님을 누르면 색이 변해요! 원하는 무지개 색을 골라봐요.</p>
 
           <section class="theme-picker hidden" id="themePicker" aria-label="색상 컨셉 선택">
@@ -180,7 +180,7 @@
 
         <section class="ranking-board">
           <div class="ranking-head">
-            <h3>곰돌이 랭킹</h3>
+            <h3>곰돌이 수학랭킹</h3>
             <button class="btn btn-ghost ranking-refresh" id="refreshRankingBtn" type="button">새로고침</button>
           </div>
           <p class="ranking-sub">맞힌 문제 수 기준 TOP 10</p>
@@ -263,10 +263,18 @@
           </article>
         </div>
         <p class="english-voice-support" id="englishVoiceSupport"></p>
+        <section class="ranking-board english-ranking-board">
+          <div class="ranking-head">
+            <h3>곰돌이 영어 랭킹</h3>
+            <button class="btn btn-ghost ranking-refresh" id="refreshEnglishRankingBtn" type="button">새로고침</button>
+          </div>
+          <p class="ranking-sub">맞힌 문제 수 기준 TOP 10</p>
+          <ol class="ranking-list" id="englishRankingList"></ol>
+        </section>
       </section>
     </main>
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="app.js?v=20260215-3"></script>
+    <script src="app.js?v=20260215-4"></script>
   </body>
 </html>

@@ -114,7 +114,9 @@ const els = {
   nicknameNote: document.querySelector("#nicknameNote"),
 
   refreshRankingBtn: document.querySelector("#refreshRankingBtn"),
+  refreshEnglishRankingBtn: document.querySelector("#refreshEnglishRankingBtn"),
   rankingList: document.querySelector("#rankingList"),
+  englishRankingList: document.querySelector("#englishRankingList"),
 
   englishStartBtn: document.querySelector("#englishStartBtn"),
   englishQuestionCount: document.querySelector("#englishQuestionCount"),
@@ -156,6 +158,7 @@ const state = {
   reviewQueue: [],
   themePickerOpen: false,
   rankingCorrect: null,
+  englishRankingCorrect: null,
   subject: "math"
 };
 
@@ -167,6 +170,7 @@ const authState = {
 
 const englishState = {
   sessionActive: false,
+  sessionStartedAt: 0,
   questionNumber: 0,
   correct: 0,
   wrong: 0,
@@ -528,14 +532,16 @@ function setNicknameNote(message, isError = false) {
   els.nicknameNote.classList.toggle("is-error", isError);
 }
 
-function renderRanking(items = []) {
-  els.rankingList.innerHTML = "";
+function renderRanking(listElement, items = []) {
+  if (!listElement) return;
+
+  listElement.innerHTML = "";
 
   if (!Array.isArray(items) || items.length === 0) {
     const empty = document.createElement("li");
     empty.className = "ranking-empty";
     empty.textContent = "아직 랭킹 데이터가 없어요. 첫 라운드의 주인공이 되어봐요!";
-    els.rankingList.appendChild(empty);
+    listElement.appendChild(empty);
     return;
   }
 
@@ -564,35 +570,65 @@ function renderRanking(items = []) {
     li.appendChild(name);
     li.appendChild(score);
 
-    els.rankingList.appendChild(li);
+    listElement.appendChild(li);
   });
 }
 
-async function fetchRankings(limit = 10) {
+async function fetchMathRankings(limit = 10) {
   try {
     const response = await fetch(getApiUrl(`/api/math/rankings?limit=${encodeURIComponent(limit)}`));
     if (!response.ok) {
-      throw new Error("failed to fetch rankings");
+      throw new Error("failed to fetch math rankings");
     }
 
     const payload = await response.json();
     return Array.isArray(payload.items) ? payload.items : [];
   } catch (error) {
-    console.error("fetchRankings failed", error);
+    console.error("fetchMathRankings failed", error);
     return [];
   }
 }
 
-async function refreshRankings() {
-  const items = await fetchRankings(10);
+async function fetchEnglishRankings(limit = 10) {
+  try {
+    const response = await fetch(getApiUrl(`/api/english/rankings?limit=${encodeURIComponent(limit)}`));
+    if (!response.ok) {
+      throw new Error("failed to fetch english rankings");
+    }
+
+    const payload = await response.json();
+    return Array.isArray(payload.items) ? payload.items : [];
+  } catch (error) {
+    console.error("fetchEnglishRankings failed", error);
+    return [];
+  }
+}
+
+async function refreshMathRankings() {
+  const items = await fetchMathRankings(10);
   if (authState.user) {
     const me = items.find((item) => item.userId === authState.user.id);
     state.rankingCorrect = me ? Number(me.totalCorrect || 0) : 0;
   } else {
     state.rankingCorrect = null;
   }
-  renderRanking(items);
+  renderRanking(els.rankingList, items);
   renderStickers();
+}
+
+async function refreshEnglishRankings() {
+  const items = await fetchEnglishRankings(10);
+  if (authState.user) {
+    const me = items.find((item) => item.userId === authState.user.id);
+    state.englishRankingCorrect = me ? Number(me.totalCorrect || 0) : 0;
+  } else {
+    state.englishRankingCorrect = null;
+  }
+  renderRanking(els.englishRankingList, items);
+}
+
+async function refreshRankings() {
+  await Promise.all([refreshMathRankings(), refreshEnglishRankings()]);
 }
 
 function renderGoogleSignInButton() {
@@ -956,6 +992,7 @@ function renderEnglishQuestion() {
 function startEnglishSession() {
   stopEnglishRecognition();
   englishState.sessionActive = true;
+  englishState.sessionStartedAt = Date.now();
   englishState.questionNumber = 1;
   englishState.correct = 0;
   englishState.wrong = 0;
@@ -991,6 +1028,9 @@ function completeEnglishSession() {
   setEnglishFeedback(`완료! 정답률 ${accuracy}%야. 정말 잘했어.`);
   updateEnglishSpeakingControls();
   setBear(mood, "영어 라운드 완료! 계속하면 발음이 더 좋아져.");
+
+  const summary = buildEnglishRoundSummary();
+  void syncEnglishRoundResult(summary);
 }
 
 function handleEnglishOptionSelect(option) {
@@ -1295,7 +1335,7 @@ async function syncRoundResult(summary) {
 
   if (result.ok) {
     setAuthStatus(`${authState.user.name || "사용자"}님, 이번 라운드 기록이 저장됐어요.`);
-    void refreshRankings();
+    void refreshMathRankings();
     return;
   }
 
@@ -1305,6 +1345,54 @@ async function syncRoundResult(summary) {
   }
 
   setAuthStatus("저장에 실패했어요. 로그인 상태와 DB 설정을 확인해 주세요.");
+}
+
+async function saveEnglishSessionToDb(summary) {
+  if (!authState.user || !authState.token) {
+    return { ok: false, reason: "not-logged-in" };
+  }
+
+  try {
+    const response = await fetch(getApiUrl("/api/english/sessions"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authState.token}`
+      },
+      body: JSON.stringify(summary)
+    });
+
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({ error: "failed to save" }));
+      throw new Error(payload.error || "failed to save");
+    }
+
+    return { ok: true };
+  } catch (error) {
+    console.error("saveEnglishSessionToDb failed", error);
+    return { ok: false, reason: "request-failed" };
+  }
+}
+
+async function syncEnglishRoundResult(summary) {
+  if (!authState.user) {
+    return;
+  }
+
+  const result = await saveEnglishSessionToDb(summary);
+
+  if (result.ok) {
+    setAuthStatus(`${authState.user.name || "사용자"}님, 영어 라운드 기록이 저장됐어요.`);
+    void refreshEnglishRankings();
+    return;
+  }
+
+  if (result.reason === "not-logged-in") {
+    setAuthStatus("로그인하면 영어 라운드 결과를 저장할 수 있어요.");
+    return;
+  }
+
+  setAuthStatus("영어 라운드 저장에 실패했어요. 로그인 상태와 DB 설정을 확인해 주세요.");
 }
 
 function buildRoundSummary() {
@@ -1323,6 +1411,23 @@ function buildRoundSummary() {
     bestStreak: state.sessionBestStreak,
     durationMs,
     externalKey: `round:${getDateKey()}:${state.operation}:${state.level}:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`
+  };
+}
+
+function buildEnglishRoundSummary() {
+  const total = englishState.correct + englishState.wrong;
+  const accuracy = total ? Math.round((englishState.correct / total) * 100) : 0;
+  const durationMs = Math.max(Date.now() - englishState.sessionStartedAt, 0);
+
+  return {
+    date: getDateKey(),
+    totalQuestions: total,
+    correctAnswers: englishState.correct,
+    wrongAnswers: englishState.wrong,
+    accuracy,
+    bestStreak: englishState.bestStreak,
+    durationMs,
+    externalKey: `english:${getDateKey()}:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`
   };
 }
 
@@ -1713,6 +1818,7 @@ async function restoreAuthSession() {
 function handleLogout() {
   clearAuthState();
   state.rankingCorrect = null;
+  state.englishRankingCorrect = null;
   renderAuthUser();
 
   if (window.google?.accounts?.id) {
@@ -1806,7 +1912,11 @@ function bindEvents() {
   });
 
   els.refreshRankingBtn.addEventListener("click", () => {
-    void refreshRankings();
+    void refreshMathRankings();
+  });
+
+  els.refreshEnglishRankingBtn.addEventListener("click", () => {
+    void refreshEnglishRankings();
   });
 
   els.englishStartBtn.addEventListener("click", () => {
@@ -1919,7 +2029,7 @@ function init() {
   updateProgress();
   setupEnglishVoiceSupport();
   renderEnglishIdle();
-  setBear("idle", "안녕! 오늘은 우리가 수학 히어로야.");
+  setBear("idle", "안녕! 난 곰돌이 선생님이야. 오늘도 즐겁게 문제 풀어볼까?");
   setFeedback("천천히, 정확하게! 준비되면 시작해요.");
 
   bindEvents();

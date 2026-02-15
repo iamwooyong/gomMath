@@ -12,7 +12,7 @@
 - 힌트 제공
 - Google 로그인 시 곰돌이 색(테마) 계정 동기화
 - Google 로그인 사용자 닉네임 등록/수정
-- 맞힌 문제 수 기준 랭킹 보드
+- 맞힌 문제 수 기준 수학/영어 랭킹 보드
 - 오늘 학습 통계:
   - 오늘 맞힌 문제 수
   - 현재 연속 정답
@@ -74,6 +74,9 @@ npm start
 - `GET /api/math/rankings`
 - `GET /api/math/sessions`
 - `POST /api/math/sessions`
+- `GET /api/english/rankings`
+- `GET /api/english/sessions`
+- `POST /api/english/sessions`
 - `GET /api/readings?userId=...&limit=...`
 - `POST /api/readings`
 
