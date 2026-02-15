@@ -122,6 +122,8 @@ const els = {
   englishModePill: document.querySelector("#englishModePill"),
   englishOptions: document.querySelector("#englishOptions"),
   englishNextBtn: document.querySelector("#englishNextBtn"),
+  englishSpeakStartBtn: document.querySelector("#englishSpeakStartBtn"),
+  englishSpeakNextBtn: document.querySelector("#englishSpeakNextBtn"),
   englishFeedback: document.querySelector("#englishFeedback"),
   englishFeedbackBear: document.querySelector("#englishFeedbackBear"),
   englishFeedbackText: document.querySelector("#englishFeedbackText"),
@@ -172,6 +174,7 @@ const englishState = {
   bestStreak: 0,
   answered: false,
   current: null,
+  speakingMissionStarted: false,
   usedLessonIndexes: new Set(),
   recognition: null,
   recognizing: false
@@ -865,6 +868,17 @@ function setEnglishSpeakingFeedback(message, isError = false) {
   els.englishSpeakFeedback.classList.toggle("is-error", isError);
 }
 
+function updateEnglishSpeakingControls() {
+  const hasActiveQuestion = englishState.sessionActive && Boolean(englishState.current);
+  const canPractice = hasActiveQuestion && englishState.speakingMissionStarted;
+  const canGoNext = englishState.sessionActive && englishState.answered;
+
+  els.englishSpeakStartBtn.disabled = !hasActiveQuestion || englishState.speakingMissionStarted;
+  els.englishSpeakNextBtn.disabled = !canGoNext;
+  els.englishListenBtn.disabled = !canPractice || !canUseSpeechSynthesis();
+  els.englishMicBtn.disabled = !canPractice || !Boolean(getSpeechRecognitionCtor());
+}
+
 function updateEnglishStats() {
   const solved = englishState.correct + englishState.wrong;
   const accuracy = solved > 0 ? Math.round((englishState.correct / solved) * 100) : 0;
@@ -875,17 +889,18 @@ function updateEnglishStats() {
 }
 
 function renderEnglishIdle() {
+  englishState.speakingMissionStarted = false;
   els.englishQuestionCount.textContent = "준비 완료";
   els.englishPrompt.textContent = "영어 시작 버튼을 누르면 문제가 나와요.";
   els.englishOptions.innerHTML = "";
   els.englishNextBtn.textContent = "다음 문제";
+  els.englishSpeakNextBtn.textContent = "다음 문제";
   els.englishNextBtn.disabled = true;
   els.englishSpeakTarget.textContent = "문제를 풀면 오늘의 말하기 문장이 나와요.";
-  els.englishListenBtn.disabled = true;
-  els.englishMicBtn.disabled = true;
   els.englishTranscript.textContent = "내 말하기 결과: 아직 없음";
-  setEnglishSpeakingFeedback("듀오링고처럼 웹에서도 듣고 따라 말하기 연습을 할 수 있어요.");
+  setEnglishSpeakingFeedback("말하기 미션에서 문제 시작 버튼을 누르면 연습이 시작돼요.");
   setEnglishFeedback("영어 탭 준비 완료! 시작 버튼을 눌러보자.");
+  updateEnglishSpeakingControls();
   updateEnglishStats();
 }
 
@@ -926,15 +941,16 @@ function renderEnglishQuestion() {
     .join("");
 
   els.englishNextBtn.textContent = "다음 문제";
+  els.englishSpeakNextBtn.textContent = "다음 문제";
   els.englishNextBtn.disabled = true;
   els.englishSpeakTarget.textContent = englishState.current.sentence;
   els.englishTranscript.textContent = "내 말하기 결과: 아직 없음";
-  setEnglishSpeakingFeedback("문장 듣기를 누른 뒤 말하기 시작으로 따라 말해보자.");
+  setEnglishSpeakingFeedback("말하기 미션 문제 시작 버튼을 누르면 듣기와 말하기가 열려요.");
   setEnglishFeedback("정답 단어를 골라보자!");
 
-  els.englishListenBtn.disabled = !canUseSpeechSynthesis();
-  els.englishMicBtn.disabled = !Boolean(getSpeechRecognitionCtor());
+  englishState.speakingMissionStarted = false;
   englishState.answered = false;
+  updateEnglishSpeakingControls();
 }
 
 function startEnglishSession() {
@@ -946,6 +962,7 @@ function startEnglishSession() {
   englishState.streak = 0;
   englishState.bestStreak = 0;
   englishState.answered = false;
+  englishState.speakingMissionStarted = false;
   englishState.usedLessonIndexes.clear();
   englishState.current = buildEnglishQuestion();
   updateEnglishStats();
@@ -954,7 +971,9 @@ function startEnglishSession() {
 }
 
 function completeEnglishSession() {
+  stopEnglishRecognition();
   englishState.sessionActive = false;
+  englishState.speakingMissionStarted = false;
   const solved = englishState.correct + englishState.wrong;
   const accuracy = solved > 0 ? Math.round((englishState.correct / solved) * 100) : 0;
   let mood = "happy";
@@ -965,12 +984,12 @@ function completeEnglishSession() {
   els.englishPrompt.textContent = `오늘 영어 ${englishState.correct}/${TARGET_QUESTIONS}문제 정답!`;
   els.englishOptions.innerHTML = "";
   els.englishNextBtn.textContent = "다음 문제";
+  els.englishSpeakNextBtn.textContent = "다음 문제";
   els.englishNextBtn.disabled = true;
-  els.englishListenBtn.disabled = true;
-  els.englishMicBtn.disabled = true;
   els.englishTranscript.textContent = "내 말하기 결과: 라운드 완료";
   setEnglishSpeakingFeedback("다음 라운드에서 새로운 문장으로 다시 도전해보자.");
   setEnglishFeedback(`완료! 정답률 ${accuracy}%야. 정말 잘했어.`);
+  updateEnglishSpeakingControls();
   setBear(mood, "영어 라운드 완료! 계속하면 발음이 더 좋아져.");
 }
 
@@ -1009,10 +1028,13 @@ function handleEnglishOptionSelect(option) {
   updateEnglishStats();
   if (englishState.questionNumber >= TARGET_QUESTIONS) {
     els.englishNextBtn.textContent = "결과 보기";
+    els.englishSpeakNextBtn.textContent = "결과 보기";
   } else {
     els.englishNextBtn.textContent = "다음 문제";
+    els.englishSpeakNextBtn.textContent = "다음 문제";
   }
   els.englishNextBtn.disabled = false;
+  updateEnglishSpeakingControls();
   els.englishNextBtn.focus();
 }
 
@@ -1028,8 +1050,21 @@ function handleEnglishNext() {
   renderEnglishQuestion();
 }
 
+function handleEnglishSpeakMissionStart() {
+  if (!englishState.sessionActive || !englishState.current) return;
+  englishState.speakingMissionStarted = true;
+  setEnglishSpeakingFeedback("좋아! 문장 듣기와 말하기 시작으로 영어를 따라 해보자.");
+  updateEnglishSpeakingControls();
+  handleEnglishListen();
+}
+
 function handleEnglishListen() {
-  if (!englishState.current || !canUseSpeechSynthesis()) return;
+  if (!englishState.current) return;
+  if (!englishState.speakingMissionStarted) {
+    setEnglishSpeakingFeedback("먼저 문제 시작 버튼을 눌러 말하기 미션을 시작해요.", true);
+    return;
+  }
+  if (!canUseSpeechSynthesis()) return;
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(englishState.current.sentence);
   utterance.lang = "en-US";
@@ -1058,6 +1093,10 @@ function stopEnglishRecognition() {
 
 function handleEnglishMic() {
   if (!englishState.current) return;
+  if (!englishState.speakingMissionStarted) {
+    setEnglishSpeakingFeedback("먼저 문제 시작 버튼을 눌러 말하기 미션을 시작해요.", true);
+    return;
+  }
   const RecognitionCtor = getSpeechRecognitionCtor();
   if (!RecognitionCtor) {
     setEnglishSpeakingFeedback("이 브라우저는 음성 인식을 지원하지 않아요. Chrome 사용을 추천해요.", true);
@@ -1782,6 +1821,14 @@ function bindEvents() {
   });
 
   els.englishNextBtn.addEventListener("click", () => {
+    handleEnglishNext();
+  });
+
+  els.englishSpeakStartBtn.addEventListener("click", () => {
+    handleEnglishSpeakMissionStart();
+  });
+
+  els.englishSpeakNextBtn.addEventListener("click", () => {
     handleEnglishNext();
   });
 

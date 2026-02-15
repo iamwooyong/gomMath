@@ -1304,6 +1304,19 @@ h2 {
   gap: 2px;
 }
 
+.english-speaking-flow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.english-speaking-flow .btn {
+  flex: 1 1 140px;
+  min-height: 48px;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
 .english-speaking-title {
   margin: 0;
   font-weight: 800;
@@ -1967,6 +1980,10 @@ h2 {
   }
 
   .english-speaking-actions {
+    flex-direction: column;
+  }
+
+  .english-speaking-flow {
     flex-direction: column;
   }
 
