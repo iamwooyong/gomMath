@@ -1311,7 +1311,7 @@ h2 {
 }
 
 .english-speaking-flow .btn {
-  flex: 1 1 140px;
+  flex: 1 1 100%;
   min-height: 48px;
   font-size: 1rem;
   font-weight: 800;
@@ -1329,15 +1329,12 @@ h2 {
   line-height: 1.3;
 }
 
-.english-speaking-actions {
+.english-speaking-replay {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
 }
 
-#englishListenBtn,
-#englishMicBtn {
-  flex: 1 1 140px;
+#englishSpeakReplayBtn {
+  width: 100%;
 }
 
 .english-transcript {
@@ -1979,8 +1976,8 @@ h2 {
     grid-template-columns: 1fr;
   }
 
-  .english-speaking-actions {
-    flex-direction: column;
+  .english-speaking-replay {
+    width: 100%;
   }
 
   .english-speaking-flow {
