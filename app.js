@@ -72,6 +72,14 @@ const HISTORY_LEVELS = {
   grade1: { key: "grade1", label: "한국사 1급" }
 };
 const HISTORY_LEVEL_KEYS = Object.keys(HISTORY_LEVELS);
+const WORLD_HISTORY_LEVELS = {
+  grade6: { key: "grade6", label: "세계사 6급" },
+  grade5: { key: "grade5", label: "세계사 5급" },
+  grade4: { key: "grade4", label: "세계사 4급" },
+  grade3: { key: "grade3", label: "세계사 3급" },
+  grade2: { key: "grade2", label: "세계사 2급" },
+  grade1: { key: "grade1", label: "세계사 1급" }
+};
 const ENGLISH_SPEAK_ACTIONS = {
   START: "start",
   RECORD: "record",
@@ -2260,6 +2268,453 @@ const SCIENCE_QUESTION_BANK = {
   ]
 };
 
+const WORLD_HISTORY_QUESTION_BANK = {
+  grade6: [
+    {
+      question: "고대 이집트 문명을 대표하는 건축물로 가장 알맞은 것은 무엇일까요?",
+      options: ["피라미드", "콜로세움", "만리장성", "앙코르와트"],
+      answer: "피라미드",
+      explanation: "고대 이집트의 대표 유적으로 피라미드가 잘 알려져 있어요."
+    },
+    {
+      question: "민주 정치가 발달한 고대 그리스 도시국가는 어디일까요?",
+      options: ["아테네", "스파르타", "로마", "카르타고"],
+      answer: "아테네",
+      explanation: "아테네는 시민이 정치에 참여하는 민주 정치가 발달했어요."
+    },
+    {
+      question: "로마 제국의 중심 도시로 가장 알맞은 곳은 어디일까요?",
+      options: ["로마", "비잔티움", "알렉산드리아", "안티오크"],
+      answer: "로마",
+      explanation: "로마 제국은 도시 로마를 중심으로 성장했어요."
+    },
+    {
+      question: "중국을 처음 통일한 진나라의 황제는 누구일까요?",
+      options: ["진시황", "한무제", "당태종", "강희제"],
+      answer: "진시황",
+      explanation: "진시황은 전국 시대를 끝내고 중국을 통일했어요."
+    },
+    {
+      question: "동서 문명을 잇는 고대의 대표 교역로는 무엇일까요?",
+      options: ["실크로드", "대서양 항로", "수에즈 운하", "파나마 운하"],
+      answer: "실크로드",
+      explanation: "실크로드는 동서 교역과 문화 교류에 큰 역할을 했어요."
+    },
+    {
+      question: "1492년에 대서양을 건너 아메리카 대륙에 도착한 인물은 누구일까요?",
+      options: ["콜럼버스", "마젤란", "바스코 다 가마", "쿡"],
+      answer: "콜럼버스",
+      explanation: "콜럼버스의 항해는 유럽의 대항해 시대를 상징해요."
+    },
+    {
+      question: "르네상스가 가장 먼저 크게 발전한 지역은 어디일까요?",
+      options: ["이탈리아", "영국", "러시아", "독일"],
+      answer: "이탈리아",
+      explanation: "피렌체 같은 이탈리아 도시에서 르네상스가 먼저 발전했어요."
+    },
+    {
+      question: "1517년 종교개혁을 이끈 인물로 가장 알맞은 사람은 누구일까요?",
+      options: ["마르틴 루터", "칼뱅", "에라스무스", "토마스 모어"],
+      answer: "마르틴 루터",
+      explanation: "루터의 95개조 반박문은 종교개혁의 출발점이 되었어요."
+    },
+    {
+      question: "산업혁명이 가장 먼저 본격적으로 시작된 나라는 어디일까요?",
+      options: ["영국", "프랑스", "미국", "독일"],
+      answer: "영국",
+      explanation: "영국은 방직업과 증기기관을 중심으로 산업혁명이 먼저 진행됐어요."
+    },
+    {
+      question: "미국 독립선언이 발표된 해는 언제일까요?",
+      options: ["1776년", "1789년", "1815년", "1914년"],
+      answer: "1776년",
+      explanation: "1776년 독립선언으로 미국 독립의 방향이 분명해졌어요."
+    },
+    {
+      question: "프랑스혁명의 시작을 상징하는 사건은 무엇일까요?",
+      options: ["바스티유 감옥 습격", "워털루 전투", "보스턴 차 사건", "트라팔가르 해전"],
+      answer: "바스티유 감옥 습격",
+      explanation: "1789년 바스티유 감옥 습격은 프랑스혁명의 상징적 사건이에요."
+    },
+    {
+      question: "이슬람교를 창시한 인물은 누구일까요?",
+      options: ["무함마드", "예수", "석가모니", "공자"],
+      answer: "무함마드",
+      explanation: "무함마드는 이슬람교의 예언자로 알려져 있어요."
+    }
+  ],
+  grade5: [
+    {
+      question: "메소포타미아 문명이 발달한 두 강은 무엇일까요?",
+      options: ["티그리스강과 유프라테스강", "나일강과 인더스강", "황허강과 양쯔강", "도나우강과 라인강"],
+      answer: "티그리스강과 유프라테스강",
+      explanation: "메소포타미아는 티그리스강과 유프라테스강 사이에서 발달했어요."
+    },
+    {
+      question: "알렉산드로스 대왕이 정복한 제국으로 가장 알맞은 것은 무엇일까요?",
+      options: ["페르시아 제국", "로마 제국", "비잔티움 제국", "몽골 제국"],
+      answer: "페르시아 제국",
+      explanation: "알렉산드로스는 페르시아 제국을 정복하며 대제국을 건설했어요."
+    },
+    {
+      question: "로마와 카르타고가 충돌한 전쟁은 무엇이라고 부를까요?",
+      options: ["포에니 전쟁", "펠로폰네소스 전쟁", "백년전쟁", "30년전쟁"],
+      answer: "포에니 전쟁",
+      explanation: "포에니 전쟁은 지중해 패권을 두고 벌어진 로마와 카르타고의 전쟁이에요."
+    },
+    {
+      question: "서로마 제국이 멸망한 해로 가장 알맞은 것은 무엇일까요?",
+      options: ["476년", "395년", "622년", "1066년"],
+      answer: "476년",
+      explanation: "476년 서로마 제국 멸망은 고대의 종말로 자주 다뤄져요."
+    },
+    {
+      question: "비잔티움 제국의 수도로 가장 알맞은 곳은 어디일까요?",
+      options: ["콘스탄티노플", "아테네", "예루살렘", "베네치아"],
+      answer: "콘스탄티노플",
+      explanation: "비잔티움 제국의 수도는 콘스탄티노플이었어요."
+    },
+    {
+      question: "십자군 전쟁의 주요 목표로 가장 알맞은 것은 무엇일까요?",
+      options: ["예루살렘 탈환", "인도 무역 독점", "프랑스 통일", "이집트 정복"],
+      answer: "예루살렘 탈환",
+      explanation: "십자군 전쟁은 성지 예루살렘을 둘러싼 충돌이 중심이었어요."
+    },
+    {
+      question: "마그나카르타가 체결된 나라는 어디일까요?",
+      options: ["영국", "프랑스", "스페인", "포르투갈"],
+      answer: "영국",
+      explanation: "1215년 영국에서 마그나카르타가 체결됐어요."
+    },
+    {
+      question: "유럽에서 흑사병이 크게 유행한 시기로 가장 알맞은 것은 무엇일까요?",
+      options: ["14세기", "10세기", "17세기", "20세기"],
+      answer: "14세기",
+      explanation: "14세기 흑사병은 유럽 인구와 사회에 큰 변화를 만들었어요."
+    },
+    {
+      question: "몽골 제국을 세운 인물은 누구일까요?",
+      options: ["칭기즈 칸", "쿠빌라이 칸", "티무르", "아소카"],
+      answer: "칭기즈 칸",
+      explanation: "칭기즈 칸은 몽골 부족을 통합해 몽골 제국을 세웠어요."
+    },
+    {
+      question: "명나라 때 대규모 항해를 이끈 인물은 누구일까요?",
+      options: ["정화", "이순신", "콜럼버스", "코페르니쿠스"],
+      answer: "정화",
+      explanation: "정화는 명나라의 해상 원정을 이끈 인물이에요."
+    },
+    {
+      question: "마젤란 원정의 역사적 의의로 가장 알맞은 것은 무엇일까요?",
+      options: ["세계 일주 항해의 완성", "아메리카 최초 발견", "수에즈 운하 개통", "대륙횡단철도 건설"],
+      answer: "세계 일주 항해의 완성",
+      explanation: "마젤란 원정대는 최초의 세계 일주를 완성했어요."
+    },
+    {
+      question: "대항해 시대 이후 신대륙과 구대륙 사이의 대규모 교류를 무엇이라고 부를까요?",
+      options: ["콜럼버스 교환", "실크로드 교환", "동방 원정", "문화대혁명"],
+      answer: "콜럼버스 교환",
+      explanation: "작물, 가축, 질병 등이 대륙 간에 이동한 현상을 콜럼버스 교환이라 불러요."
+    }
+  ],
+  grade4: [
+    {
+      question: "프랑스 절대왕정의 전성기를 이끈 군주로 가장 알맞은 인물은 누구일까요?",
+      options: ["루이 14세", "루이 16세", "나폴레옹", "샤를마뉴"],
+      answer: "루이 14세",
+      explanation: "루이 14세는 절대왕정의 상징적인 군주예요."
+    },
+    {
+      question: "영국 명예혁명이 일어난 해로 가장 알맞은 것은 무엇일까요?",
+      options: ["1688년", "1642년", "1776년", "1848년"],
+      answer: "1688년",
+      explanation: "1688년 명예혁명으로 영국 의회 중심 체제가 강화됐어요."
+    },
+    {
+      question: "삼권분립 사상을 체계화한 인물은 누구일까요?",
+      options: ["몽테스키외", "루소", "볼테르", "홉스"],
+      answer: "몽테스키외",
+      explanation: "몽테스키외는 권력 분립의 필요성을 강조했어요."
+    },
+    {
+      question: "프랑스혁명 시기 발표된 문서로 가장 알맞은 것은 무엇일까요?",
+      options: ["인간과 시민의 권리 선언", "마그나카르타", "독립선언서", "베르사유 조약"],
+      answer: "인간과 시민의 권리 선언",
+      explanation: "1789년 인권 선언은 자유와 평등 원칙을 제시했어요."
+    },
+    {
+      question: "나폴레옹이 최종적으로 패배한 전투는 무엇일까요?",
+      options: ["워털루 전투", "트라팔가르 해전", "아우스터리츠 전투", "미드웨이 해전"],
+      answer: "워털루 전투",
+      explanation: "1815년 워털루 전투 패배로 나폴레옹 체제가 무너졌어요."
+    },
+    {
+      question: "나폴레옹 전쟁 이후 유럽 질서를 재편한 회의는 무엇일까요?",
+      options: ["빈 회의", "얄타 회담", "포츠담 회담", "제네바 회의"],
+      answer: "빈 회의",
+      explanation: "빈 회의는 유럽의 보수적 질서 회복을 목표로 했어요."
+    },
+    {
+      question: "라틴아메리카 독립운동의 대표 지도자로 가장 알맞은 인물은 누구일까요?",
+      options: ["시몬 볼리바르", "산 마르틴", "링컨", "비스마르크"],
+      answer: "시몬 볼리바르",
+      explanation: "볼리바르는 남미 여러 지역의 독립을 이끌었어요."
+    },
+    {
+      question: "제1차 아편전쟁 뒤 청나라가 맺은 조약은 무엇일까요?",
+      options: ["난징 조약", "시모노세키 조약", "포츠머스 조약", "강화도 조약"],
+      answer: "난징 조약",
+      explanation: "난징 조약은 중국 근대사에서 불평등 조약의 시작으로 여겨져요."
+    },
+    {
+      question: "일본의 근대화를 본격화한 정치 개혁은 무엇일까요?",
+      options: ["메이지 유신", "다이카 개신", "문화대혁명", "무술변법"],
+      answer: "메이지 유신",
+      explanation: "메이지 유신은 일본의 근대국가 전환을 이끈 개혁이에요."
+    },
+    {
+      question: "독일 통일을 실질적으로 추진한 인물은 누구일까요?",
+      options: ["비스마르크", "가리발디", "나폴레옹 3세", "메테르니히"],
+      answer: "비스마르크",
+      explanation: "비스마르크는 철혈정책으로 독일 통일을 주도했어요."
+    },
+    {
+      question: "19세기 유럽 열강의 아프리카 분할과 관련 깊은 회의는 무엇일까요?",
+      options: ["베를린 회의", "빈 회의", "제네바 회의", "도쿄 회의"],
+      answer: "베를린 회의",
+      explanation: "베를린 회의는 아프리카 분할 규칙을 정한 회의로 알려져 있어요."
+    },
+    {
+      question: "미국 남북전쟁의 핵심 쟁점으로 가장 알맞은 것은 무엇일까요?",
+      options: ["노예제와 연방 유지", "대항해 무역", "종교개혁", "식민지 분할"],
+      answer: "노예제와 연방 유지",
+      explanation: "남북전쟁은 노예제 문제와 연방의 통합 문제가 핵심이었어요."
+    }
+  ],
+  grade3: [
+    {
+      question: "제1차 세계대전의 직접적 계기가 된 사건은 무엇일까요?",
+      options: ["사라예보 사건", "보스턴 차 사건", "쿠바 미사일 위기", "진주만 공습"],
+      answer: "사라예보 사건",
+      explanation: "오스트리아 황태자 피살 사건이 전쟁 발발의 도화선이 되었어요."
+    },
+    {
+      question: "제1차 세계대전 후 독일에 배상 책임을 크게 지운 조약은 무엇일까요?",
+      options: ["베르사유 조약", "난징 조약", "포츠머스 조약", "브레스트-리토프스크 조약"],
+      answer: "베르사유 조약",
+      explanation: "베르사유 조약은 전후 유럽 질서에 큰 영향을 주었어요."
+    },
+    {
+      question: "1917년 러시아 혁명을 이끈 볼셰비키 지도자는 누구일까요?",
+      options: ["레닌", "스탈린", "트로츠키", "케렌스키"],
+      answer: "레닌",
+      explanation: "레닌은 볼셰비키 혁명을 이끌어 소비에트 정권 수립에 기여했어요."
+    },
+    {
+      question: "제1차 세계대전 뒤 평화 유지를 위해 설립된 국제기구는 무엇일까요?",
+      options: ["국제연맹", "국제통화기금", "유럽연합", "세계무역기구"],
+      answer: "국제연맹",
+      explanation: "국제연맹은 전쟁 재발 방지를 목표로 설립됐어요."
+    },
+    {
+      question: "1929년 시작된 세계 대공황의 출발점으로 가장 알맞은 것은 무엇일까요?",
+      options: ["뉴욕 증권시장 붕괴", "석유 파동", "수에즈 전쟁", "베를린 봉쇄"],
+      answer: "뉴욕 증권시장 붕괴",
+      explanation: "주가 폭락은 세계 경제 위기로 빠르게 확산됐어요."
+    },
+    {
+      question: "이탈리아 파시즘 정권을 이끈 인물은 누구일까요?",
+      options: ["무솔리니", "히틀러", "프랑코", "처칠"],
+      answer: "무솔리니",
+      explanation: "무솔리니는 파시즘 체제를 대표하는 지도자예요."
+    },
+    {
+      question: "독일 나치 정권의 지도자는 누구일까요?",
+      options: ["히틀러", "괴벨스", "힘러", "루덴도르프"],
+      answer: "히틀러",
+      explanation: "히틀러는 나치 독일의 총통으로 제2차 세계대전을 일으켰어요."
+    },
+    {
+      question: "제2차 세계대전이 유럽에서 본격 시작된 사건은 무엇일까요?",
+      options: ["독일의 폴란드 침공", "프랑스혁명", "러일전쟁", "베를린 봉쇄"],
+      answer: "독일의 폴란드 침공",
+      explanation: "1939년 폴란드 침공으로 제2차 세계대전이 시작됐어요."
+    },
+    {
+      question: "1941년 미국의 참전을 이끈 사건으로 가장 알맞은 것은 무엇일까요?",
+      options: ["진주만 공습", "쿠바 미사일 위기", "얄타 회담", "베트남 전쟁"],
+      answer: "진주만 공습",
+      explanation: "일본의 진주만 공습 이후 미국이 본격 참전했어요."
+    },
+    {
+      question: "국제연합(UN)이 창설된 해는 언제일까요?",
+      options: ["1945년", "1919년", "1939년", "1955년"],
+      answer: "1945년",
+      explanation: "제2차 세계대전 직후인 1945년에 국제연합이 출범했어요."
+    },
+    {
+      question: "냉전의 상징으로 불린 장벽은 무엇일까요?",
+      options: ["베를린 장벽", "만리장성", "하드리아누스 장벽", "통곡의 벽"],
+      answer: "베를린 장벽",
+      explanation: "베를린 장벽은 동서 진영 대립의 상징이었어요."
+    },
+    {
+      question: "한국전쟁이 발발한 해로 가장 알맞은 것은 무엇일까요?",
+      options: ["1950년", "1945년", "1960년", "1973년"],
+      answer: "1950년",
+      explanation: "1950년 한반도에서 한국전쟁이 시작됐어요."
+    }
+  ],
+  grade2: [
+    {
+      question: "제2차 세계대전 후 서유럽 경제 재건을 지원한 미국 정책은 무엇일까요?",
+      options: ["마셜 플랜", "뉴딜 정책", "먼로 독트린", "브레튼우즈 체제"],
+      answer: "마셜 플랜",
+      explanation: "마셜 플랜은 서유럽 복구와 냉전 구도 형성에 큰 영향을 줬어요."
+    },
+    {
+      question: "북대서양조약기구(NATO)가 창설된 해는 언제일까요?",
+      options: ["1949년", "1939년", "1955년", "1991년"],
+      answer: "1949년",
+      explanation: "NATO는 1949년 집단안보 체제로 출범했어요."
+    },
+    {
+      question: "바르샤바 조약기구는 어떤 성격의 동맹이었을까요?",
+      options: ["소련 중심의 군사 동맹", "식민지 해방 동맹", "무역 관세 동맹", "환경 협력 동맹"],
+      answer: "소련 중심의 군사 동맹",
+      explanation: "바르샤바 조약기구는 동유럽 사회주의 국가들의 군사 동맹이었어요."
+    },
+    {
+      question: "핵전쟁 위기까지 갔던 쿠바 미사일 위기는 몇 년에 발생했을까요?",
+      options: ["1962년", "1956년", "1979년", "1989년"],
+      answer: "1962년",
+      explanation: "1962년 미국과 소련은 쿠바 미사일 배치를 둘러싸고 대치했어요."
+    },
+    {
+      question: "아시아·아프리카의 탈식민화가 본격화된 시기로 가장 알맞은 것은 무엇일까요?",
+      options: ["제2차 세계대전 이후", "산업혁명 이전", "르네상스 시기", "십자군 전쟁 직후"],
+      answer: "제2차 세계대전 이후",
+      explanation: "전후 약화된 유럽 열강 대신 식민지의 독립운동이 확산됐어요."
+    },
+    {
+      question: "1973년 석유 파동의 중심이 된 산유국 협의체는 무엇일까요?",
+      options: ["OPEC", "OECD", "WTO", "IMF"],
+      answer: "OPEC",
+      explanation: "OPEC의 감산·금수 조치로 세계 에너지 가격이 급등했어요."
+    },
+    {
+      question: "이란 혁명이 일어난 해는 언제일까요?",
+      options: ["1979년", "1968년", "1986년", "1999년"],
+      answer: "1979년",
+      explanation: "1979년 이란 혁명으로 중동 정세가 크게 바뀌었어요."
+    },
+    {
+      question: "동서독 통일이 이루어진 해는 언제일까요?",
+      options: ["1990년", "1980년", "1995년", "2001년"],
+      answer: "1990년",
+      explanation: "독일 통일은 냉전 붕괴 과정을 상징하는 사건이에요."
+    },
+    {
+      question: "소련이 공식 해체된 해는 언제일까요?",
+      options: ["1991년", "1985년", "1975년", "2000년"],
+      answer: "1991년",
+      explanation: "1991년 소련 해체로 냉전 구도가 사실상 종료됐어요."
+    },
+    {
+      question: "유럽연합(EU)이 공식 출범한 해는 언제일까요?",
+      options: ["1993년", "1945년", "1970년", "2008년"],
+      answer: "1993년",
+      explanation: "마스트리히트 조약 발효로 1993년 EU가 출범했어요."
+    },
+    {
+      question: "세계무역기구(WTO)가 출범한 해는 언제일까요?",
+      options: ["1995년", "1989년", "2001년", "2010년"],
+      answer: "1995년",
+      explanation: "WTO는 다자무역 질서 조정을 위해 1995년에 출범했어요."
+    },
+    {
+      question: "남아프리카공화국의 아파르트헤이트 종식 상징으로 가장 알맞은 사건은 무엇일까요?",
+      options: ["만델라 대통령 당선", "수에즈 운하 개통", "베를린 회의 개최", "브레튼우즈 회의"],
+      answer: "만델라 대통령 당선",
+      explanation: "1994년 만델라 당선은 인종차별 정책 종식의 상징이에요."
+    }
+  ],
+  grade1: [
+    {
+      question: "1648년 웨스트팔리아 조약의 핵심 의의로 가장 알맞은 것은 무엇일까요?",
+      options: ["주권 국가 질서의 확립", "산업혁명 시작", "식민지 해방 완료", "EU 출범"],
+      answer: "주권 국가 질서의 확립",
+      explanation: "웨스트팔리아 조약은 근대 국제질서의 출발점으로 평가돼요."
+    },
+    {
+      question: "브레튼우즈 체제에서 창설된 국제기구 조합으로 옳은 것은 무엇일까요?",
+      options: ["IMF와 세계은행", "UNESCO와 WHO", "WTO와 OECD", "NATO와 EU"],
+      answer: "IMF와 세계은행",
+      explanation: "브레튼우즈 회의에서 IMF, 세계은행 체제가 마련됐어요."
+    },
+    {
+      question: "제1차 세계대전 이후 윌슨이 강조한 원칙으로 가장 알맞은 것은 무엇일까요?",
+      options: ["민족자결주의", "중상주의", "왕권신수설", "사회진화론"],
+      answer: "민족자결주의",
+      explanation: "민족자결주의는 각 민족의 정치적 선택권을 강조한 원칙이에요."
+    },
+    {
+      question: "냉전기의 데탕트(긴장 완화)를 보여주는 사례로 가장 알맞은 것은 무엇일까요?",
+      options: ["SALT 협정 체결", "베를린 장벽 건설", "폴란드 침공", "진주만 공습"],
+      answer: "SALT 협정 체결",
+      explanation: "미국과 소련의 전략무기 제한 협정은 데탕트 흐름을 상징해요."
+    },
+    {
+      question: "1990년대 이후 세계화가 빠르게 진행된 배경으로 가장 알맞은 것은 무엇일까요?",
+      options: ["정보통신기술 발달과 시장 개방", "장원제 확대", "십자군 원정", "절대왕정 강화"],
+      answer: "정보통신기술 발달과 시장 개방",
+      explanation: "ICT 발전과 무역 자유화가 세계화 속도를 크게 높였어요."
+    },
+    {
+      question: "아랍의 봄이 처음 본격화된 국가로 가장 널리 알려진 곳은 어디일까요?",
+      options: ["튀니지", "이라크", "사우디아라비아", "터키"],
+      answer: "튀니지",
+      explanation: "2010년 말 튀니지에서 시작된 시위가 중동으로 확산됐어요."
+    },
+    {
+      question: "기후변화 대응을 위한 파리협정이 채택된 해는 언제일까요?",
+      options: ["2015년", "2005년", "1992년", "2020년"],
+      answer: "2015년",
+      explanation: "파리협정은 2015년 채택돼 온실가스 감축 목표를 제시했어요."
+    },
+    {
+      question: "유럽 통합 과정에서 ECSC가 의미하는 것으로 옳은 것은 무엇일까요?",
+      options: ["유럽석탄철강공동체", "유럽안보협력기구", "유럽자유무역연합", "유럽통화기금"],
+      answer: "유럽석탄철강공동체",
+      explanation: "ECSC는 이후 유럽연합으로 이어지는 통합의 출발점이었어요."
+    },
+    {
+      question: "비동맹운동의 주요 지도자 중 한 명으로 가장 알맞은 인물은 누구일까요?",
+      options: ["네루", "케네디", "처칠", "드골"],
+      answer: "네루",
+      explanation: "인도의 네루는 비동맹 노선을 대표한 지도자예요."
+    },
+    {
+      question: "현대 중동 분쟁의 장기적 배경 중 하나로 가장 자주 다뤄지는 사건은 무엇일까요?",
+      options: ["1948년 이스라엘 건국", "베를린 봉쇄", "얄타 회담", "대서양 헌장"],
+      answer: "1948년 이스라엘 건국",
+      explanation: "이스라엘 건국과 난민 문제는 중동 갈등의 핵심 배경 중 하나예요."
+    },
+    {
+      question: "디지털 혁명의 핵심 기반 기술로 가장 알맞은 것은 무엇일까요?",
+      options: ["인터넷과 컴퓨팅 네트워크", "증기기관", "풍차", "청동기 제련"],
+      answer: "인터넷과 컴퓨팅 네트워크",
+      explanation: "인터넷과 네트워크 컴퓨팅은 현대 사회 구조를 크게 바꿨어요."
+    },
+    {
+      question: "유엔의 지속가능발전목표(SDGs)가 채택된 해는 언제일까요?",
+      options: ["2015년", "1990년", "2001년", "2022년"],
+      answer: "2015년",
+      explanation: "SDGs는 2015년 유엔에서 채택되어 2030년 달성을 목표로 해요."
+    }
+  ]
+};
+
 const SUBJECT_COPY = {
   math: {
     title: "곰돌이 수학",
@@ -2280,6 +2735,11 @@ const SUBJECT_COPY = {
     title: "곰돌이 과학",
     subtitle: "곰돌이 선생님과 생활 속 과학 개념을 단계별로 연습해요.",
     bearMessage: "안녕! 난 곰돌이 선생님이야. 오늘은 과학 탐험을 시작해볼까?"
+  },
+  worldHistory: {
+    title: "곰돌이 세계사",
+    subtitle: "곰돌이 선생님과 세계사능력검정시험 1~6급 문제를 연습해요.",
+    bearMessage: "안녕! 난 곰돌이 선생님이야. 오늘은 세계사 여행을 떠나볼까?"
   }
 };
 
@@ -2289,6 +2749,7 @@ const els = {
   englishViews: Array.from(document.querySelectorAll(".english-view")),
   historyViews: Array.from(document.querySelectorAll(".history-view")),
   scienceViews: Array.from(document.querySelectorAll(".science-view")),
+  worldHistoryViews: Array.from(document.querySelectorAll(".world-history-view")),
   heroTitle: document.querySelector("#heroTitle"),
   heroSubtitle: document.querySelector("#heroSubtitle"),
 
@@ -2340,10 +2801,12 @@ const els = {
   refreshEnglishRankingBtn: document.querySelector("#refreshEnglishRankingBtn"),
   refreshHistoryRankingBtn: document.querySelector("#refreshHistoryRankingBtn"),
   refreshScienceRankingBtn: document.querySelector("#refreshScienceRankingBtn"),
+  refreshWorldHistoryRankingBtn: document.querySelector("#refreshWorldHistoryRankingBtn"),
   rankingList: document.querySelector("#rankingList"),
   englishRankingList: document.querySelector("#englishRankingList"),
   historyRankingList: document.querySelector("#historyRankingList"),
   scienceRankingList: document.querySelector("#scienceRankingList"),
+  worldHistoryRankingList: document.querySelector("#worldHistoryRankingList"),
 
   englishStartBtn: document.querySelector("#englishStartBtn"),
   englishGuide: document.querySelector(".english-guide"),
@@ -2400,7 +2863,25 @@ const els = {
   scienceCorrect: document.querySelector("#scienceCorrect"),
   scienceStreak: document.querySelector("#scienceStreak"),
   scienceBestStreak: document.querySelector("#scienceBestStreak"),
-  scienceAccuracy: document.querySelector("#scienceAccuracy")
+  scienceAccuracy: document.querySelector("#scienceAccuracy"),
+
+  worldHistoryStartBtn: document.querySelector("#worldHistoryStartBtn"),
+  worldHistoryLevelButtons: Array.from(document.querySelectorAll("[data-world-history-level]")),
+  worldHistoryQuestionCount: document.querySelector("#worldHistoryQuestionCount"),
+  worldHistoryModePill: document.querySelector("#worldHistoryModePill"),
+  worldHistoryPrompt: document.querySelector("#worldHistoryPrompt"),
+  worldHistoryOptions: document.querySelector("#worldHistoryOptions"),
+  worldHistoryNextBtn: document.querySelector("#worldHistoryNextBtn"),
+  worldHistoryFeedback: document.querySelector("#worldHistoryFeedback"),
+  worldHistoryFeedbackBear: document.querySelector("#worldHistoryFeedbackBear"),
+  worldHistoryFeedbackText: document.querySelector("#worldHistoryFeedbackText"),
+  worldHistoryCorrect: document.querySelector("#worldHistoryCorrect"),
+  worldHistoryStreak: document.querySelector("#worldHistoryStreak"),
+  worldHistoryBestStreak: document.querySelector("#worldHistoryBestStreak"),
+  worldHistoryAccuracy: document.querySelector("#worldHistoryAccuracy"),
+  worldHistoryWrongNoteGuide: document.querySelector("#worldHistoryWrongNoteGuide"),
+  worldHistoryWrongNoteList: document.querySelector("#worldHistoryWrongNoteList"),
+  worldHistoryRetryWrongBtn: document.querySelector("#worldHistoryRetryWrongBtn")
 };
 
 const state = {
@@ -2424,6 +2905,7 @@ const state = {
   englishRankingCorrect: null,
   historyRankingCorrect: null,
   scienceRankingCorrect: null,
+  worldHistoryRankingCorrect: null,
   subject: "math"
 };
 
@@ -2494,6 +2976,24 @@ const scienceState = {
   usedQuestionIndexes: new Set()
 };
 
+const worldHistoryState = {
+  level: "grade6",
+  sessionActive: false,
+  sessionStartedAt: 0,
+  questionNumber: 0,
+  correct: 0,
+  wrong: 0,
+  streak: 0,
+  bestStreak: 0,
+  answered: false,
+  current: null,
+  usedQuestionIndexes: new Set(),
+  wrongNotes: [],
+  reviewMode: false,
+  reviewQueue: [],
+  reviewTotal: 0
+};
+
 let googleScriptLoadPromise = null;
 
 let profile = loadProfile();
@@ -2527,6 +3027,7 @@ function createDefaultProfile() {
     lastEnglishLevel: "starter",
     lastHistoryLevel: "grade4",
     lastScienceLevel: "starter",
+    lastWorldHistoryLevel: "grade6",
     theme: "pink"
   };
 }
@@ -2563,6 +3064,9 @@ function loadProfile() {
     }
     if (!SCIENCE_LEVELS[merged.lastScienceLevel]) {
       merged.lastScienceLevel = defaults.lastScienceLevel;
+    }
+    if (!WORLD_HISTORY_LEVELS[merged.lastWorldHistoryLevel]) {
+      merged.lastWorldHistoryLevel = defaults.lastWorldHistoryLevel;
     }
 
     return merged;
@@ -2616,6 +3120,7 @@ function loadTabPreference() {
     if (saved === "english") return "english";
     if (saved === "history") return "history";
     if (saved === "science") return "science";
+    if (saved === "worldHistory") return "worldHistory";
     return "math";
   } catch {
     return "math";
@@ -2645,7 +3150,7 @@ function applySubjectCopy(subjectKey) {
 
 function setSubjectTab(tabKey, options = {}) {
   const { persist = true } = options;
-  const validTabs = new Set(["math", "english", "history", "science"]);
+  const validTabs = new Set(["math", "english", "history", "science", "worldHistory"]);
   const safeTab = validTabs.has(tabKey) ? tabKey : "math";
   state.subject = safeTab;
 
@@ -2662,6 +3167,9 @@ function setSubjectTab(tabKey, options = {}) {
   els.scienceViews.forEach((element) => {
     element.classList.toggle("hidden", safeTab !== "science");
   });
+  els.worldHistoryViews.forEach((element) => {
+    element.classList.toggle("hidden", safeTab !== "worldHistory");
+  });
   applySubjectCopy(safeTab);
   document.title = "곰돌이 선생님";
 
@@ -2677,6 +3185,9 @@ function setSubjectTab(tabKey, options = {}) {
   }
   if (safeTab === "science" && !scienceState.sessionActive && !scienceState.current) {
     renderScienceIdle();
+  }
+  if (safeTab === "worldHistory" && !worldHistoryState.sessionActive && !worldHistoryState.current) {
+    renderWorldHistoryIdle();
   }
 
   if (persist) {
@@ -2802,6 +3313,12 @@ function setBear(mood, message) {
   }
   if (els.scienceFeedbackBear) {
     els.scienceFeedbackBear.dataset.mood = mood;
+  }
+  if (els.worldHistoryFeedback) {
+    els.worldHistoryFeedback.dataset.mood = mood;
+  }
+  if (els.worldHistoryFeedbackBear) {
+    els.worldHistoryFeedbackBear.dataset.mood = mood;
   }
 }
 
@@ -2998,6 +3515,21 @@ async function fetchScienceRankings(limit = 10) {
   }
 }
 
+async function fetchWorldHistoryRankings(limit = 10) {
+  try {
+    const response = await fetch(getApiUrl(`/api/world-history/rankings?limit=${encodeURIComponent(limit)}`));
+    if (!response.ok) {
+      throw new Error("failed to fetch world history rankings");
+    }
+
+    const payload = await response.json();
+    return Array.isArray(payload.items) ? payload.items : [];
+  } catch (error) {
+    console.error("fetchWorldHistoryRankings failed", error);
+    return [];
+  }
+}
+
 async function refreshMathRankings() {
   const items = await fetchMathRankings(10);
   if (authState.user) {
@@ -3043,8 +3575,25 @@ async function refreshScienceRankings() {
   renderRanking(els.scienceRankingList, items);
 }
 
+async function refreshWorldHistoryRankings() {
+  const items = await fetchWorldHistoryRankings(10);
+  if (authState.user) {
+    const me = items.find((item) => item.userId === authState.user.id);
+    state.worldHistoryRankingCorrect = me ? Number(me.totalCorrect || 0) : 0;
+  } else {
+    state.worldHistoryRankingCorrect = null;
+  }
+  renderRanking(els.worldHistoryRankingList, items);
+}
+
 async function refreshRankings() {
-  await Promise.all([refreshMathRankings(), refreshEnglishRankings(), refreshHistoryRankings(), refreshScienceRankings()]);
+  await Promise.all([
+    refreshMathRankings(),
+    refreshEnglishRankings(),
+    refreshHistoryRankings(),
+    refreshScienceRankings(),
+    refreshWorldHistoryRankings()
+  ]);
 }
 
 function renderGoogleSignInButton() {
@@ -3384,6 +3933,11 @@ function setScienceFeedback(message) {
   els.scienceFeedbackText.textContent = `곰돌이 선생님: ${message}`;
 }
 
+function setWorldHistoryFeedback(message) {
+  if (!els.worldHistoryFeedbackText) return;
+  els.worldHistoryFeedbackText.textContent = `곰돌이 선생님: ${message}`;
+}
+
 function getEnglishLevel(levelKey) {
   return ENGLISH_LEVELS[levelKey] || ENGLISH_LEVELS.starter;
 }
@@ -3406,6 +3960,16 @@ function getScienceQuestions(levelKey) {
   const safeLevel = getScienceLevel(levelKey).key;
   const questions = SCIENCE_QUESTION_BANK[safeLevel];
   return Array.isArray(questions) && questions.length > 0 ? questions : SCIENCE_QUESTION_BANK.starter;
+}
+
+function getWorldHistoryLevel(levelKey) {
+  return WORLD_HISTORY_LEVELS[levelKey] || WORLD_HISTORY_LEVELS.grade6;
+}
+
+function getWorldHistoryQuestions(levelKey) {
+  const safeLevel = getWorldHistoryLevel(levelKey).key;
+  const questions = WORLD_HISTORY_QUESTION_BANK[safeLevel];
+  return Array.isArray(questions) && questions.length > 0 ? questions : WORLD_HISTORY_QUESTION_BANK.grade6;
 }
 
 function normalizeEnglishAnswer(answer) {
@@ -3484,6 +4048,14 @@ function updateScienceLevelUi() {
   }
 }
 
+function updateWorldHistoryLevelUi() {
+  const level = getWorldHistoryLevel(worldHistoryState.level);
+  setActive(els.worldHistoryLevelButtons, "worldHistoryLevel", level.key);
+  if (els.worldHistoryStartBtn) {
+    els.worldHistoryStartBtn.textContent = `${level.label} 10문제 시작`;
+  }
+}
+
 function pickHistoryQuestionIndex() {
   const pool = getHistoryQuestions(historyState.level);
   const allIndexes = Array.from({ length: pool.length }, (_, index) => index);
@@ -3527,6 +4099,32 @@ function pickScienceQuestionIndex() {
 function buildScienceQuestion() {
   const pool = getScienceQuestions(scienceState.level);
   const questionIndex = pickScienceQuestionIndex();
+  const question = pool[questionIndex];
+  return {
+    question: question.question,
+    options: shuffleList([...question.options]),
+    answer: question.answer,
+    explanation: question.explanation
+  };
+}
+
+function pickWorldHistoryQuestionIndex() {
+  const pool = getWorldHistoryQuestions(worldHistoryState.level);
+  const allIndexes = Array.from({ length: pool.length }, (_, index) => index);
+  let availableIndexes = allIndexes.filter((index) => !worldHistoryState.usedQuestionIndexes.has(index));
+  if (availableIndexes.length === 0) {
+    worldHistoryState.usedQuestionIndexes.clear();
+    availableIndexes = allIndexes;
+  }
+
+  const questionIndex = availableIndexes[randomInt(0, availableIndexes.length - 1)];
+  worldHistoryState.usedQuestionIndexes.add(questionIndex);
+  return questionIndex;
+}
+
+function buildWorldHistoryQuestion() {
+  const pool = getWorldHistoryQuestions(worldHistoryState.level);
+  const questionIndex = pickWorldHistoryQuestionIndex();
   const question = pool[questionIndex];
   return {
     question: question.question,
@@ -4392,6 +4990,15 @@ function updateScienceStats() {
   els.scienceAccuracy.textContent = `${accuracy}%`;
 }
 
+function updateWorldHistoryStats() {
+  const solved = worldHistoryState.correct + worldHistoryState.wrong;
+  const accuracy = solved > 0 ? Math.round((worldHistoryState.correct / solved) * 100) : 0;
+  els.worldHistoryCorrect.textContent = String(worldHistoryState.correct);
+  els.worldHistoryStreak.textContent = String(worldHistoryState.streak);
+  els.worldHistoryBestStreak.textContent = String(worldHistoryState.bestStreak);
+  els.worldHistoryAccuracy.textContent = `${accuracy}%`;
+}
+
 function renderScienceIdle() {
   const level = getScienceLevel(scienceState.level);
   scienceState.current = null;
@@ -4868,6 +5475,348 @@ function handleHistoryNext() {
   setHistoryFeedback("다음 문제도 집중해서 풀어보자.");
 }
 
+function renderWorldHistoryWrongNotes() {
+  if (!els.worldHistoryWrongNoteList) return;
+
+  const notes = worldHistoryState.wrongNotes;
+  const unresolvedCount = notes.filter((note) => !note.solved).length;
+  const canRetry = unresolvedCount > 0 && !worldHistoryState.sessionActive && !worldHistoryState.reviewMode;
+
+  els.worldHistoryWrongNoteList.innerHTML = "";
+  if (els.worldHistoryRetryWrongBtn) {
+    els.worldHistoryRetryWrongBtn.classList.toggle("hidden", !canRetry);
+    els.worldHistoryRetryWrongBtn.disabled = !canRetry;
+  }
+
+  if (els.worldHistoryWrongNoteGuide) {
+    if (notes.length === 0) {
+      els.worldHistoryWrongNoteGuide.textContent = "틀린 문제가 생기면 여기에 자동으로 기록돼요.";
+    } else if (unresolvedCount === 0) {
+      els.worldHistoryWrongNoteGuide.textContent = "멋져요! 세계사 오답노트를 전부 해결했어요.";
+    } else {
+      els.worldHistoryWrongNoteGuide.textContent = `오답 ${unresolvedCount}개가 남아 있어요. 복습 버튼으로 다시 풀어봐요.`;
+    }
+  }
+
+  if (notes.length === 0) {
+    const empty = document.createElement("li");
+    empty.className = "ranking-empty";
+    empty.textContent = "아직 기록된 오답이 없어요.";
+    els.worldHistoryWrongNoteList.appendChild(empty);
+    return;
+  }
+
+  notes.forEach((note, index) => {
+    const li = document.createElement("li");
+    li.className = "history-wrong-note-item";
+    if (note.solved) {
+      li.classList.add("is-solved");
+    }
+
+    const top = document.createElement("div");
+    top.className = "history-wrong-note-top";
+
+    const order = document.createElement("span");
+    order.className = "history-wrong-note-order";
+    order.textContent = `${index + 1}번`;
+
+    const badge = document.createElement("span");
+    badge.className = "history-wrong-note-badge";
+    badge.textContent = note.solved ? "복습 완료" : "복습 대기";
+
+    top.appendChild(order);
+    top.appendChild(badge);
+
+    const question = document.createElement("p");
+    question.className = "history-wrong-note-question";
+    question.textContent = note.question;
+
+    const answer = document.createElement("p");
+    answer.className = "history-wrong-note-answer";
+    answer.textContent = `내 답: ${note.selected} · 정답: ${note.answer}`;
+
+    li.appendChild(top);
+    li.appendChild(question);
+    li.appendChild(answer);
+    els.worldHistoryWrongNoteList.appendChild(li);
+  });
+}
+
+function renderWorldHistoryIdle() {
+  const level = getWorldHistoryLevel(worldHistoryState.level);
+  worldHistoryState.current = null;
+  worldHistoryState.answered = false;
+  worldHistoryState.sessionActive = false;
+  worldHistoryState.reviewMode = false;
+  worldHistoryState.reviewQueue = [];
+  worldHistoryState.reviewTotal = 0;
+  els.worldHistoryQuestionCount.textContent = "준비 완료";
+  els.worldHistoryModePill.textContent = `${level.label} 객관식`;
+  els.worldHistoryPrompt.textContent = `${level.label} 시작 버튼을 누르면 세계사 10문제가 나와요.`;
+  els.worldHistoryOptions.innerHTML = "";
+  els.worldHistoryNextBtn.textContent = "다음 문제";
+  els.worldHistoryNextBtn.disabled = true;
+  setWorldHistoryFeedback(`${level.label} 준비 완료! 시작 버튼을 눌러보자.`);
+  updateWorldHistoryLevelUi();
+  updateWorldHistoryStats();
+  renderWorldHistoryWrongNotes();
+}
+
+function renderWorldHistoryQuestion() {
+  if (!worldHistoryState.current) return;
+
+  const level = getWorldHistoryLevel(worldHistoryState.level);
+  if (worldHistoryState.reviewMode) {
+    const remaining = worldHistoryState.reviewQueue.length + 1;
+    els.worldHistoryQuestionCount.textContent = `오답노트 복습 · 남은 ${remaining}문제`;
+    els.worldHistoryModePill.textContent = "오답노트 복습";
+  } else {
+    els.worldHistoryQuestionCount.textContent = `${worldHistoryState.questionNumber} / ${TARGET_QUESTIONS} 문제`;
+    els.worldHistoryModePill.textContent = `${level.label} 객관식`;
+  }
+  els.worldHistoryPrompt.textContent = worldHistoryState.current.question;
+  els.worldHistoryOptions.innerHTML = worldHistoryState.current.options
+    .map((option) => {
+      return `<button class="english-option" type="button" data-world-history-option="${option}">${option}</button>`;
+    })
+    .join("");
+  els.worldHistoryNextBtn.textContent = worldHistoryState.reviewMode ? "다음 복습" : "다음 문제";
+  els.worldHistoryNextBtn.disabled = true;
+  worldHistoryState.answered = false;
+}
+
+function startWorldHistorySession() {
+  const level = getWorldHistoryLevel(worldHistoryState.level);
+  worldHistoryState.sessionActive = true;
+  worldHistoryState.sessionStartedAt = Date.now();
+  worldHistoryState.questionNumber = 1;
+  worldHistoryState.correct = 0;
+  worldHistoryState.wrong = 0;
+  worldHistoryState.streak = 0;
+  worldHistoryState.bestStreak = 0;
+  worldHistoryState.answered = false;
+  worldHistoryState.current = null;
+  worldHistoryState.reviewMode = false;
+  worldHistoryState.reviewQueue = [];
+  worldHistoryState.reviewTotal = 0;
+  worldHistoryState.wrongNotes = [];
+  worldHistoryState.usedQuestionIndexes.clear();
+  worldHistoryState.current = buildWorldHistoryQuestion();
+  updateWorldHistoryStats();
+  renderWorldHistoryWrongNotes();
+  renderWorldHistoryQuestion();
+  setWorldHistoryFeedback(`${level.label} 시작! 세계사 문제를 차근차근 풀어보자.`);
+  setBear("thinking", `${level.label} 세계사 라운드 시작!`);
+}
+
+function completeWorldHistorySession() {
+  worldHistoryState.sessionActive = false;
+  worldHistoryState.answered = false;
+  worldHistoryState.current = null;
+
+  const total = worldHistoryState.correct + worldHistoryState.wrong;
+  const accuracy = total > 0 ? Math.round((worldHistoryState.correct / total) * 100) : 0;
+  let mood = "happy";
+  if (accuracy >= 90) mood = "celebrate";
+  if (accuracy < 60) mood = "thinking";
+
+  els.worldHistoryQuestionCount.textContent = "세계사 라운드 완료";
+  els.worldHistoryModePill.textContent = "세계사 라운드 완료";
+  els.worldHistoryPrompt.textContent = `총 ${worldHistoryState.correct}/${total}문제 정답 (${accuracy}%)`;
+  els.worldHistoryOptions.innerHTML = "";
+  els.worldHistoryNextBtn.textContent = "다음 문제";
+  els.worldHistoryNextBtn.disabled = true;
+  const unresolvedWrongCount = worldHistoryState.wrongNotes.filter((note) => !note.solved).length;
+  if (unresolvedWrongCount > 0) {
+    setWorldHistoryFeedback(
+      `완료! ${getWorldHistoryLevel(worldHistoryState.level).label} 라운드를 끝냈어요. 오답노트 ${unresolvedWrongCount}개를 다시 풀어볼까?`
+    );
+  } else {
+    setWorldHistoryFeedback(`완료! ${getWorldHistoryLevel(worldHistoryState.level).label} 라운드를 끝냈어요. 다시 도전해볼까?`);
+  }
+  updateWorldHistoryStats();
+  renderWorldHistoryWrongNotes();
+  setBear(mood, "세계사 라운드 완료! 시대 흐름이 더 잘 보이기 시작했어.");
+
+  const summary = buildWorldHistoryRoundSummary();
+  void syncWorldHistoryRoundResult(summary);
+}
+
+function nextWorldHistoryReviewQuestion() {
+  const next = worldHistoryState.reviewQueue.shift();
+  if (!next) {
+    completeWorldHistoryWrongReview();
+    return;
+  }
+
+  worldHistoryState.current = {
+    ...next,
+    options: shuffleList([...(next.options || [])])
+  };
+  renderWorldHistoryQuestion();
+}
+
+function startWorldHistoryWrongReview() {
+  const unresolved = worldHistoryState.wrongNotes.filter((note) => !note.solved);
+  if (unresolved.length === 0) return;
+
+  worldHistoryState.reviewMode = true;
+  worldHistoryState.sessionActive = true;
+  worldHistoryState.answered = false;
+  worldHistoryState.reviewTotal = unresolved.length;
+  worldHistoryState.reviewQueue = unresolved.map((note) => ({
+    question: note.question,
+    options: [...note.options],
+    answer: note.answer,
+    explanation: note.explanation,
+    noteKey: note.key
+  }));
+  worldHistoryState.current = null;
+  worldHistoryState.questionNumber = 1;
+
+  renderWorldHistoryWrongNotes();
+  setWorldHistoryFeedback("좋아! 세계사 오답노트 복습 시작. 틀린 문제를 다시 맞혀보자.");
+  setBear("thinking", "오답노트 복습 시작! 이번엔 꼭 맞힐 수 있어.");
+  nextWorldHistoryReviewQuestion();
+}
+
+function completeWorldHistoryWrongReview() {
+  const unresolved = worldHistoryState.wrongNotes.filter((note) => !note.solved).length;
+  worldHistoryState.reviewMode = false;
+  worldHistoryState.sessionActive = false;
+  worldHistoryState.answered = false;
+  worldHistoryState.current = null;
+  worldHistoryState.reviewQueue = [];
+  worldHistoryState.reviewTotal = 0;
+  worldHistoryState.questionNumber = 0;
+
+  els.worldHistoryQuestionCount.textContent = "오답노트 복습 완료";
+  els.worldHistoryModePill.textContent = `${getWorldHistoryLevel(worldHistoryState.level).label} 객관식`;
+  els.worldHistoryPrompt.textContent = "오답노트를 모두 점검했어요. 다시 라운드를 시작해볼까요?";
+  els.worldHistoryOptions.innerHTML = "";
+  els.worldHistoryNextBtn.textContent = "다음 문제";
+  els.worldHistoryNextBtn.disabled = true;
+
+  if (unresolved > 0) {
+    setWorldHistoryFeedback(`복습 완료! 아직 ${unresolved}개 남았어요. 다시 복습하면 더 좋아져요.`);
+    setBear("happy", "괜찮아! 한 번 더 복습하면 완벽해질 수 있어.");
+  } else {
+    setWorldHistoryFeedback("복습 완료! 오답노트를 전부 해결했어요.");
+    setBear("celebrate", "오답노트 완주! 정말 대단해.");
+  }
+  renderWorldHistoryWrongNotes();
+}
+
+function handleWorldHistoryOptionSelect(option) {
+  if (!worldHistoryState.sessionActive || worldHistoryState.answered || !worldHistoryState.current) return;
+
+  worldHistoryState.answered = true;
+  const isCorrect = option === worldHistoryState.current.answer;
+
+  if (worldHistoryState.reviewMode) {
+    if (isCorrect) {
+      const targetKey = String(worldHistoryState.current.noteKey || "");
+      const matched = worldHistoryState.wrongNotes.find((note) => note.key === targetKey);
+      if (matched) {
+        matched.solved = true;
+      }
+      setWorldHistoryFeedback(`정답! ${worldHistoryState.current.explanation}`);
+      setBear("love", "좋아! 오답노트 문제를 다시 맞혔어.");
+      renderWorldHistoryWrongNotes();
+    } else {
+      worldHistoryState.reviewQueue.push({
+        question: worldHistoryState.current.question,
+        options: [...worldHistoryState.current.options],
+        answer: worldHistoryState.current.answer,
+        explanation: worldHistoryState.current.explanation,
+        noteKey: worldHistoryState.current.noteKey
+      });
+      setWorldHistoryFeedback(`오답! 정답은 "${worldHistoryState.current.answer}" · ${worldHistoryState.current.explanation}`);
+      setBear("cry", "괜찮아! 같은 문제를 한 번 더 복습해보자.");
+      renderWorldHistoryWrongNotes();
+    }
+  } else if (isCorrect) {
+    worldHistoryState.correct += 1;
+    worldHistoryState.streak += 1;
+    worldHistoryState.bestStreak = Math.max(worldHistoryState.bestStreak, worldHistoryState.streak);
+    setWorldHistoryFeedback(`정답! ${worldHistoryState.current.explanation}`);
+    setBear("love", "세계사 정답! 곰돌이 선생님이 칭찬 중이야.");
+  } else {
+    const noteKey = `world-history-wrong-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+    worldHistoryState.wrong += 1;
+    worldHistoryState.streak = 0;
+    worldHistoryState.wrongNotes.push({
+      key: noteKey,
+      question: worldHistoryState.current.question,
+      options: [...worldHistoryState.current.options],
+      answer: worldHistoryState.current.answer,
+      explanation: worldHistoryState.current.explanation,
+      selected: option,
+      solved: false
+    });
+    setWorldHistoryFeedback(`오답! 정답은 "${worldHistoryState.current.answer}" · ${worldHistoryState.current.explanation}`);
+    setBear("cry", "괜찮아! 다음 문제에서 만회하자.");
+    renderWorldHistoryWrongNotes();
+  }
+
+  Array.from(els.worldHistoryOptions.querySelectorAll(".english-option")).forEach((button) => {
+    if (!(button instanceof HTMLElement)) return;
+    const value = button.dataset.worldHistoryOption || "";
+    button.setAttribute("disabled", "true");
+    if (value === worldHistoryState.current.answer) {
+      button.classList.add("is-correct");
+      return;
+    }
+    if (value === option && !isCorrect) {
+      button.classList.add("is-wrong");
+    }
+  });
+
+  if (!worldHistoryState.reviewMode) {
+    updateWorldHistoryStats();
+  }
+  if (isCorrect) {
+    handleWorldHistoryNext();
+    return;
+  }
+
+  if (worldHistoryState.reviewMode) {
+    els.worldHistoryNextBtn.textContent = worldHistoryState.reviewQueue.length === 0 ? "복습 완료" : "다음 복습";
+  } else {
+    els.worldHistoryNextBtn.textContent = worldHistoryState.questionNumber >= TARGET_QUESTIONS ? "결과 보기" : "다음 문제";
+  }
+  els.worldHistoryNextBtn.disabled = false;
+  els.worldHistoryNextBtn.focus();
+}
+
+function handleWorldHistoryNext() {
+  if (!worldHistoryState.answered) return;
+
+  if (worldHistoryState.reviewMode) {
+    if (worldHistoryState.reviewQueue.length === 0) {
+      completeWorldHistoryWrongReview();
+      return;
+    }
+
+    worldHistoryState.questionNumber += 1;
+    nextWorldHistoryReviewQuestion();
+    setBear("idle", "좋아! 오답노트 다음 문제로 가자.");
+    setWorldHistoryFeedback("복습을 하나씩 끝내보자.");
+    return;
+  }
+
+  if (worldHistoryState.questionNumber >= TARGET_QUESTIONS) {
+    completeWorldHistorySession();
+    return;
+  }
+
+  worldHistoryState.questionNumber += 1;
+  worldHistoryState.current = buildWorldHistoryQuestion();
+  renderWorldHistoryQuestion();
+  setBear("idle", "좋아! 세계사 다음 문제로 가자.");
+  setWorldHistoryFeedback("다음 문제도 집중해서 풀어보자.");
+}
+
 function renderQuestion() {
   const question = state.currentQuestion;
   if (!question) return;
@@ -5162,6 +6111,54 @@ async function syncScienceRoundResult(summary) {
   setAuthStatus("과학 라운드 저장에 실패했어요. 로그인 상태와 DB 설정을 확인해 주세요.");
 }
 
+async function saveWorldHistorySessionToDb(summary) {
+  if (!authState.user || !authState.token) {
+    return { ok: false, reason: "not-logged-in" };
+  }
+
+  try {
+    const response = await fetch(getApiUrl("/api/world-history/sessions"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authState.token}`
+      },
+      body: JSON.stringify(summary)
+    });
+
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({ error: "failed to save" }));
+      throw new Error(payload.error || "failed to save");
+    }
+
+    return { ok: true };
+  } catch (error) {
+    console.error("saveWorldHistorySessionToDb failed", error);
+    return { ok: false, reason: "request-failed" };
+  }
+}
+
+async function syncWorldHistoryRoundResult(summary) {
+  if (!authState.user) {
+    return;
+  }
+
+  const result = await saveWorldHistorySessionToDb(summary);
+
+  if (result.ok) {
+    setAuthStatus(`${authState.user.name || "사용자"}님, 세계사 라운드 기록이 저장됐어요.`);
+    void refreshWorldHistoryRankings();
+    return;
+  }
+
+  if (result.reason === "not-logged-in") {
+    setAuthStatus("로그인하면 세계사 라운드 결과를 저장할 수 있어요.");
+    return;
+  }
+
+  setAuthStatus("세계사 라운드 저장에 실패했어요. 로그인 상태와 DB 설정을 확인해 주세요.");
+}
+
 function buildRoundSummary() {
   const total = state.sessionCorrect + state.sessionWrong;
   const accuracy = total ? Math.round((state.sessionCorrect / total) * 100) : 0;
@@ -5231,6 +6228,24 @@ function buildScienceRoundSummary() {
     bestStreak: scienceState.bestStreak,
     durationMs,
     externalKey: `science:${getDateKey()}:${scienceState.level}:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`
+  };
+}
+
+function buildWorldHistoryRoundSummary() {
+  const total = worldHistoryState.correct + worldHistoryState.wrong;
+  const accuracy = total ? Math.round((worldHistoryState.correct / total) * 100) : 0;
+  const durationMs = Math.max(Date.now() - worldHistoryState.sessionStartedAt, 0);
+
+  return {
+    date: getDateKey(),
+    level: worldHistoryState.level,
+    totalQuestions: total,
+    correctAnswers: worldHistoryState.correct,
+    wrongAnswers: worldHistoryState.wrong,
+    accuracy,
+    bestStreak: worldHistoryState.bestStreak,
+    durationMs,
+    externalKey: `world-history:${getDateKey()}:${worldHistoryState.level}:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`
   };
 }
 
@@ -5482,6 +6497,28 @@ function handleScienceLevelSelect(nextLevel) {
   }
 }
 
+function handleWorldHistoryLevelSelect(nextLevel) {
+  if (!WORLD_HISTORY_LEVELS[nextLevel]) return;
+
+  worldHistoryState.level = nextLevel;
+  profile.lastWorldHistoryLevel = nextLevel;
+  saveProfile();
+  updateWorldHistoryLevelUi();
+  worldHistoryState.usedQuestionIndexes.clear();
+
+  const label = getWorldHistoryLevel(nextLevel).label;
+  if (worldHistoryState.sessionActive) {
+    setWorldHistoryFeedback(`${label} 난이도로 바꿨어. 다음 문제부터 적용돼요.`);
+    setBear("happy", `${label} 난이도로 변경 완료!`);
+    return;
+  }
+
+  if (state.subject === "worldHistory") {
+    renderWorldHistoryIdle();
+    setBear("happy", `${label} 난이도 준비 완료!`);
+  }
+}
+
 function handleEnglishLevelSelect(nextLevel) {
   if (!ENGLISH_LEVELS[nextLevel]) return;
 
@@ -5696,6 +6733,7 @@ function handleLogout() {
   state.englishRankingCorrect = null;
   state.historyRankingCorrect = null;
   state.scienceRankingCorrect = null;
+  state.worldHistoryRankingCorrect = null;
   renderAuthUser();
 
   if (window.google?.accounts?.id) {
@@ -5741,6 +6779,12 @@ function bindEvents() {
   els.scienceLevelButtons.forEach((button) => {
     button.addEventListener("click", () => {
       handleScienceLevelSelect(button.dataset.scienceLevel);
+    });
+  });
+
+  els.worldHistoryLevelButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      handleWorldHistoryLevelSelect(button.dataset.worldHistoryLevel);
     });
   });
 
@@ -5822,6 +6866,10 @@ function bindEvents() {
     void refreshScienceRankings();
   });
 
+  els.refreshWorldHistoryRankingBtn.addEventListener("click", () => {
+    void refreshWorldHistoryRankings();
+  });
+
   els.historyRetryWrongBtn.addEventListener("click", () => {
     startHistoryWrongReview();
   });
@@ -5836,6 +6884,10 @@ function bindEvents() {
 
   els.scienceStartBtn.addEventListener("click", () => {
     startScienceSession();
+  });
+
+  els.worldHistoryStartBtn.addEventListener("click", () => {
+    startWorldHistorySession();
   });
 
   els.englishOptions.addEventListener("click", (event) => {
@@ -5881,6 +6933,21 @@ function bindEvents() {
 
   els.scienceNextBtn.addEventListener("click", () => {
     handleScienceNext();
+  });
+
+  els.worldHistoryRetryWrongBtn.addEventListener("click", () => {
+    startWorldHistoryWrongReview();
+  });
+
+  els.worldHistoryOptions.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    if (!target.classList.contains("english-option")) return;
+    handleWorldHistoryOptionSelect(String(target.dataset.worldHistoryOption || ""));
+  });
+
+  els.worldHistoryNextBtn.addEventListener("click", () => {
+    handleWorldHistoryNext();
   });
 
   els.englishSpeakActionBtn.addEventListener("click", () => {
@@ -5944,7 +7011,7 @@ function bindEvents() {
 
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Enter") return;
-    if (state.subject !== "english" && state.subject !== "history" && state.subject !== "science") return;
+    if (state.subject !== "english" && state.subject !== "history" && state.subject !== "science" && state.subject !== "worldHistory") return;
 
     const target = event.target;
     if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) return;
@@ -5972,6 +7039,15 @@ function bindEvents() {
         event.preventDefault();
         handleScienceNext();
       }
+      return;
+    }
+
+    if (state.subject === "worldHistory") {
+      if (!worldHistoryState.sessionActive) return;
+      if (worldHistoryState.answered) {
+        event.preventDefault();
+        handleWorldHistoryNext();
+      }
     }
   });
 
@@ -5986,6 +7062,7 @@ function init() {
   englishState.level = ENGLISH_LEVELS[profile.lastEnglishLevel] ? profile.lastEnglishLevel : "starter";
   historyState.level = HISTORY_LEVELS[profile.lastHistoryLevel] ? profile.lastHistoryLevel : "grade4";
   scienceState.level = SCIENCE_LEVELS[profile.lastScienceLevel] ? profile.lastScienceLevel : "starter";
+  worldHistoryState.level = WORLD_HISTORY_LEVELS[profile.lastWorldHistoryLevel] ? profile.lastWorldHistoryLevel : "grade6";
   state.subject = loadTabPreference();
 
   setActive(els.operationButtons, "operation", state.operation);
@@ -5993,6 +7070,7 @@ function init() {
   setActive(els.englishLevelButtons, "englishLevel", englishState.level);
   setActive(els.historyLevelButtons, "historyLevel", historyState.level);
   setActive(els.scienceLevelButtons, "scienceLevel", scienceState.level);
+  setActive(els.worldHistoryLevelButtons, "worldHistoryLevel", worldHistoryState.level);
 
   applyTheme(profile.theme, { persist: false });
   setThemePicker(false);
@@ -6005,6 +7083,7 @@ function init() {
   renderEnglishIdle();
   renderHistoryIdle();
   renderScienceIdle();
+  renderWorldHistoryIdle();
   setBear("idle", "안녕! 난 곰돌이 선생님이야. 오늘도 즐겁게 문제 풀어볼까?");
   setFeedback("천천히, 정확하게! 준비되면 시작해요.");
 

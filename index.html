@@ -87,6 +87,7 @@
         <button class="subject-tab" data-subject="english" type="button">곰돌이 영어</button>
         <button class="subject-tab" data-subject="history" type="button">곰돌이 한국사</button>
         <button class="subject-tab" data-subject="science" type="button">곰돌이 과학</button>
+        <button class="subject-tab" data-subject="worldHistory" type="button">곰돌이 세계사</button>
       </nav>
 
       <section class="panel settings-panel math-view">
@@ -441,9 +442,93 @@
           <ol class="ranking-list" id="scienceRankingList"></ol>
         </section>
       </section>
+
+      <section class="panel settings-panel world-history-view hidden" id="worldHistorySettingsPanel">
+        <h2>곰돌이 세계사</h2>
+        <p class="english-guide">세계사능력검정시험 1~6급 문제를 단계별로 연습해요.</p>
+        <div class="option-wrap">
+          <p class="option-title">세계사 난이도</p>
+          <div class="chip-row" id="worldHistoryLevelRow">
+            <button class="chip is-active" data-world-history-level="grade6" type="button">세계사 6급</button>
+            <button class="chip" data-world-history-level="grade5" type="button">세계사 5급</button>
+            <button class="chip" data-world-history-level="grade4" type="button">세계사 4급</button>
+            <button class="chip" data-world-history-level="grade3" type="button">세계사 3급</button>
+            <button class="chip" data-world-history-level="grade2" type="button">세계사 2급</button>
+            <button class="chip" data-world-history-level="grade1" type="button">세계사 1급</button>
+          </div>
+        </div>
+        <button class="btn btn-primary" id="worldHistoryStartBtn" type="button">세계사 6급 10문제 시작</button>
+      </section>
+
+      <section class="panel quiz-panel world-history-view hidden" id="worldHistoryQuizPanel">
+        <div class="quiz-head">
+          <p class="question-count" id="worldHistoryQuestionCount">준비 완료</p>
+          <p class="mode-pill" id="worldHistoryModePill">세계사 6급 객관식</p>
+        </div>
+
+        <p class="english-label">세계사능력검정시험 유형으로 풀어보세요.</p>
+        <p class="equation english-equation" id="worldHistoryPrompt">세계사 시작 버튼을 누르면 문제가 나와요.</p>
+
+        <div class="english-options" id="worldHistoryOptions"></div>
+        <div class="english-actions">
+          <button class="btn btn-primary" id="worldHistoryNextBtn" type="button" disabled>다음 문제</button>
+        </div>
+
+        <section class="feedback english-feedback" id="worldHistoryFeedback" data-mood="idle" aria-live="polite">
+          <div class="feedback-bear english-feedback-bear" id="worldHistoryFeedbackBear" data-mood="idle" aria-hidden="true">
+            <span class="fb-ear fb-ear-left"></span>
+            <span class="fb-ear fb-ear-right"></span>
+            <span class="fb-eye fb-eye-left"></span>
+            <span class="fb-eye fb-eye-right"></span>
+            <span class="fb-snout"></span>
+            <span class="fb-mouth"></span>
+            <span class="fb-blush fb-blush-left"></span>
+            <span class="fb-blush fb-blush-right"></span>
+          </div>
+          <p class="feedback-text english-feedback-text" id="worldHistoryFeedbackText">곰돌이 선생님: 세계사 탭 준비 완료!</p>
+        </section>
+      </section>
+
+      <section class="panel stats-panel world-history-view hidden" id="worldHistoryStatsPanel">
+        <h2>오늘의 세계사 성과판</h2>
+        <div class="stat-grid">
+          <article class="stat-card">
+            <p class="stat-label">맞힌 문제</p>
+            <p class="stat-value" id="worldHistoryCorrect">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-label">현재 연속 정답</p>
+            <p class="stat-value" id="worldHistoryStreak">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-label">최고 연속 기록</p>
+            <p class="stat-value" id="worldHistoryBestStreak">0</p>
+          </article>
+          <article class="stat-card">
+            <p class="stat-label">정답률</p>
+            <p class="stat-value" id="worldHistoryAccuracy">0%</p>
+          </article>
+        </div>
+        <section class="ranking-board history-wrong-note-board">
+          <div class="ranking-head">
+            <h3>오답노트</h3>
+            <button class="btn btn-ghost ranking-refresh hidden" id="worldHistoryRetryWrongBtn" type="button">오답 다시 풀기</button>
+          </div>
+          <p class="ranking-sub" id="worldHistoryWrongNoteGuide">틀린 문제가 생기면 여기에 자동으로 기록돼요.</p>
+          <ol class="history-wrong-note-list" id="worldHistoryWrongNoteList"></ol>
+        </section>
+        <section class="ranking-board">
+          <div class="ranking-head">
+            <h3>곰돌이 세계사 랭킹</h3>
+            <button class="btn btn-ghost ranking-refresh" id="refreshWorldHistoryRankingBtn" type="button">새로고침</button>
+          </div>
+          <p class="ranking-sub">맞힌 문제 수 기준 TOP 10</p>
+          <ol class="ranking-list" id="worldHistoryRankingList"></ol>
+        </section>
+      </section>
     </main>
 
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <script src="app.js?v=20260215-23"></script>
+    <script src="app.js?v=20260215-24"></script>
   </body>
 </html>

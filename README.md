@@ -12,7 +12,7 @@
 - 힌트 제공
 - Google 로그인 시 곰돌이 색(테마) 계정 동기화
 - Google 로그인 사용자 닉네임 등록/수정
-- 맞힌 문제 수 기준 수학/영어/한국사/과학 랭킹 보드
+- 맞힌 문제 수 기준 수학/영어/한국사/과학/세계사 랭킹 보드
 - 오늘 학습 통계:
   - 오늘 맞힌 문제 수
   - 현재 연속 정답
@@ -83,6 +83,9 @@ npm start
 - `GET /api/science/rankings`
 - `GET /api/science/sessions`
 - `POST /api/science/sessions`
+- `GET /api/world-history/rankings`
+- `GET /api/world-history/sessions`
+- `POST /api/world-history/sessions`
 - `GET /api/readings?userId=...&limit=...`
 - `POST /api/readings`
 
