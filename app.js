@@ -86,6 +86,12 @@ const BASEBALL_LEVELS = {
   advanced: { key: "advanced", label: "고급" }
 };
 const BASEBALL_LEVEL_KEYS = Object.keys(BASEBALL_LEVELS);
+const SOCCER_LEVELS = {
+  beginner: { key: "beginner", label: "초급" },
+  intermediate: { key: "intermediate", label: "중급" },
+  advanced: { key: "advanced", label: "고급" }
+};
+const SOCCER_LEVEL_KEYS = Object.keys(SOCCER_LEVELS);
 const ENGLISH_SPEAK_ACTIONS = {
   START: "start",
   RECORD: "record",
@@ -2571,6 +2577,303 @@ const BASEBALL_QUESTION_BANK = {
   ]
 };
 
+const SOCCER_QUESTION_BANK = {
+  beginner: [
+    {
+      question: "축구 경기에서 한 팀이 동시에 그라운드에 나오는 선수 수는 몇 명일까요?",
+      options: ["11명", "9명", "10명", "12명"],
+      answer: "11명",
+      explanation: "축구는 보통 팀당 11명이 경기에 출전해요."
+    },
+    {
+      question: "정규 시간 기준 축구 경기는 전반과 후반 각각 몇 분일까요?",
+      options: ["45분", "30분", "40분", "50분"],
+      answer: "45분",
+      explanation: "정규 시간은 전반 45분 + 후반 45분이에요."
+    },
+    {
+      question: "골키퍼가 손으로 공을 다룰 수 있는 기본 구역은 어디일까요?",
+      options: ["자기 팀 페널티 지역", "센터 서클", "상대 팀 페널티 지역", "터치라인 바깥"],
+      answer: "자기 팀 페널티 지역",
+      explanation: "골키퍼는 자기 페널티 지역 안에서만 손 사용이 가능해요."
+    },
+    {
+      question: "정상 득점(골)으로 인정되려면 공이 어떻게 되어야 할까요?",
+      options: ["공 전체가 골라인을 넘어야 함", "공 일부만 골라인을 넘으면 됨", "골키퍼가 건드리면 자동 득점", "크로스바 맞으면 자동 득점"],
+      answer: "공 전체가 골라인을 넘어야 함",
+      explanation: "공 전체가 라인을 넘어야 골로 인정돼요."
+    },
+    {
+      question: "수비수가 공을 건드린 뒤 자기 팀 골라인 밖으로 나가면 공격팀에 주어지는 것은 무엇일까요?",
+      options: ["코너킥", "스로인", "페널티킥", "드롭볼"],
+      answer: "코너킥",
+      explanation: "수비수 최종 터치 후 골라인 아웃이면 코너킥이에요."
+    },
+    {
+      question: "터치라인 밖으로 공이 나갔을 때 재개하는 방법은 무엇일까요?",
+      options: ["스로인", "코너킥", "킥오프", "간접 프리킥"],
+      answer: "스로인",
+      explanation: "터치라인 아웃은 손으로 던지는 스로인으로 재개해요."
+    },
+    {
+      question: "경기에서 경고를 뜻하는 카드는 무엇일까요?",
+      options: ["옐로카드", "레드카드", "블루카드", "그린카드"],
+      answer: "옐로카드",
+      explanation: "옐로카드는 경고, 레드카드는 퇴장을 의미해요."
+    },
+    {
+      question: "레드카드를 받은 선수에게 내려지는 조치로 맞는 것은 무엇일까요?",
+      options: ["즉시 퇴장", "코너킥 1회 면제", "주장 교체", "전반 종료까지 대기"],
+      answer: "즉시 퇴장",
+      explanation: "레드카드를 받으면 즉시 경기장에서 퇴장해요."
+    },
+    {
+      question: "경기 시작과 득점 후 재개할 때 사용하는 방식은 무엇일까요?",
+      options: ["킥오프", "스로인", "골킥", "드롭볼"],
+      answer: "킥오프",
+      explanation: "킥오프로 경기를 시작하고 득점 후에도 재개해요."
+    },
+    {
+      question: "수비 반칙이 자기 팀 페널티 지역 안에서 발생하면 보통 공격팀에 무엇이 주어질까요?",
+      options: ["페널티킥", "코너킥", "스로인", "오프사이드 선언"],
+      answer: "페널티킥",
+      explanation: "페널티 지역 내 수비 반칙은 페널티킥이 주어져요."
+    },
+    {
+      question: "오프사이드 판정에서 핵심이 되는 기준으로 가장 알맞은 것은 무엇일까요?",
+      options: ["패스 순간 공격수가 공과 두 번째 수비수보다 앞에 있는지", "공이 높이 떴는지", "골키퍼가 나온 거리", "관중석 소음"],
+      answer: "패스 순간 공격수가 공과 두 번째 수비수보다 앞에 있는지",
+      explanation: "오프사이드는 패스 순간의 위치와 플레이 관여 여부를 봐요."
+    },
+    {
+      question: "토너먼트에서 정규 시간 후 동점일 때 보통 추가로 치르는 시간은 무엇일까요?",
+      options: ["연장전", "재경기", "바로 추첨", "즉시 승부 없음"],
+      answer: "연장전",
+      explanation: "토너먼트에서는 연장전을 통해 승부를 가리기도 해요."
+    },
+    {
+      question: "연장전은 일반적으로 어떤 구성으로 진행될까요?",
+      options: ["15분 전반 + 15분 후반", "30분 전반만", "10분 전반 + 10분 후반", "45분 후반만"],
+      answer: "15분 전반 + 15분 후반",
+      explanation: "연장전은 보통 15분씩 두 번 진행돼요."
+    },
+    {
+      question: "승부차기에서 기본적으로 먼저 차는 선수 수는 팀당 몇 명일까요?",
+      options: ["5명", "3명", "7명", "11명"],
+      answer: "5명",
+      explanation: "기본은 팀당 5명씩 차고, 동점이면 서든데스로 이어져요."
+    },
+    {
+      question: "VAR의 주요 목적은 무엇일까요?",
+      options: ["중요 판정 장면을 영상으로 재확인", "광고 노출", "선수 체력 측정", "경기장 조명 조절"],
+      answer: "중요 판정 장면을 영상으로 재확인",
+      explanation: "VAR는 득점·PK·퇴장 등 핵심 판정을 보조해요."
+    },
+    {
+      question: "주심이 파울 직후 공격팀에 유리하다고 보고 경기를 이어가게 하는 원칙은 무엇일까요?",
+      options: ["어드밴티지", "오프사이드 트랩", "티키타카", "역습 금지"],
+      answer: "어드밴티지",
+      explanation: "어드밴티지는 공격 흐름의 이점을 살리기 위한 원칙이에요."
+    }
+  ],
+  intermediate: [
+    {
+      question: "4-3-3 포메이션의 숫자가 의미하는 순서로 맞는 것은 무엇일까요?",
+      options: ["수비수-미드필더-공격수", "골키퍼-수비수-미드필더", "공격수-미드필더-수비수", "코치-선수-교체"],
+      answer: "수비수-미드필더-공격수",
+      explanation: "포메이션 표기는 필드 플레이어 라인 구성 순서를 뜻해요."
+    },
+    {
+      question: "어시스트(assist)의 의미로 가장 알맞은 것은 무엇일까요?",
+      options: ["득점으로 연결된 마지막 패스", "태클 성공 횟수", "골킥 개수", "경고 누적"],
+      answer: "득점으로 연결된 마지막 패스",
+      explanation: "동료의 득점을 직접 도운 패스를 어시스트라고 해요."
+    },
+    {
+      question: "클린시트(clean sheet)의 뜻으로 맞는 것은 무엇일까요?",
+      options: ["실점 없이 경기 종료", "득점 없이 경기 종료", "파울 없이 경기 종료", "슈팅 없이 경기 종료"],
+      answer: "실점 없이 경기 종료",
+      explanation: "팀이 한 골도 내주지 않으면 클린시트예요."
+    },
+    {
+      question: "세트피스(set piece)에 해당하는 상황으로 가장 알맞은 것은 무엇일까요?",
+      options: ["코너킥", "드리블 돌파", "오픈플레이 패스", "압박 회피 런"],
+      answer: "코너킥",
+      explanation: "세트피스는 프리킥·코너킥 같은 정지된 상황 재개예요."
+    },
+    {
+      question: "전방 압박(pressing)의 핵심 목표는 무엇일까요?",
+      options: ["상대 빌드업을 방해해 빠르게 공 탈취", "무조건 뒤로 물러서기", "드리블만 반복", "롱스로인만 시도"],
+      answer: "상대 빌드업을 방해해 빠르게 공 탈취",
+      explanation: "압박은 상대의 실수를 유도하고 높은 위치에서 공을 되찾으려는 전술이에요."
+    },
+    {
+      question: "역습(counter attack)의 특징으로 가장 알맞은 것은 무엇일까요?",
+      options: ["공을 탈취한 뒤 빠르게 전진해 공격", "무조건 점유율 유지", "중앙 수비수만 공격", "코너킥만 노리기"],
+      answer: "공을 탈취한 뒤 빠르게 전진해 공격",
+      explanation: "역습은 수비 전환 직후 빠른 속도로 공간을 공략해요."
+    },
+    {
+      question: "오버래핑(overlap)의 설명으로 맞는 것은 무엇일까요?",
+      options: ["뒤의 선수가 바깥으로 앞질러 침투", "골키퍼가 중앙으로 올라옴", "공격수가 수비수 자리로 이동", "주장이 심판과 교대"],
+      answer: "뒤의 선수가 바깥으로 앞질러 침투",
+      explanation: "측면에서 풀백이 윙어 바깥을 돌아 올라가는 장면이 대표적이에요."
+    },
+    {
+      question: "스루패스의 목적은 무엇일까요?",
+      options: ["수비 뒷공간으로 침투하는 동료에게 패스", "공을 멀리 걷어내기", "경기 시간 지연", "심판에게 공 전달"],
+      answer: "수비 뒷공간으로 침투하는 동료에게 패스",
+      explanation: "수비 라인을 무너뜨리는 전진 패스예요."
+    },
+    {
+      question: "가짜 9번(false nine)의 특징으로 가장 알맞은 것은 무엇일까요?",
+      options: ["최전방 공격수가 내려와 연계에 관여", "수비수 9명이 동시에 전진", "골키퍼가 공격수로 고정", "코너킥 전담 선수"],
+      answer: "최전방 공격수가 내려와 연계에 관여",
+      explanation: "센터포워드가 내려와 공간을 만들고 연계를 돕는 역할이에요."
+    },
+    {
+      question: "전환 수비(transition defense)가 필요한 순간은 언제일까요?",
+      options: ["공을 빼앗긴 직후", "득점 세리머니 중", "전반 시작 전", "하프타임 휴식 중"],
+      answer: "공을 빼앗긴 직후",
+      explanation: "공 소유를 잃은 직후가 가장 위험한 전환 구간이에요."
+    },
+    {
+      question: "로우 블록(low block)의 전형적 특징은 무엇일까요?",
+      options: ["수비 라인을 낮게 두고 공간을 좁힘", "수비 라인을 매우 높게 유지", "중앙 미드필더를 모두 전방 배치", "양쪽 풀백을 벤치 대기"],
+      answer: "수비 라인을 낮게 두고 공간을 좁힘",
+      explanation: "골문 근처에서 촘촘하게 막아 상대에게 공간을 덜 주는 방식이에요."
+    },
+    {
+      question: "원투패스(one-two)의 핵심은 무엇일까요?",
+      options: ["짧은 패스 후 즉시 재침투해 다시 받기", "중앙에서 롱패스만 반복", "백패스만 계속하기", "코너킥으로만 연결"],
+      answer: "짧은 패스 후 즉시 재침투해 다시 받기",
+      explanation: "빠른 패스 교환으로 수비 사이를 뚫는 데 효과적이에요."
+    },
+    {
+      question: "타깃맨(target man)의 장점으로 가장 알맞은 것은 무엇일까요?",
+      options: ["전방에서 공을 지켜 2선과 연계", "항상 수비라인 마지막에만 대기", "세트피스 수비 불참", "드리블 금지"],
+      answer: "전방에서 공을 지켜 2선과 연계",
+      explanation: "전방 기점 역할로 동료의 공격 가담 시간을 벌어줘요."
+    },
+    {
+      question: "수비수가 오프사이드 트랩을 시도할 때 목표는 무엇일까요?",
+      options: ["공격수를 오프사이드 위치에 남기기", "코너킥 유도", "볼 소유 포기", "무조건 태클하기"],
+      answer: "공격수를 오프사이드 위치에 남기기",
+      explanation: "수비 라인을 동시에 올려 공격수의 타이밍을 끊는 전략이에요."
+    },
+    {
+      question: "직접 프리킥과 간접 프리킥의 차이로 맞는 것은 무엇일까요?",
+      options: ["직접은 바로 슈팅 득점 가능, 간접은 다른 선수 터치 필요", "직접은 헤더만 가능", "간접은 손 사용 가능", "차이가 없다"],
+      answer: "직접은 바로 슈팅 득점 가능, 간접은 다른 선수 터치 필요",
+      explanation: "직접 프리킥은 바로 골 가능, 간접은 2인 이상 터치가 필요해요."
+    },
+    {
+      question: "하프스페이스를 잘 활용하면 얻기 쉬운 이점은 무엇일까요?",
+      options: ["중앙과 측면 사이에서 전진 패스 각도 확보", "무조건 코너킥 증가", "수비 숫자 자동 증가", "오프사이드 면제"],
+      answer: "중앙과 측면 사이에서 전진 패스 각도 확보",
+      explanation: "하프스페이스는 상대 수비 간격을 흔들기 좋은 구역이에요."
+    }
+  ],
+  advanced: [
+    {
+      question: "xG(expected goals)의 의미로 가장 알맞은 것은 무엇일까요?",
+      options: ["슈팅 기회의 기대 득점값", "선수의 연봉 예측치", "경기장 점유 면적", "태클 성공 확률"],
+      answer: "슈팅 기회의 기대 득점값",
+      explanation: "슈팅 위치·각도·상황 등을 기반으로 득점 가능성을 수치화해요."
+    },
+    {
+      question: "PPDA가 낮게 나오는 팀의 일반적 성향은 무엇일까요?",
+      options: ["강한 전방 압박", "극단적 로우 블록만 유지", "패스 시도 최소화", "슈팅 회피"],
+      answer: "강한 전방 압박",
+      explanation: "PPDA가 낮을수록 상대 패스를 덜 허용하며 적극적으로 압박하는 경향이 커요."
+    },
+    {
+      question: "점유율이 높아도 반드시 득점이 늘지 않는 이유로 가장 알맞은 것은 무엇일까요?",
+      options: ["유효한 찬스 창출이 부족할 수 있음", "점유율은 득점과 항상 반비례", "점유율이 높으면 슈팅 금지", "심판이 자동으로 무효 처리"],
+      answer: "유효한 찬스 창출이 부족할 수 있음",
+      explanation: "점유율 자체보다 어떤 지역에서 얼마나 위협적으로 공을 썼는지가 중요해요."
+    },
+    {
+      question: "rest defense의 주된 목적은 무엇일까요?",
+      options: ["공격 중 볼을 잃었을 때 즉시 역습 차단", "항상 오프사이드 유도", "세트피스 전담", "후반 체력 비축"],
+      answer: "공격 중 볼을 잃었을 때 즉시 역습 차단",
+      explanation: "공격 시에도 뒤에 안정 구조를 남겨 전환 리스크를 줄여요."
+    },
+    {
+      question: "인버티드 풀백(inverted fullback)의 일반적 움직임은 무엇일까요?",
+      options: ["측면에서 안쪽 미드필드로 들어와 수적 우위 형성", "항상 최전방으로만 질주", "센터백 뒤로만 이동", "라인 밖에서 대기"],
+      answer: "측면에서 안쪽 미드필드로 들어와 수적 우위 형성",
+      explanation: "중앙 빌드업 안정과 패스 경로 확장을 돕는 역할이에요."
+    },
+    {
+      question: "counter-pressing(게겐프레싱)의 핵심은 무엇일까요?",
+      options: ["볼을 잃은 직후 즉시 압박해 재탈취", "볼을 잃으면 전원 후퇴만", "세트피스 전담 조직", "롱볼만 고집"],
+      answer: "볼을 잃은 직후 즉시 압박해 재탈취",
+      explanation: "전환 순간 짧은 시간 내 공을 되찾아 상대 역습을 막는 전략이에요."
+    },
+    {
+      question: "빌드업에서 3-2 구조를 만드는 이유로 가장 알맞은 것은 무엇일까요?",
+      options: ["1차 압박 회피와 중앙 연결 안정", "공격수 수 줄이기", "코너킥 횟수 감소", "오프사이드 방지 규정 회피"],
+      answer: "1차 압박 회피와 중앙 연결 안정",
+      explanation: "후방 3명+중앙 2명으로 패스 네트워크를 안정화해요."
+    },
+    {
+      question: "progressive pass의 설명으로 옳은 것은 무엇일까요?",
+      options: ["상대 골문 방향으로 의미 있게 전진시키는 패스", "백패스만 반복하는 패스", "터치라인 밖으로 나가는 패스", "심판에게 전달하는 패스"],
+      answer: "상대 골문 방향으로 의미 있게 전진시키는 패스",
+      explanation: "전진 거리와 위협도 측면에서 공격 전개에 중요한 지표예요."
+    },
+    {
+      question: "xA(expected assists)가 보여주는 정보로 가장 알맞은 것은 무엇일까요?",
+      options: ["패스가 슈팅으로 이어졌을 때의 기대 도움값", "수비 성공 확률", "골키퍼 선방 기대값", "팀 버스 이동 거리"],
+      answer: "패스가 슈팅으로 이어졌을 때의 기대 도움값",
+      explanation: "창의적 패스의 질을 평가할 때 쓰는 지표예요."
+    },
+    {
+      question: "약한 쪽 전환(weak-side switch)의 전술적 이점은 무엇일까요?",
+      options: ["한쪽으로 몰린 수비를 반대편 넓은 공간으로 흔듦", "오프사이드 자동 해제", "경기 시간 정지", "교체 카드 추가 획득"],
+      answer: "한쪽으로 몰린 수비를 반대편 넓은 공간으로 흔듦",
+      explanation: "수비 이동 속도보다 빠르게 공을 전환하면 공간 우위를 만들 수 있어요."
+    },
+    {
+      question: "하이 라인(high line)을 사용할 때 얻을 수 있는 장점으로 가장 알맞은 것은 무엇일까요?",
+      options: ["라인 간격을 좁혀 압박과 볼 회수 지점 전진", "항상 실점 감소 보장", "체력 소모 0", "오프사이드 규정 무시"],
+      answer: "라인 간격을 좁혀 압박과 볼 회수 지점 전진",
+      explanation: "팀 전체를 끌어올려 상대 진영에서 공을 되찾기 쉬워져요."
+    },
+    {
+      question: "third-man run 패턴의 핵심으로 맞는 것은 무엇일까요?",
+      options: ["직접 받는 선수가 아닌 3번째 선수가 공간 침투", "수비수 3명이 항상 겹침", "골키퍼 3연속 킥", "공을 3번 바운드 후 패스"],
+      answer: "직접 받는 선수가 아닌 3번째 선수가 공간 침투",
+      explanation: "패스받는 척 끌어낸 뒤 제3의 선수가 침투해 수비를 흔들어요."
+    },
+    {
+      question: "저점유 고효율 팀의 전형적 특징으로 가장 알맞은 것은 무엇일까요?",
+      options: ["적은 기회에서도 높은 전환 공격 완성도", "슈팅 시도 최소화", "전진 패스 금지", "세트피스 포기"],
+      answer: "적은 기회에서도 높은 전환 공격 완성도",
+      explanation: "역습 품질과 박스 침투 효율이 높아 적은 점유율로도 득점해요."
+    },
+    {
+      question: "오버로드(overload)의 전술적 의미로 맞는 것은 무엇일까요?",
+      options: ["특정 구역에 수적 우위를 만들어 패스 루트 확보", "전 구역 동일 인원 유지", "항상 개인기만 사용", "수비수 교체 금지"],
+      answer: "특정 구역에 수적 우위를 만들어 패스 루트 확보",
+      explanation: "국지적 수적 우위는 탈압박과 찬스 창출에 유리해요."
+    },
+    {
+      question: "라인 브레이킹 패스(line-breaking pass)의 목적은 무엇일까요?",
+      options: ["수비 라인 사이를 통과해 전진 연결", "수비 라인을 뒤로 물리기만 함", "터치라인 밖으로 내보내기", "골키퍼에게만 전달"],
+      answer: "수비 라인 사이를 통과해 전진 연결",
+      explanation: "수비 블록을 직접 관통해 공격 템포를 높이는 패스예요."
+    },
+    {
+      question: "데이터 분석에서 게임 스테이트(game state)를 고려해야 하는 이유로 가장 알맞은 것은 무엇일까요?",
+      options: ["리드/열세 상황에 따라 전술 선택과 지표가 달라지기 때문", "심판 성향만으로 결과가 정해지기 때문", "선수 교체는 항상 동일하기 때문", "날씨는 모든 팀에 완전히 동일하기 때문"],
+      answer: "리드/열세 상황에 따라 전술 선택과 지표가 달라지기 때문",
+      explanation: "앞서고 있을 때와 뒤지고 있을 때 팀의 위험 감수와 지표가 크게 달라져요."
+    }
+  ]
+};
+
 const WORLD_HISTORY_QUESTION_BANK = {
   grade6: [
     {
@@ -3264,6 +3567,11 @@ const SUBJECT_COPY = {
     title: "곰돌이 야구",
     subtitle: "야구 상식 퀴즈예요. 신민찬 어린이의 요청으로 만들었습니다.",
     bearMessage: "안녕! 난 곰돌이 선생님이야. 야구 상식 퀴즈도 신나게 풀어볼까?"
+  },
+  soccer: {
+    title: "곰돌이 축구",
+    subtitle: "곰돌이 선생님과 축구 상식 퀴즈를 난이도별로 재미있게 풀어봐요.",
+    bearMessage: "안녕! 난 곰돌이 선생님이야. 이번엔 축구 상식 퀴즈로 워밍업해볼까?"
   }
 };
 
@@ -3275,6 +3583,7 @@ const els = {
   scienceViews: Array.from(document.querySelectorAll(".science-view")),
   worldHistoryViews: Array.from(document.querySelectorAll(".world-history-view")),
   baseballViews: Array.from(document.querySelectorAll(".baseball-view")),
+  soccerViews: Array.from(document.querySelectorAll(".soccer-view")),
   heroTitle: document.querySelector("#heroTitle"),
   heroSubtitle: document.querySelector("#heroSubtitle"),
 
@@ -3328,12 +3637,14 @@ const els = {
   refreshScienceRankingBtn: document.querySelector("#refreshScienceRankingBtn"),
   refreshWorldHistoryRankingBtn: document.querySelector("#refreshWorldHistoryRankingBtn"),
   refreshBaseballRankingBtn: document.querySelector("#refreshBaseballRankingBtn"),
+  refreshSoccerRankingBtn: document.querySelector("#refreshSoccerRankingBtn"),
   rankingList: document.querySelector("#rankingList"),
   englishRankingList: document.querySelector("#englishRankingList"),
   historyRankingList: document.querySelector("#historyRankingList"),
   scienceRankingList: document.querySelector("#scienceRankingList"),
   worldHistoryRankingList: document.querySelector("#worldHistoryRankingList"),
   baseballRankingList: document.querySelector("#baseballRankingList"),
+  soccerRankingList: document.querySelector("#soccerRankingList"),
 
   englishStartBtn: document.querySelector("#englishStartBtn"),
   englishGuide: document.querySelector(".english-guide"),
@@ -3423,7 +3734,22 @@ const els = {
   baseballCorrect: document.querySelector("#baseballCorrect"),
   baseballStreak: document.querySelector("#baseballStreak"),
   baseballBestStreak: document.querySelector("#baseballBestStreak"),
-  baseballAccuracy: document.querySelector("#baseballAccuracy")
+  baseballAccuracy: document.querySelector("#baseballAccuracy"),
+
+  soccerStartBtn: document.querySelector("#soccerStartBtn"),
+  soccerLevelButtons: Array.from(document.querySelectorAll("[data-soccer-level]")),
+  soccerQuestionCount: document.querySelector("#soccerQuestionCount"),
+  soccerModePill: document.querySelector("#soccerModePill"),
+  soccerPrompt: document.querySelector("#soccerPrompt"),
+  soccerOptions: document.querySelector("#soccerOptions"),
+  soccerNextBtn: document.querySelector("#soccerNextBtn"),
+  soccerFeedback: document.querySelector("#soccerFeedback"),
+  soccerFeedbackBear: document.querySelector("#soccerFeedbackBear"),
+  soccerFeedbackText: document.querySelector("#soccerFeedbackText"),
+  soccerCorrect: document.querySelector("#soccerCorrect"),
+  soccerStreak: document.querySelector("#soccerStreak"),
+  soccerBestStreak: document.querySelector("#soccerBestStreak"),
+  soccerAccuracy: document.querySelector("#soccerAccuracy")
 };
 
 const state = {
@@ -3449,6 +3775,7 @@ const state = {
   scienceRankingCorrect: null,
   worldHistoryRankingCorrect: null,
   baseballRankingCorrect: null,
+  soccerRankingCorrect: null,
   subject: "math"
 };
 
@@ -3551,6 +3878,20 @@ const baseballState = {
   usedQuestionIndexes: new Set()
 };
 
+const soccerState = {
+  level: "beginner",
+  sessionActive: false,
+  sessionStartedAt: 0,
+  questionNumber: 0,
+  correct: 0,
+  wrong: 0,
+  streak: 0,
+  bestStreak: 0,
+  answered: false,
+  current: null,
+  usedQuestionIndexes: new Set()
+};
+
 let googleScriptLoadPromise = null;
 
 let profile = loadProfile();
@@ -3586,6 +3927,7 @@ function createDefaultProfile() {
     lastScienceLevel: "starter",
     lastWorldHistoryLevel: "grade6",
     lastBaseballLevel: "beginner",
+    lastSoccerLevel: "beginner",
     theme: "pink"
   };
 }
@@ -3628,6 +3970,9 @@ function loadProfile() {
     }
     if (!BASEBALL_LEVELS[merged.lastBaseballLevel]) {
       merged.lastBaseballLevel = defaults.lastBaseballLevel;
+    }
+    if (!SOCCER_LEVELS[merged.lastSoccerLevel]) {
+      merged.lastSoccerLevel = defaults.lastSoccerLevel;
     }
 
     return merged;
@@ -3683,6 +4028,7 @@ function loadTabPreference() {
     if (saved === "science") return "science";
     if (saved === "worldHistory") return "worldHistory";
     if (saved === "baseball") return "baseball";
+    if (saved === "soccer") return "soccer";
     return "math";
   } catch {
     return "math";
@@ -3712,7 +4058,7 @@ function applySubjectCopy(subjectKey) {
 
 function setSubjectTab(tabKey, options = {}) {
   const { persist = true } = options;
-  const validTabs = new Set(["math", "english", "history", "science", "worldHistory", "baseball"]);
+  const validTabs = new Set(["math", "english", "history", "science", "worldHistory", "baseball", "soccer"]);
   const safeTab = validTabs.has(tabKey) ? tabKey : "math";
   state.subject = safeTab;
 
@@ -3735,6 +4081,9 @@ function setSubjectTab(tabKey, options = {}) {
   els.baseballViews.forEach((element) => {
     element.classList.toggle("hidden", safeTab !== "baseball");
   });
+  els.soccerViews.forEach((element) => {
+    element.classList.toggle("hidden", safeTab !== "soccer");
+  });
   applySubjectCopy(safeTab);
   document.title = "곰돌이 선생님";
 
@@ -3756,6 +4105,9 @@ function setSubjectTab(tabKey, options = {}) {
   }
   if (safeTab === "baseball" && !baseballState.sessionActive && !baseballState.current) {
     renderBaseballIdle();
+  }
+  if (safeTab === "soccer" && !soccerState.sessionActive && !soccerState.current) {
+    renderSoccerIdle();
   }
 
   if (persist) {
@@ -3893,6 +4245,12 @@ function setBear(mood, message) {
   }
   if (els.baseballFeedbackBear) {
     els.baseballFeedbackBear.dataset.mood = mood;
+  }
+  if (els.soccerFeedback) {
+    els.soccerFeedback.dataset.mood = mood;
+  }
+  if (els.soccerFeedbackBear) {
+    els.soccerFeedbackBear.dataset.mood = mood;
   }
 }
 
@@ -4119,6 +4477,21 @@ async function fetchBaseballRankings(limit = 10) {
   }
 }
 
+async function fetchSoccerRankings(limit = 10) {
+  try {
+    const response = await fetch(getApiUrl(`/api/soccer/rankings?limit=${encodeURIComponent(limit)}`));
+    if (!response.ok) {
+      throw new Error("failed to fetch soccer rankings");
+    }
+
+    const payload = await response.json();
+    return Array.isArray(payload.items) ? payload.items : [];
+  } catch (error) {
+    console.error("fetchSoccerRankings failed", error);
+    return [];
+  }
+}
+
 async function refreshMathRankings() {
   const items = await fetchMathRankings(10);
   if (authState.user) {
@@ -4186,6 +4559,17 @@ async function refreshBaseballRankings() {
   renderRanking(els.baseballRankingList, items);
 }
 
+async function refreshSoccerRankings() {
+  const items = await fetchSoccerRankings(10);
+  if (authState.user) {
+    const me = items.find((item) => item.userId === authState.user.id);
+    state.soccerRankingCorrect = me ? Number(me.totalCorrect || 0) : 0;
+  } else {
+    state.soccerRankingCorrect = null;
+  }
+  renderRanking(els.soccerRankingList, items);
+}
+
 async function refreshRankings() {
   await Promise.all([
     refreshMathRankings(),
@@ -4193,7 +4577,8 @@ async function refreshRankings() {
     refreshHistoryRankings(),
     refreshScienceRankings(),
     refreshWorldHistoryRankings(),
-    refreshBaseballRankings()
+    refreshBaseballRankings(),
+    refreshSoccerRankings()
   ]);
 }
 
@@ -4544,6 +4929,11 @@ function setBaseballFeedback(message) {
   els.baseballFeedbackText.textContent = `곰돌이 선생님: ${message}`;
 }
 
+function setSoccerFeedback(message) {
+  if (!els.soccerFeedbackText) return;
+  els.soccerFeedbackText.textContent = `곰돌이 선생님: ${message}`;
+}
+
 function getEnglishLevel(levelKey) {
   return ENGLISH_LEVELS[levelKey] || ENGLISH_LEVELS.starter;
 }
@@ -4586,6 +4976,16 @@ function getBaseballQuestions(levelKey) {
   const safeLevel = getBaseballLevel(levelKey).key;
   const questions = BASEBALL_QUESTION_BANK[safeLevel];
   return Array.isArray(questions) && questions.length > 0 ? questions : BASEBALL_QUESTION_BANK.beginner;
+}
+
+function getSoccerLevel(levelKey) {
+  return SOCCER_LEVELS[levelKey] || SOCCER_LEVELS.beginner;
+}
+
+function getSoccerQuestions(levelKey) {
+  const safeLevel = getSoccerLevel(levelKey).key;
+  const questions = SOCCER_QUESTION_BANK[safeLevel];
+  return Array.isArray(questions) && questions.length > 0 ? questions : SOCCER_QUESTION_BANK.beginner;
 }
 
 function normalizeEnglishAnswer(answer) {
@@ -4677,6 +5077,14 @@ function updateBaseballLevelUi() {
   setActive(els.baseballLevelButtons, "baseballLevel", level.key);
   if (els.baseballStartBtn) {
     els.baseballStartBtn.textContent = `${level.label} 야구 10문제 시작`;
+  }
+}
+
+function updateSoccerLevelUi() {
+  const level = getSoccerLevel(soccerState.level);
+  setActive(els.soccerLevelButtons, "soccerLevel", level.key);
+  if (els.soccerStartBtn) {
+    els.soccerStartBtn.textContent = `${level.label} 축구 10문제 시작`;
   }
 }
 
@@ -4775,6 +5183,32 @@ function pickBaseballQuestionIndex() {
 function buildBaseballQuestion() {
   const pool = getBaseballQuestions(baseballState.level);
   const questionIndex = pickBaseballQuestionIndex();
+  const question = pool[questionIndex];
+  return {
+    question: question.question,
+    options: shuffleList([...question.options]),
+    answer: question.answer,
+    explanation: question.explanation
+  };
+}
+
+function pickSoccerQuestionIndex() {
+  const pool = getSoccerQuestions(soccerState.level);
+  const allIndexes = Array.from({ length: pool.length }, (_, index) => index);
+  let availableIndexes = allIndexes.filter((index) => !soccerState.usedQuestionIndexes.has(index));
+  if (availableIndexes.length === 0) {
+    soccerState.usedQuestionIndexes.clear();
+    availableIndexes = allIndexes;
+  }
+
+  const questionIndex = availableIndexes[randomInt(0, availableIndexes.length - 1)];
+  soccerState.usedQuestionIndexes.add(questionIndex);
+  return questionIndex;
+}
+
+function buildSoccerQuestion() {
+  const pool = getSoccerQuestions(soccerState.level);
+  const questionIndex = pickSoccerQuestionIndex();
   const question = pool[questionIndex];
   return {
     question: question.question,
@@ -5658,6 +6092,15 @@ function updateBaseballStats() {
   els.baseballAccuracy.textContent = `${accuracy}%`;
 }
 
+function updateSoccerStats() {
+  const solved = soccerState.correct + soccerState.wrong;
+  const accuracy = solved > 0 ? Math.round((soccerState.correct / solved) * 100) : 0;
+  els.soccerCorrect.textContent = String(soccerState.correct);
+  els.soccerStreak.textContent = String(soccerState.streak);
+  els.soccerBestStreak.textContent = String(soccerState.bestStreak);
+  els.soccerAccuracy.textContent = `${accuracy}%`;
+}
+
 function renderScienceIdle() {
   const level = getScienceLevel(scienceState.level);
   scienceState.current = null;
@@ -5926,6 +6369,141 @@ function handleBaseballNext() {
   renderBaseballQuestion();
   setBear("idle", "좋아! 야구 다음 문제로 가자.");
   setBaseballFeedback("다음 문제도 집중해서 풀어보자.");
+}
+
+function renderSoccerIdle() {
+  const level = getSoccerLevel(soccerState.level);
+  soccerState.current = null;
+  soccerState.answered = false;
+  soccerState.sessionActive = false;
+  els.soccerQuestionCount.textContent = "준비 완료";
+  els.soccerModePill.textContent = `${level.label} 객관식`;
+  els.soccerPrompt.textContent = `${level.label} 시작 버튼을 누르면 축구 상식 10문제가 나와요.`;
+  els.soccerOptions.innerHTML = "";
+  els.soccerNextBtn.textContent = "다음 문제";
+  els.soccerNextBtn.disabled = true;
+  setSoccerFeedback(`${level.label} 축구 퀴즈 준비 완료! 시작 버튼을 눌러보자.`);
+  updateSoccerLevelUi();
+  updateSoccerStats();
+}
+
+function renderSoccerQuestion() {
+  if (!soccerState.current) return;
+
+  const level = getSoccerLevel(soccerState.level);
+  els.soccerQuestionCount.textContent = `${soccerState.questionNumber} / ${TARGET_QUESTIONS} 문제`;
+  els.soccerModePill.textContent = `${level.label} 객관식`;
+  els.soccerPrompt.textContent = soccerState.current.question;
+  els.soccerOptions.innerHTML = soccerState.current.options
+    .map((option) => {
+      return `<button class="english-option" type="button" data-soccer-option="${option}">${option}</button>`;
+    })
+    .join("");
+  els.soccerNextBtn.textContent = soccerState.questionNumber >= TARGET_QUESTIONS ? "결과 보기" : "다음 문제";
+  els.soccerNextBtn.disabled = true;
+  soccerState.answered = false;
+}
+
+function startSoccerSession() {
+  const level = getSoccerLevel(soccerState.level);
+  soccerState.sessionActive = true;
+  soccerState.sessionStartedAt = Date.now();
+  soccerState.questionNumber = 1;
+  soccerState.correct = 0;
+  soccerState.wrong = 0;
+  soccerState.streak = 0;
+  soccerState.bestStreak = 0;
+  soccerState.answered = false;
+  soccerState.current = null;
+  soccerState.usedQuestionIndexes.clear();
+  soccerState.current = buildSoccerQuestion();
+  updateSoccerStats();
+  renderSoccerQuestion();
+  setSoccerFeedback(`${level.label} 축구 상식 퀴즈 시작! 차근차근 풀어보자.`);
+  setBear("thinking", `${level.label} 곰돌이 축구 라운드 시작!`);
+}
+
+function completeSoccerSession() {
+  soccerState.sessionActive = false;
+  soccerState.answered = false;
+  soccerState.current = null;
+
+  const total = soccerState.correct + soccerState.wrong;
+  const accuracy = total > 0 ? Math.round((soccerState.correct / total) * 100) : 0;
+  let mood = "happy";
+  if (accuracy >= 90) mood = "celebrate";
+  if (accuracy < 60) mood = "thinking";
+
+  els.soccerQuestionCount.textContent = "축구 라운드 완료";
+  els.soccerModePill.textContent = "축구 라운드 완료";
+  els.soccerPrompt.textContent = `총 ${soccerState.correct}/${total}문제 정답 (${accuracy}%)`;
+  els.soccerOptions.innerHTML = "";
+  els.soccerNextBtn.textContent = "다음 문제";
+  els.soccerNextBtn.disabled = true;
+  setSoccerFeedback(`완료! ${getSoccerLevel(soccerState.level).label} 라운드를 끝냈어요. 다시 도전해볼까?`);
+  updateSoccerStats();
+  setBear(mood, "축구 라운드 완료! 이제 전술 용어가 더 익숙해졌어.");
+
+  const summary = buildSoccerRoundSummary();
+  void syncSoccerRoundResult(summary);
+}
+
+function handleSoccerOptionSelect(option) {
+  if (!soccerState.sessionActive || soccerState.answered || !soccerState.current) return;
+
+  soccerState.answered = true;
+  const isCorrect = option === soccerState.current.answer;
+
+  if (isCorrect) {
+    soccerState.correct += 1;
+    soccerState.streak += 1;
+    soccerState.bestStreak = Math.max(soccerState.bestStreak, soccerState.streak);
+    setSoccerFeedback(`정답! ${soccerState.current.explanation}`);
+    setBear("love", "축구 정답! 곰돌이 선생님이 엄지척 하고 있어.");
+  } else {
+    soccerState.wrong += 1;
+    soccerState.streak = 0;
+    setSoccerFeedback(`오답! 정답은 "${soccerState.current.answer}" · ${soccerState.current.explanation}`);
+    setBear("cry", "괜찮아! 다음 축구 문제에서 만회하자.");
+  }
+
+  Array.from(els.soccerOptions.querySelectorAll(".english-option")).forEach((button) => {
+    if (!(button instanceof HTMLElement)) return;
+    const value = button.dataset.soccerOption || "";
+    button.setAttribute("disabled", "true");
+    if (value === soccerState.current.answer) {
+      button.classList.add("is-correct");
+      return;
+    }
+    if (value === option && !isCorrect) {
+      button.classList.add("is-wrong");
+    }
+  });
+
+  updateSoccerStats();
+  if (isCorrect) {
+    handleSoccerNext();
+    return;
+  }
+
+  els.soccerNextBtn.textContent = soccerState.questionNumber >= TARGET_QUESTIONS ? "결과 보기" : "다음 문제";
+  els.soccerNextBtn.disabled = false;
+  els.soccerNextBtn.focus();
+}
+
+function handleSoccerNext() {
+  if (!soccerState.answered) return;
+
+  if (soccerState.questionNumber >= TARGET_QUESTIONS) {
+    completeSoccerSession();
+    return;
+  }
+
+  soccerState.questionNumber += 1;
+  soccerState.current = buildSoccerQuestion();
+  renderSoccerQuestion();
+  setBear("idle", "좋아! 축구 다음 문제로 가자.");
+  setSoccerFeedback("다음 문제도 집중해서 풀어보자.");
 }
 
 function renderHistoryWrongNotes() {
@@ -7001,6 +7579,54 @@ async function syncBaseballRoundResult(summary) {
   setAuthStatus("야구 라운드 저장에 실패했어요. 로그인 상태와 DB 설정을 확인해 주세요.");
 }
 
+async function saveSoccerSessionToDb(summary) {
+  if (!authState.user || !authState.token) {
+    return { ok: false, reason: "not-logged-in" };
+  }
+
+  try {
+    const response = await fetch(getApiUrl("/api/soccer/sessions"), {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authState.token}`
+      },
+      body: JSON.stringify(summary)
+    });
+
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({ error: "failed to save" }));
+      throw new Error(payload.error || "failed to save");
+    }
+
+    return { ok: true };
+  } catch (error) {
+    console.error("saveSoccerSessionToDb failed", error);
+    return { ok: false, reason: "request-failed" };
+  }
+}
+
+async function syncSoccerRoundResult(summary) {
+  if (!authState.user) {
+    return;
+  }
+
+  const result = await saveSoccerSessionToDb(summary);
+
+  if (result.ok) {
+    setAuthStatus(`${authState.user.name || "사용자"}님, 축구 라운드 기록이 저장됐어요.`);
+    void refreshSoccerRankings();
+    return;
+  }
+
+  if (result.reason === "not-logged-in") {
+    setAuthStatus("로그인하면 축구 라운드 결과를 저장할 수 있어요.");
+    return;
+  }
+
+  setAuthStatus("축구 라운드 저장에 실패했어요. 로그인 상태와 DB 설정을 확인해 주세요.");
+}
+
 function buildRoundSummary() {
   const total = state.sessionCorrect + state.sessionWrong;
   const accuracy = total ? Math.round((state.sessionCorrect / total) * 100) : 0;
@@ -7106,6 +7732,24 @@ function buildBaseballRoundSummary() {
     bestStreak: baseballState.bestStreak,
     durationMs,
     externalKey: `baseball:${getDateKey()}:${baseballState.level}:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`
+  };
+}
+
+function buildSoccerRoundSummary() {
+  const total = soccerState.correct + soccerState.wrong;
+  const accuracy = total ? Math.round((soccerState.correct / total) * 100) : 0;
+  const durationMs = Math.max(Date.now() - soccerState.sessionStartedAt, 0);
+
+  return {
+    date: getDateKey(),
+    level: soccerState.level,
+    totalQuestions: total,
+    correctAnswers: soccerState.correct,
+    wrongAnswers: soccerState.wrong,
+    accuracy,
+    bestStreak: soccerState.bestStreak,
+    durationMs,
+    externalKey: `soccer:${getDateKey()}:${soccerState.level}:${Date.now()}:${Math.random().toString(36).slice(2, 8)}`
   };
 }
 
@@ -7401,6 +8045,28 @@ function handleBaseballLevelSelect(nextLevel) {
   }
 }
 
+function handleSoccerLevelSelect(nextLevel) {
+  if (!SOCCER_LEVELS[nextLevel]) return;
+
+  soccerState.level = nextLevel;
+  profile.lastSoccerLevel = nextLevel;
+  saveProfile();
+  updateSoccerLevelUi();
+  soccerState.usedQuestionIndexes.clear();
+
+  const label = getSoccerLevel(nextLevel).label;
+  if (soccerState.sessionActive) {
+    setSoccerFeedback(`${label} 난이도로 바꿨어. 다음 문제부터 적용돼요.`);
+    setBear("happy", `${label} 난이도로 변경 완료!`);
+    return;
+  }
+
+  if (state.subject === "soccer") {
+    renderSoccerIdle();
+    setBear("happy", `${label} 난이도 준비 완료!`);
+  }
+}
+
 function handleEnglishLevelSelect(nextLevel) {
   if (!ENGLISH_LEVELS[nextLevel]) return;
 
@@ -7617,6 +8283,7 @@ function handleLogout() {
   state.scienceRankingCorrect = null;
   state.worldHistoryRankingCorrect = null;
   state.baseballRankingCorrect = null;
+  state.soccerRankingCorrect = null;
   renderAuthUser();
 
   if (window.google?.accounts?.id) {
@@ -7674,6 +8341,12 @@ function bindEvents() {
   els.baseballLevelButtons.forEach((button) => {
     button.addEventListener("click", () => {
       handleBaseballLevelSelect(button.dataset.baseballLevel);
+    });
+  });
+
+  els.soccerLevelButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      handleSoccerLevelSelect(button.dataset.soccerLevel);
     });
   });
 
@@ -7763,6 +8436,10 @@ function bindEvents() {
     void refreshBaseballRankings();
   });
 
+  els.refreshSoccerRankingBtn.addEventListener("click", () => {
+    void refreshSoccerRankings();
+  });
+
   els.historyRetryWrongBtn.addEventListener("click", () => {
     startHistoryWrongReview();
   });
@@ -7785,6 +8462,10 @@ function bindEvents() {
 
   els.baseballStartBtn.addEventListener("click", () => {
     startBaseballSession();
+  });
+
+  els.soccerStartBtn.addEventListener("click", () => {
+    startSoccerSession();
   });
 
   els.englishOptions.addEventListener("click", (event) => {
@@ -7858,6 +8539,17 @@ function bindEvents() {
     handleBaseballNext();
   });
 
+  els.soccerOptions.addEventListener("click", (event) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) return;
+    if (!target.classList.contains("english-option")) return;
+    handleSoccerOptionSelect(String(target.dataset.soccerOption || ""));
+  });
+
+  els.soccerNextBtn.addEventListener("click", () => {
+    handleSoccerNext();
+  });
+
   els.englishSpeakActionBtn.addEventListener("click", () => {
     handleEnglishSpeakAction();
   });
@@ -7924,7 +8616,8 @@ function bindEvents() {
       state.subject !== "history" &&
       state.subject !== "science" &&
       state.subject !== "worldHistory" &&
-      state.subject !== "baseball"
+      state.subject !== "baseball" &&
+      state.subject !== "soccer"
     ) {
       return;
     }
@@ -7973,6 +8666,15 @@ function bindEvents() {
         event.preventDefault();
         handleBaseballNext();
       }
+      return;
+    }
+
+    if (state.subject === "soccer") {
+      if (!soccerState.sessionActive) return;
+      if (soccerState.answered) {
+        event.preventDefault();
+        handleSoccerNext();
+      }
     }
   });
 
@@ -7989,6 +8691,7 @@ function init() {
   scienceState.level = SCIENCE_LEVELS[profile.lastScienceLevel] ? profile.lastScienceLevel : "starter";
   worldHistoryState.level = WORLD_HISTORY_LEVELS[profile.lastWorldHistoryLevel] ? profile.lastWorldHistoryLevel : "grade6";
   baseballState.level = BASEBALL_LEVELS[profile.lastBaseballLevel] ? profile.lastBaseballLevel : "beginner";
+  soccerState.level = SOCCER_LEVELS[profile.lastSoccerLevel] ? profile.lastSoccerLevel : "beginner";
   state.subject = loadTabPreference();
 
   setActive(els.operationButtons, "operation", state.operation);
@@ -7998,6 +8701,7 @@ function init() {
   setActive(els.scienceLevelButtons, "scienceLevel", scienceState.level);
   setActive(els.worldHistoryLevelButtons, "worldHistoryLevel", worldHistoryState.level);
   setActive(els.baseballLevelButtons, "baseballLevel", baseballState.level);
+  setActive(els.soccerLevelButtons, "soccerLevel", soccerState.level);
 
   applyTheme(profile.theme, { persist: false });
   setThemePicker(false);
@@ -8012,6 +8716,7 @@ function init() {
   renderScienceIdle();
   renderWorldHistoryIdle();
   renderBaseballIdle();
+  renderSoccerIdle();
   setBear("idle", "안녕! 난 곰돌이 선생님이야. 오늘도 즐겁게 문제 풀어볼까?");
   setFeedback("천천히, 정확하게! 준비되면 시작해요.");
 
